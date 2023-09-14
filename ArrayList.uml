@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.util.ArrayList</OriginalElement>
+  <nodes>
+    <node x="210.0" y="222.0">java.lang.Cloneable</node>
+    <node x="21.875" y="64.0">java.util.Collection</node>
+    <node x="387.07142857142867" y="64.0">java.util.ListIterator</node>
+    <node x="30.875" y="-14.0">java.lang.Iterable</node>
+    <node x="357.0" y="222.0">java.io.Serializable</node>
+    <node x="-12.361607142857139" y="222.0">java.util.AbstractList</node>
+    <node x="145.0" y="142.0">java.util.List</node>
+    <node x="167.94642857142856" y="302.0">java.util.ArrayList</node>
+    <node x="516.0" y="222.0">java.util.RandomAccess</node>
+    <node x="401.07142857142867" y="-14.0">java.util.Iterator</node>
+    <node x="-99.0" y="142.0">java.util.AbstractCollection</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.util.ArrayList" target="java.io.Serializable" relationship="REALIZATION">
+      <point x="37.5" y="-14.0" />
+      <point x="280.44642857142856" y="281.0" />
+      <point x="350.0" y="281.0" />
+      <point x="350.0" y="271.0" />
+      <point x="426.5" y="271.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.ArrayList" target="java.lang.Cloneable" relationship="REALIZATION">
+      <point x="37.5" y="-14.0" />
+      <point x="280.44642857142856" y="281.0" />
+      <point x="350.0" y="281.0" />
+      <point x="350.0" y="271.0" />
+      <point x="273.5" y="271.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.Collection" target="java.lang.Iterable" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.AbstractList" target="java.util.AbstractCollection" relationship="GENERALIZATION">
+      <point x="-43.75" y="-14.0" />
+      <point x="31.38839285714286" y="196.0" />
+      <point x="13.0" y="196.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.AbstractList" target="java.util.List" relationship="REALIZATION">
+      <point x="43.75" y="-14.0" />
+      <point x="118.88839285714286" y="196.0" />
+      <point x="199.5" y="196.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.ArrayList" target="java.util.RandomAccess" relationship="REALIZATION">
+      <point x="37.5" y="-14.0" />
+      <point x="280.44642857142856" y="281.0" />
+      <point x="350.0" y="281.0" />
+      <point x="350.0" y="271.0" />
+      <point x="600.0" y="271.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.List" target="java.util.Collection" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="199.5" y="117.0" />
+      <point x="141.125" y="117.0" />
+      <point x="39.75" y="14.0" />
+    </edge>
+    <edge source="java.util.ArrayList" target="java.util.List" relationship="REALIZATION">
+      <point x="37.5" y="-14.0" />
+      <point x="280.44642857142856" y="281.0" />
+      <point x="350.0" y="281.0" />
+      <point x="350.0" y="271.0" />
+      <point x="199.5" y="271.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.ListIterator" target="java.util.Iterator" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.ArrayList" target="java.util.AbstractList" relationship="GENERALIZATION">
+      <point x="-37.5" y="-14.0" />
+      <point x="205.44642857142856" y="281.0" />
+      <point x="75.13839285714286" y="281.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.AbstractCollection" target="java.util.Collection" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="13.0" y="117.0" />
+      <point x="61.625" y="117.0" />
+      <point x="-39.75" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.2727272727272727" showDependencies="true" x="289.5" y="243.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
