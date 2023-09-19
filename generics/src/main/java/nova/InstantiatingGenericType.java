@@ -1,8 +1,11 @@
+package nova;
+
+import model.Person;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class InstantiatingGenericType {
@@ -116,7 +119,7 @@ public class InstantiatingGenericType {
         Person p = createGenericType(() -> new Person(1, "Rafa"));
 
         BiFunction<Integer, String, Person> constP = (id, name) -> new Person(id, name);
-        Supplier<Person> constPerson = () -> constP.apply(1, ""); // new Person(1,"");
+        Supplier<Person> constPerson = () -> constP.apply(1, ""); // new model.Person(1,"");
     }
 
     private static void createPersonTypeTest() {
@@ -192,7 +195,7 @@ public class InstantiatingGenericType {
         class StringThing extends Thing<String> {
         }
 
-        //Thing<String> t1 = new Thing<>();
+        //nova.Thing<String> t1 = new nova.Thing<>();
         StringThing t1 = new StringThing();
         String s = t1.createGenericInstance();
 
@@ -200,8 +203,8 @@ public class InstantiatingGenericType {
 
         InstantiatingGenericType.<String>instantiateParameter(String::new);
 
-        Object o = instantiateGenericParameterObject(Wrapper.class);
-        System.out.println(o.getClass().getName());
+        //Object o = instantiateGenericParameterObject(Wrapper.class);
+        //System.out.println(o.getClass().getName());
 
         Consumer<Object> consumer = System.out::println;
         Optional.of(Integer.valueOf(10)).ifPresent(consumer);

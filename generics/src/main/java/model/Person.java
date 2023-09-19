@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -22,9 +24,9 @@ public class Person implements Comparable<Person> {
     /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Person)) return false;
+        if (!(o instanceof model.Person)) return false;
 
-        Person person = (Person) o;
+        model.Person person = (model.Person) o;
 
         if (getId() != person.getId()) return false;
         return getName().equals(person.getName());
@@ -44,7 +46,7 @@ public class Person implements Comparable<Person> {
 
     @Override
     public String toString() {
-        return "Person{" +
+        return "model.Person{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

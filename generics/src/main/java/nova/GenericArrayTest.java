@@ -1,9 +1,11 @@
+package nova;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class GenericArrayTest<T> {
+public class GenericArrayTest<T> {/*
     T[] elements;
 
     //No se pueden crear arrays de tipos genericos
@@ -89,5 +91,5 @@ public class GenericArrayTest<T> {
                  NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 }
