@@ -18,6 +18,7 @@ public class ListDemo {
             }
         });
 
+
         alumnoList.add(new Alumno("12345678", "AMADOR", new String[]{"DENADOR", "PEREZ"}, 34));
 
         return alumnoList;
