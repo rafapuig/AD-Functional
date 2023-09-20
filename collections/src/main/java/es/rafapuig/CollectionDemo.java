@@ -4,29 +4,44 @@ import java.util.*;
 
 public class CollectionDemo {
 
+    //Imprimir una coleccion en la consola
+    static void print(Collection<?> collection) {
+        System.out.println(collection);
+    }
+
     public static void main(String[] args) {
 
-        String[] paisesArray = {"España", "Francia", "Portugal", "Italia"};
-        String[] paisesAmericaArray = {"EE.UU.", "Canada", "Brasil", "Argentina", "Cuba", "Colombia"};
+        String[] paisesArray =
+                {"España", "Francia", "Portugal", "Italia"};
 
-        //Coleccion modificable
+        String[] paisesAmericaArray =
+                {"EE.UU.", "Canada", "Brasil", "Argentina", "Cuba", "Colombia"};
+
+        //Coleccion modificable (mutable), se pueden añadir y quitar elementos
         //Collection<String> paises = new LinkedList<>(Arrays.asList(paisesArray));
         Collection<String> paises = new LinkedList<>(List.of(paisesArray)); //otra forma
+
+        //Coleccion inmutable
         Collection<String> paisesInmutable = List.of(paisesArray);
 
         print(paises);
         paises.add("Inglaterra");
         print(paises);
 
+        //Añadir elementos a la colleccion
+
+        //Comprobamos que no se puede añadir elementos a una coleccion inmutable
         try {
             paisesInmutable.add("Belgica");
         } catch (UnsupportedOperationException e) {
             System.out.println("No se puede insertar en una coleccion inmutable - " + e);
         }
 
+        //El metodo addAll permite añadir varios elementos que provienen de una coleccion
         paises.addAll(List.of("Japon", "Australia"));
         print(paises);
 
+        //El metodo List.of permite como argumento un array
         paises.addAll(List.of(paisesAmericaArray));
         print(paises);
 
@@ -34,12 +49,15 @@ public class CollectionDemo {
         paises.remove("Francia");
         print(paises);
 
+        //Elimina los elementos coincidientes con los de la coleccion proporcionada
         paises.removeAll(List.of("Portugal", "Brasil", "Colombia"));
         print(paises);
 
+        //Borra todos los elementos de la coleccion menos los que estan en la coleccion proporcionada
         paises.retainAll(List.of(paisesAmericaArray));
         print(paises);
 
+        //Borrar todos los elementos de la coleccion
         paises.clear();
         print(paises);
 
@@ -81,6 +99,7 @@ public class CollectionDemo {
         stringArray[0] = "Peru";
         System.out.println(Arrays.toString(stringArray));
 
+
         //Streams
         paises.clear();
         paises.addAll(List.of(paisesAmericaArray));
@@ -92,7 +111,4 @@ public class CollectionDemo {
 
     }
 
-    static void print(Collection<?> collection) {
-        System.out.println(collection);
-    }
 }

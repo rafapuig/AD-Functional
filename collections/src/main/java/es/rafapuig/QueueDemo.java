@@ -6,7 +6,7 @@ public class QueueDemo {
 
     public static void main(String[] args) {
 
-        Queue<String> words = new ArrayDeque<>(1); //16 elemetos inicialmente
+        Queue<String> words = new ArrayDeque<>(1); //16 elementos inicialmente
 
         peekOrElementTest(words);
 

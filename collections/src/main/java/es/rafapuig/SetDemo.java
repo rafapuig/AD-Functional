@@ -9,7 +9,8 @@ import java.util.function.Function;
 
 public class SetDemo {
 
-    static String[] frutas = {"pera", "manzana", "limon", "kiwi", "cereza", "uva", "melocoton", "piña", "naranja"};
+    static String[] frutas =
+            {"pera", "manzana", "limon", "kiwi", "cereza", "uva", "melocoton", "piña", "naranja"};
 
     public static void main(String[] args) {
 
@@ -49,6 +50,14 @@ public class SetDemo {
         System.out.println(addedOK ? "Añadida OK" : "No se ha podido añadir");
     }
 
+
+    static <T,V> void hashcodeTest(Set<T> set, T original, T clone, Function<T, V> map) {
+        System.out.println(
+                "original: '" + map.apply(original) + "'.hashCode() = " + original.hashCode());
+        System.out.println(
+                "clone: '" + map.apply(clone) + "'.hashCode() = " + clone.hashCode());
+    }
+
     static void hashcodeTest(Set<Persona> set) {
         //Es necesario que la clase implemente hashcode para que no haya duplicados en colecciones que usan tabla hash
 
@@ -59,16 +68,6 @@ public class SetDemo {
         //System.out.println("mengano: '" + mengano.getNombre() + "' hashCode() = " + mengano.hashCode());
 
         hashcodeTest(set, fulano, mengano,Persona::toString);
-
-    }
-
-    static <T,V> void hashcodeTest(Set<T> set, T original, T clone, Function<T, V> map) {
-        System.out.println("original: '" + map.apply(original) + "'.hashCode() = " + original.hashCode());
-        System.out.println("clone: '" + map.apply(clone) + "'.hashCode() = " + clone.hashCode());
-    }
-
-    static void equalsTest(Set<Persona> set) {
-        equalsTest(set, amadorDenador, amadorDenador.cloneMe());
     }
 
     static <T> void equalsTest(Set<T> set, T original, T clone) {
@@ -86,6 +85,11 @@ public class SetDemo {
         System.out.println("set.contains(original) = " + set.contains(original));
         System.out.println("set.contains(clone) = " + set.contains(clone));
     }
+
+    static void equalsTest(Set<Persona> set) {
+        equalsTest(set, amadorDenador, amadorDenador.cloneMe());
+    }
+
 
 
     private static void hashSetTest1() {
@@ -204,7 +208,8 @@ public class SetDemo {
     }
 
     private static void sortedSetTest() {
-        SortedSet<Persona> personaSet = new TreeSet<>(Comparator.comparing(Persona::getFechaNacimiento)); //Persona::compareByEdad);
+        SortedSet<Persona> personaSet =
+                new TreeSet<>(Comparator.comparing(Persona::getFechaNacimiento)); //Persona::compareByEdad);
 
         personaSet.add(aitorTilla);
         personaSet.add(belenTilla);
@@ -269,7 +274,7 @@ public class SetDemo {
         }
         print(personaSet);
 
-        //Un TreeSet se basa para saber si contiene un elemento en el comparador, NOOO en el hash code, no lo necesita, necestia el equals
+        //Un TreeSet se basa para saber si contiene un elemento en el comparador, NOOO en el hash code, no lo necesita, necesita el equals
         addPersona(personaSet, new Persona("Perico Palotes", armandoBronca.getFechaNacimiento()));
         addPersona(personaSet, new Persona(armandoBronca.getNombre(), armandoBronca.getFechaNacimiento().plusDays(1)));
 
@@ -279,6 +284,5 @@ public class SetDemo {
 
         hashcodeTest(personaSet);
     }
-
 
 }
