@@ -17,9 +17,6 @@ public class WrapperUtil {
         System.out.println("Valor: " + value);
     }
 
-
-    //public static double sum(Wrapper<?> n1, Wrapper<?> n2) { return 0D; }
-
     public static double sum(Wrapper<? extends Number> n1, Wrapper<? extends Number> n2) {
         Number num1 = n1.get();
         Number num2 = n2.get();
@@ -32,7 +29,5 @@ public class WrapperUtil {
         T value = source.get();
         dest.set(value);
     }
-
-
 
 }
