@@ -61,7 +61,6 @@ public class DominoesSetDemo {
 
     }
 
-
     private static Set<Dominoes> getDominoes() {
         Set<Dominoes> dominoesSet = new LinkedHashSet<>();
 
