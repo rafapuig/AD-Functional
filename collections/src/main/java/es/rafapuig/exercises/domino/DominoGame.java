@@ -2,6 +2,8 @@ package es.rafapuig.exercises.domino;
 
 import java.util.*;
 
+import static es.rafapuig.exercises.domino.SetUtils.shuffleSet;
+
 public class DominoGame {
 
     public static void main(String[] args) {
@@ -44,12 +46,5 @@ public class DominoGame {
         System.out.println(players.get(0));
     }
 
-    static <E> Set<E> shuffleSet(Set<E> set) {
 
-        List<E> list = new LinkedList<>(set);
-
-        Collections.shuffle(list);
-
-        return new LinkedHashSet<>(list);
-    }
 }
