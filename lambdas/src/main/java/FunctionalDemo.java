@@ -13,31 +13,37 @@ public class FunctionalDemo {
         //mapperTest();
         //functionTRtest();
         //functionTRDefaultAndStaticTest();
-        // m,predicateTtest();
+        //predicateTtest();
         //functionalUtilTest();
         //methodReferenceIntroTest();
         //staticMethodReferenceTest();
         //instanceMethodReferenceTest();
         //superInstanceMethodReferenceTest();
-        constructorReferencesTest();
+        //constructorReferencesTest();
     }
 
     private static void mapperTest() {
         System.out.println("Mapear nombres a su longitud:");
+
         String[] names = {"Rafael", "Raul", "Emilio", "Ramon"};
+
         int[] lengthMapping = Mapper.mapToInt(
                 names,
                 name -> name.length());
 
         printMapping(names, lengthMapping);
 
+
         System.out.println("Mapear enteros a sus cuadrados:");
+
         Integer[] numbers = {1, 2, 3, 4};
+
         int[] countMapping = Mapper.mapToInt(numbers, n -> n * n);
+
         printMapping(numbers, countMapping);
     }
 
-    public static void printMapping(Object[] from, int[] to) {
+    public static <T> void printMapping(T[] from, int[] to) {
         for (int i = 0; i < from.length; i++) {
             System.out.println(from[i] + " mapeado a " + to[i]);
         }
@@ -243,27 +249,27 @@ public class FunctionalDemo {
 
     static void constructorReferencesTest() {
         Supplier<String> func1 = () -> new String();
-        Function<String,String> func2 = s -> new String(s);
+        Function<String, String> func2 = s -> new String(s);
 
         Supplier<String> func11 = String::new;
-        Function<String,String> func22 = String::new;
+        Function<String, String> func22 = String::new;
 
         Supplier<Item> func31 = () -> new Item();
-        Function<String,Item> func32 = name -> new Item(name);
-        BiFunction<String,Double,Item> func33 =
-                (name,price)->new Item(name,price);
+        Function<String, Item> func32 = name -> new Item(name);
+        BiFunction<String, Double, Item> func33 =
+                (name, price) -> new Item(name, price);
 
         System.out.println(func31.get());
         System.out.println(func32.apply("Melocoton"));
-        System.out.println(func33.apply("Manzana",0.56));
+        System.out.println(func33.apply("Manzana", 0.56));
 
         Supplier<Item> func_31 = Item::new;
-        Function<String,Item> func_32 = Item::new;
-        BiFunction<String,Double,Item> func_33 = Item::new;
+        Function<String, Item> func_32 = Item::new;
+        BiFunction<String, Double, Item> func_33 = Item::new;
 
         System.out.println(func_31.get());
         System.out.println(func_32.apply("Melocoton"));
-        System.out.println(func_33.apply("Manzana",0.56));
+        System.out.println(func_33.apply("Manzana", 0.56));
     }
 
     static void arrayConstructorReferencesTest() {
@@ -278,8 +284,8 @@ public class FunctionalDemo {
 
     static void genericMethodReferencesTest() {
         // static <T> List<T> asList(T... a) de java.util.Arrays
-        List<String> names = Arrays.asList("Rafael","Ramon","Emilio");
-        List<String> names1 = Arrays.asList(new String[]{"Ramon","Emilio"});
+        List<String> names = Arrays.asList("Rafael", "Ramon", "Emilio");
+        List<String> names1 = Arrays.asList(new String[]{"Ramon", "Emilio"});
 
         Function<String[], List<String>> asListFunction = Arrays::asList;
         String[] namesArray = {"Rafael", "Ramon", "Emilio"};

@@ -10,5 +10,13 @@ public class Asignaturas {
     public static Asignatura ad = new Asignatura(
             "0486", SEGUNDO, "Acceso a datos", 6);
 
+    public static Asignatura di = new Asignatura(
+            "0488", SEGUNDO, "Desarrollo de interfaces", 7);
+
+    public static Asignatura pmdm = new Asignatura(
+            "0489", SEGUNDO, "Programación multimedia y dispositivos móviles", 5);
+
+
+
 
 }

@@ -1,5 +1,7 @@
 package es.rafapuig.exercises.model;
 
+import java.util.StringJoiner;
+
 public class Asignatura {
 
     public enum Curso { PRIMERO, SEGUNDO }
@@ -20,5 +22,29 @@ public class Asignatura {
         this.horasSemana = horasSemana;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
 
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int getHorasSemana() {
+        return horasSemana;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Asignatura.class.getSimpleName() + "[", "]")
+                .add("codigo='" + codigo + "'")
+                .add("curso=" + curso)
+                .add("nombre='" + nombre + "'")
+                .add("horasSemana=" + horasSemana)
+                .toString();
+    }
 }

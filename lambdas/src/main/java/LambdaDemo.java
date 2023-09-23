@@ -5,6 +5,10 @@ import lambda.LambdaUtil;
 
 import java.util.ArrayList;
 
+//Una expresion lambda es una funcion anonima, cuyo tipo se obtenda por el contexto
+// dicho se hará corresponder con una interfaz funcional
+// (cuyo metodo abstracto es compatible por su firma con la de expresion lambda
+
 public class LambdaDemo {
 
     public static void main(String[] args) {
@@ -64,7 +68,7 @@ public class LambdaDemo {
 
     static void targetTypingOverloadedMethodCall() {
 
-        //Falla porque la lambda se corresponde con las versiones del metodo
+        //Falla porque la lambda se corresponde con varias versiones del metodo
         //lambda.LambdaUtilOverloadedTest.test((x, y) -> x + y);
 
         //Solucion 1: explicitar el tipo de los parametros
@@ -76,7 +80,7 @@ public class LambdaDemo {
         LambdaUtilOverloaded.test((Adder) (x, y) -> x + y);
         LambdaUtilOverloaded.test((Joiner) (x, y) -> x + y);
 
-        //Solucion 3: No usar la expresion directamente, asinar a una variable y pasar la variable
+        //Solucion 3: No usar la expresion directamente, asignar a una variable y pasar la variable
         Adder adder = (x, y) -> x + y;
         LambdaUtilOverloaded.test(adder);
 
