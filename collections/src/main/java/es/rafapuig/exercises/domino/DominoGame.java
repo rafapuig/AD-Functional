@@ -2,48 +2,48 @@ package es.rafapuig.exercises.domino;
 
 import java.util.*;
 
-import static es.rafapuig.exercises.domino.SetUtils.shuffleSet;
 
 public class DominoGame {
 
     public static void main(String[] args) {
 
-        Set<Dominoes> set = Domino.getDominoes();
+        Set<Dominoes> set = Domino.createDominoes();
 
-        Set<Dominoes> shuffledSet = shuffleSet(set);
+        Set<Dominoes> shuffledSet = Domino.shuffle(set);
 
         System.out.println(shuffledSet);
 
-        List<Set<Dominoes>> players = new ArrayList<>();
-
-        players.add(new LinkedHashSet<>());
-        players.add(new LinkedHashSet<>());
-        players.add(new LinkedHashSet<>());
-        players.add(new LinkedHashSet<>());
-
-        int counter = 0;
-        for(Dominoes dominoes : shuffledSet) {
-            players.get(counter++ % players.size()).add(dominoes);
+        //Crear 4 jugadores
+        List<Player> players = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            players.add(new Player());
         }
 
-        for(Set<Dominoes> player : players) {
-            System.out.println(player);
+        int counter = 0;
+        for (Dominoes dominoes : shuffledSet) {
+            players.get(counter++ % players.size()).getDominoes().add(dominoes);
+        }
+
+        for (Player player : players) {
+            System.out.println(player.getDominoes());
         }
 
         //Comprobar si el jugador 1 tiene seises
-        List<Dominoes> dominoes = Domino.containsDominoesWith(players.get(0), 6);
-        System.out.println(dominoes);
-        dominoes = Domino.containsDominoesWithStreams(players.get(0), 6);
-        System.out.println(dominoes);
+        List<Dominoes> dominoesList = Domino.containsDominoesWith(
+                players.get(0).getDominoes(), 6);
+        System.out.println(dominoesList);
+        dominoesList = Domino.containsDominoesWithStreams(
+                players.get(0).getDominoes(), 6);
+        System.out.println(dominoesList);
 
         //Jugar la primera ficha del jugador 1 que tenga seis
         System.out.println(players.get(0));
 
-        if(!dominoes.isEmpty()) {
-            players.get(0).remove(dominoes.get(0));
+        if (!dominoesList.isEmpty()) {
+            players.get(0).removeDominoes(dominoesList.get(0));
         }
 
-        System.out.println(players.get(0));
+        System.out.println(players.get(0).getDominoes());
     }
 
 

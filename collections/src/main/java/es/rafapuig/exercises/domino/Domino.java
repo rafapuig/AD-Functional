@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Domino {
 
-    public static Set<Dominoes> getDominoes() {
+    public static Set<Dominoes> createDominoes() {
 
         Set<Dominoes> dominoesSet = new LinkedHashSet<>();
 
@@ -13,14 +13,18 @@ public class Domino {
             for (int j = i; j <= 6; j++) {
                 Dominoes piece = new Dominoes(i, j);
                 dominoesSet.add(piece);
-                System.out.println(piece);
-                System.out.printf("%d : %d\n", i, j);
+                //System.out.println(piece);
+                //System.out.printf("%d : %d\n", i, j);
             }
         }
         return dominoesSet;
     }
 
-    public static List<Dominoes> containsDominoesWith(Set<Dominoes> set, int value) {
+    public static Set<Dominoes> shuffle(Set<Dominoes> dominoes) {
+        return SetUtils.shuffleSet(dominoes);
+    }
+
+    public static List<Dominoes> containsDominoesWith(Collection<Dominoes> set, int value) {
         List<Dominoes> result = new LinkedList<>();
 
         for (Dominoes dominoes : set) {
@@ -32,7 +36,7 @@ public class Domino {
         return result;
     }
 
-    public static List<Dominoes> containsDominoesWithStreams(Set<Dominoes> set, int value) {
+    public static List<Dominoes> containsDominoesWithStreams(Collection<Dominoes> set, int value) {
 
         return set.stream()
                 .filter(d -> d.getTop() == value || d.getBottom() == value)
