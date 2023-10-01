@@ -1,54 +1,8 @@
 package model;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.List;
 
 public class Persona {
-
-    private static List<Persona> personas;
-
-    public static List<Persona> getPersonas() {
-        if(personas == null) {
-            personas = createPersonas();
-        }
-        return personas;
-    }
-
-    public static List<Persona> createPersonas() {
-        Persona armando = new Persona(1, "Armando Bronca Segura",
-                Sexo.HOMBRE,
-                LocalDate.of(1970, Month.AUGUST, 3),
-                1300);
-
-        Persona belen = new Persona(2, "Belen Tilla",
-                Sexo.MUJER,
-                LocalDate.of(1983, Month.APRIL, 12),
-                2100);
-
-        Persona esther = new Persona(3, "Esther Malgin",
-                Sexo.MUJER,
-                LocalDate.of(1988, Month.JULY, 5),
-                1800);
-
-        Persona amador = new Persona(4, "Amador Denador",
-                Sexo.HOMBRE,
-                LocalDate.of(1994, Month.DECEMBER, 24),
-                1600);
-
-        Persona aitor = new Persona(5, "Aitor Tilla",
-                Sexo.HOMBRE,
-                LocalDate.of(2001, Month.JANUARY, 7),
-                2500);
-
-        Persona sandra = new Persona(2, "Sandra Matica",
-                Sexo.MUJER,
-                LocalDate.of(1977, Month.FEBRUARY, 19),
-                1400);
-
-        List<Persona> personas = List.of(armando, belen, esther, amador, aitor, sandra);
-        return personas;
-    }
 
     public static enum Sexo {
         HOMBRE,

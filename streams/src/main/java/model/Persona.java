@@ -6,10 +6,10 @@ import java.util.List;
 
 public class Persona {
 
-    private static List<Persona> personas;
+    private static List<Persona> PERSONAS_SAMPLE = createPersonas();
 
     {
-        personas = createPersonas();
+        PERSONAS_SAMPLE = createPersonas();
     }
 
     public static List<Persona> createPersonas() {

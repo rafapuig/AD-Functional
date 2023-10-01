@@ -5,9 +5,15 @@ import java.util.*;
 public class DominoesSetDemo {
 
     public static void main(String[] args) {
-        //duplicatePieceTest();
+        generateDominoesSetTest();
+        duplicatePieceTest();
         sortedPiecesTest();
         sortedPiecesByPointsTest();
+    }
+
+    static void generateDominoesSetTest() {
+        Set<Dominoes> dominoesSet = Domino.createDominoesSet();
+        System.out.println(dominoesSet);
     }
 
     static void duplicatePieceTest() {
@@ -58,21 +64,6 @@ public class DominoesSetDemo {
         set.add(new Dominoes(1,4));
         set.add(new Dominoes(3,0));
         System.out.println(set);
-
     }
 
-    private static Set<Dominoes> getDominoes() {
-        Set<Dominoes> dominoesSet = new LinkedHashSet<>();
-
-        //Generar el conjunto de fichas de domino
-        for (int i = 0; i <= 6; i++) {
-            for (int j = i; j <= 6; j++) {
-                Dominoes piece = new Dominoes(i, j);
-                dominoesSet.add(piece);
-                System.out.println(piece);
-                System.out.printf("%d : %d\n", i, j);
-            }
-        }
-        return dominoesSet;
-    }
 }

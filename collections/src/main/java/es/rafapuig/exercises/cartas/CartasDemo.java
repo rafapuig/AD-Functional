@@ -47,7 +47,7 @@ public class CartasDemo {
         List<Naipe> mazo = new ArrayList<>();
         iterator.forEachRemaining(mazo::add);
 
-        for(List<Naipe> abanico : abanicos) {
+        for (List<Naipe> abanico : abanicos) {
             System.out.println(abanico);
         }
 
@@ -64,7 +64,7 @@ public class CartasDemo {
 
         ToIntFunction<Naipe> scorer = n -> n.getValor().getNumber();
 
-         points = Naipes.scoring(naipe, scorer);
+        points = Naipes.scoring(naipe, scorer);
 
         System.out.println("puntos = " + points);
 

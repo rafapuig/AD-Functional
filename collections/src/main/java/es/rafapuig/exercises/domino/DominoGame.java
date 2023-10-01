@@ -7,7 +7,7 @@ public class DominoGame {
 
     public static void main(String[] args) {
 
-        Set<Dominoes> set = Domino.createDominoes();
+        Set<Dominoes> set = Domino.createDominoesSet();
 
         Set<Dominoes> shuffledSet = Domino.shuffle(set);
 

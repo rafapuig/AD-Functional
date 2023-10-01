@@ -51,6 +51,10 @@ public class LambdaDemo {
         System.out.println("text = " + text);
     }
 
+    /**
+     * Se puede pasar una expresion lambda como argumento en la llamada a un metodo
+     */
+
     static void targetTypingMethodCall() {
         //Misma expresion lambda como argumento de llamada a metodo
         LambdaUtil.adderTest((x, y) -> x + y);
