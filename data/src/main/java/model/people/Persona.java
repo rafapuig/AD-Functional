@@ -1,6 +1,7 @@
-package model;
+package model.people;
 
 import java.time.LocalDate;
+import java.util.StringJoiner;
 
 public class Persona {
 
@@ -11,13 +12,15 @@ public class Persona {
 
     private long id;
     private String nombre;
+    private String apellidos;
     private Sexo sexo;
     private LocalDate nacimiento;
     private double sueldo;
 
-    public Persona(long id, String nombre, Sexo sexo, LocalDate nacimiento, double sueldo) {
+    public Persona(long id, String nombre, String apellidos, Sexo sexo, LocalDate nacimiento, double sueldo) {
         this.id = id;
         this.nombre = nombre;
+        this.apellidos = apellidos;
         this.sexo = sexo;
         this.nacimiento = nacimiento;
         this.sueldo = sueldo;
@@ -73,12 +76,13 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Persona{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", sexo=" + sexo +
-                ", nacimiento=" + nacimiento +
-                ", sueldo=" + sueldo +
-                '}';
+        return new StringJoiner(", ", Persona.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("nombre='" + nombre + "'")
+                .add("apellidos='" + apellidos + "'")
+                .add("sexo=" + sexo)
+                .add("nacimiento=" + nacimiento)
+                .add("sueldo=" + sueldo)
+                .toString();
     }
 }

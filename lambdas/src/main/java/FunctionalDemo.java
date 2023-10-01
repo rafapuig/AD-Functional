@@ -1,8 +1,8 @@
 import functional.FunctionalUtil;
 import functional.Item;
 import functional.Mapper;
-import model.Persona;
-import model.Personas;
+import model.people.Persona;
+import model.people.Personas;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -225,7 +225,7 @@ public class FunctionalDemo {
     }
 
     static void functionalUtilTest() {
-        List<Persona> list = Personas.getPersonas();
+        List<Persona> list = Personas.PERSONAS;
 
         System.out.println("Lista original de personas: ");
         FunctionalUtil.forEach(list,
@@ -315,7 +315,7 @@ public class FunctionalDemo {
         System.out.println(func22.apply("15"));
         System.out.println(func23.apply("1111", 2));
 
-        Supplier<List<Persona>> supplier = Personas::getPersonas;
+        Supplier<List<Persona>> supplier = () -> Personas.PERSONAS; // Personas::getPersonas;
         List<Persona> personas = supplier.get();
         FunctionalUtil.forEach(personas, p -> System.out.println(p));
         //FunctionalUtil.forEach(personas, System.out::println);
@@ -334,7 +334,7 @@ public class FunctionalDemo {
         Consumer<String> consumer1 = System.out::println;
         consumer1.accept("Adios");
 
-        List<Persona> personaList = Personas.getPersonas();
+        List<Persona> personaList = Personas.PERSONAS;
         FunctionalUtil.forEach(personaList, System.out::println);
 
         Function<Persona, String> nombreFunction = p -> p.getNombre();

@@ -10,6 +10,7 @@ public class RecordWinnersManagerTest {
 
         rwm.registerWinner(Tournaments.ROLAND_GARROS, TennisPlayers.RAFA_NADAL);
         rwm.registerWinner(Tournaments.ROLAND_GARROS, TennisPlayers.RAFA_NADAL);
+        rwm.registerWinner(Tournaments.ROLAND_GARROS, TennisPlayers.FEDERER);
         rwm.registerWinner(Tournaments.ROLAND_GARROS, TennisPlayers.RAFA_NADAL);
         rwm.registerWinner(Tournaments.WIMBLEDON, TennisPlayers.FEDERER);
         rwm.registerWinner(Tournaments.US_OPEN,TennisPlayers.RAFA_NADAL);

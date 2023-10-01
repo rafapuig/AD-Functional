@@ -16,8 +16,8 @@ public class RecordWinnersManager {
                t -> new HashMap<>()
         );
 
-        //Integer i = tournamentMap.computeIfAbsent(player, p -> 1);
         //tournamentMap.computeIfPresent(player, (k, v) -> v + 1);
+        //tournamentMap.computeIfAbsent(player, p -> 1);
 
         tournamentMap.compute(player, (k,v) -> v == null ? 1 : v + 1);
 
@@ -38,12 +38,20 @@ public class RecordWinnersManager {
         map.forEach(
                 (t,tm) ->  {
                     sj.add(t.getName() + "\n--------------------------");
-                    List<Map.Entry<TennisPlayer,Integer>> winners = new ArrayList<>(tm.entrySet());
 
-                    winners.sort(Comparator.comparing(Map.Entry::getValue));
-                    winners = winners.reversed();
+                    //List<Map.Entry<TennisPlayer,Integer>> winners = new ArrayList<>(tm.entrySet());
 
-                    winners.forEach(w -> sj.add(w.getKey().getName() + "\t" + w.getValue()));
+                    //winners.sort(Comparator.comparing(Map.Entry::getValue));
+
+                    //winners.reversed().forEach(w -> sj.add(w.getKey().getName() + "\t" + w.getValue()));
+
+
+                    Comparator<Map.Entry<TennisPlayer,Integer>> comparator = Map.Entry.comparingByValue();
+                    Comparator<Map.Entry<TennisPlayer,Integer>> reverse = comparator.reversed();
+
+                    tm.entrySet().stream()
+                            .sorted(Map.Entry.<TennisPlayer,Integer>comparingByValue().reversed())
+                            .forEachOrdered(entry -> sj.add(entry.getKey().getName() + "\t" + entry.getValue() ));
 
                     sj.add("\n");
                 }
