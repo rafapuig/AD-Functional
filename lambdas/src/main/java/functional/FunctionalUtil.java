@@ -16,7 +16,7 @@ public class FunctionalUtil {
     }
 
     // Aplica un filtro a los elementos de la lista y devuelve la lista filtrada
-    public static <E> List<E> filter(List<E> list, Predicate<? super E> predicate) {
+    public static <E> List<? extends E> filter(List<? extends E> list, Predicate<? super E> predicate) {
         List<E> filteredList = new ArrayList<>();
         for (E item : list) {
             if (predicate.test(item)) {

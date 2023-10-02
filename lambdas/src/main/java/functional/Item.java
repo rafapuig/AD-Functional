@@ -56,6 +56,5 @@ public class Item implements Priced {
         System.out.println("Item.super::toString = " + s2.get());
         System.out.println("this::getPrice = " + d3.get());
         System.out.println("Priced.super::getPrice = " + d4.get());
-
     }
 }

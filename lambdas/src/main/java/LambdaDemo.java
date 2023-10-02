@@ -4,6 +4,10 @@ import lambda.LambdaUtilOverloaded;
 import lambda.LambdaUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 //Una expresion lambda es una funcion anonima, cuyo tipo se obtenda por el contexto
 // dicho se hará corresponder con una interfaz funcional
@@ -12,16 +16,51 @@ import java.util.ArrayList;
 public class LambdaDemo {
 
     public static void main(String[] args) {
-        //targetTyping();
-        //targetTypingMethodCall();
+        anonymousVsLambdas();
+        targetTyping();
+        targetTypingMethodCall();
         targetTypingOverloadedMethodCall();
+        lambdasBridging();
+    }
+
+    static void anonymousVsLambdas() {
+
+        interface HelloFunctional {
+            String sayHello(String name); // El metodo unico abstracto SAM
+        }
+
+        //Implementacion de la interfaz mediante un tipo anonimo (mas intanciacion)
+        var helloAnonymous = new HelloFunctional() {
+            @Override
+            public String sayHello(String name) {
+                return "Hola, " + name + "!(anonymous)";
+            }
+        };
+
+        //Una expresion lambda es una nueva instancia cuyo tipo es el de la interfaz funcional
+        HelloFunctional helloLambda = name -> "Hola, " + name + "!(lambda)";
+
+        //Invocar el metodo SAM produce que se ejecute el metodo SAM o la expresion lambda en su caso
+        String result1 = helloAnonymous.sayHello("Fulanito");
+        String result2 = helloLambda.sayHello("Menganito");
+
+        System.out.println(result1);
+        System.out.println(result2);
+
+        //Expresion lambda con cuerpo definido mediante un bloque
+        HelloFunctional other1 =
+                (final String name) -> {
+                    return "Hola, " + name + "!(lambda)";
+                };
+
+        System.out.println(other1.sayHello("Zutanito"));
     }
 
     static void targetTyping() {
         // (x + y) -> x + y
 
-        //TIPOS DE EXPRESIONES EN JAVA
-        //Standalone expression
+        // TIPOS DE EXPRESIONES EN JAVA
+        // Standalone expression
         // (se sabe el tipo sin necesidad del contexto en que se usa)
         // new String("Hola");
         // "Hola"
@@ -51,10 +90,7 @@ public class LambdaDemo {
         System.out.println("text = " + text);
     }
 
-    /**
-     * Se puede pasar una expresion lambda como argumento en la llamada a un metodo
-     */
-
+    // Se puede pasar una expresion lambda como argumento en la llamada a un metodo
     static void targetTypingMethodCall() {
         //Misma expresion lambda como argumento de llamada a metodo
         LambdaUtil.adderTest((x, y) -> x + y);
@@ -93,4 +129,67 @@ public class LambdaDemo {
     }
 
 
+    static void lambdasBridging() {
+        //Una expresion lambda es una instancia de una interfaz funcional
+        //Crear una nueva instancia requiere que el tipo este definido en el lado izquierdo
+        Predicate<String> isNull = text -> text == null;
+        Predicate<String> isNull1 = Objects::isNull; //Mediante referencia a metodo Objets.isNull(Object)
+
+        //var isNull = text -> text == null; //NO COMPILA pq no se puede inferir el tipo
+        //La firma del metodo SAM de la interfaz Predicate<String> se puede inferir:
+        //boolean test(String input)
+
+        interface LikePredicate<T> {
+            boolean test(T value); //El SAM es identico a la de Predicate<T>
+        }
+
+        LikePredicate<String> isNull2 = value -> value == null;
+        //Predicate<String> isNull3 =  isNull2; //NO COMPILA
+        //Predicate<String> isNull4 = (Predicate<String>) isNull2; //COMPILA pero provocara una ClassCastException
+
+        Predicate<String> isNull5 = isNull2::test; // Puentear mediante una referencia a metodo
+
+        //Debido a esta incompatibilidad, no debemos definir nuevos interfaces funcionales
+        //sino hacer uso de las interfaces funcionales disponibles en el paquete java.util.function
+
+        class Filters {
+            static List<String> filter1(List<String> values, Predicate<String> predicate) {
+                List<String> result = new ArrayList<>();
+                for (String value : values) {
+                    if (predicate.test(value)) {
+                        result.add(value);
+                    }
+                }
+                return result;
+            }
+
+            static List<String> filter2(List<String> values, LikePredicate<String> predicate) {
+                //return filter1(values, predicate::test); //Puentear
+                return values.stream()
+                        .filter(predicate::test)
+                        .toList();
+            }
+
+            //Este metodo devuelve una funcion lambda  (una instancia de Predicate<Integer>)
+            static Predicate<Integer> isGreaterThan(int value) {
+                //Lexical scoping, captura del parametro value por la expresion lambda
+                return compareValue -> compareValue > value;
+            }
+        }
+
+        var values = Arrays.asList("a", null, "c");
+        //Lambdas creadas ad hoc como argumentos de llamada no sufren la incompatibilidad
+        //El compilador infiere correctamente a partir de la firma del metodo
+        var result1 = Filters.filter1(values, value -> value == null);
+        var result2 = Filters.filter2(values, value -> value == null);
+
+        //De nuevo tendremos que puentear (mediante una referencia a metodo, en el metodo SAM de la interfaz)
+        LikePredicate<Integer> isGreaterThan10 = Filters.isGreaterThan(10)::test;
+
+        //Probar si 9 es mayor que 20 llamando a la lambda
+        Filters.isGreaterThan(20).test(9);
+
+        //Para ejecutar la expresion lambda tenemos que llamar al SAM de la interfaz funcional
+        isGreaterThan10.test(19);
+    }
 }

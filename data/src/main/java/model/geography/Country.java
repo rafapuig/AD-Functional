@@ -1,6 +1,11 @@
 package model.geography;
 
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class Country {
@@ -8,11 +13,17 @@ public class Country {
     private String iso3;
     private String name;
     private City capital;
+    private Optional<Integer> surfaceArea = Optional.empty();
 
     public Country(String iso3, String name, City capital) {
         this.iso3 = iso3;
         this.name = name;
         this.capital = capital;
+    }
+
+    public Country(String iso3, String name, int surfaceArea, City capital) {
+        this(iso3, name, capital);
+        this.surfaceArea = Optional.of(surfaceArea);
     }
 
     public String getIso3() {
@@ -27,13 +38,25 @@ public class Country {
         return capital;
     }
 
+    public Optional<Integer> getSurfaceArea() {
+        return surfaceArea;
+    }
+
     @Override
     public String toString() {
-        return new StringJoiner(", ", Country.class.getSimpleName() + "[", "]")
+        StringJoiner joiner = new StringJoiner(", ", Country.class.getSimpleName() + "[", "]")
                 .add("'" + iso3 + "'")
-                .add("'" + name + "'")
-                .add("capital=" + capital)
-                .toString();
+                .add("'" + name + "'");
+
+        if(surfaceArea.isPresent()) {
+            NumberFormat format = new DecimalFormat();
+            String surface = format.format(surfaceArea.get());
+            joiner.add(String.format("superficie=%s km^2",  surface));
+        }
+
+        joiner.add("capital=" + capital);
+
+        return joiner.toString();
     }
 
     @Override

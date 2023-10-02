@@ -2,12 +2,10 @@ import functional.FunctionalUtil;
 import functional.Item;
 import functional.Mapper;
 import model.people.Persona;
-import model.people.Personas;
+import model.people.Empleados;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.*;
 
 public class FunctionalDemo {
@@ -19,115 +17,27 @@ public class FunctionalDemo {
     }
 
     public static void main(String[] args) {
-        anonymousVsLambdasTest();
-        lambdasBridging();
-        methodReferencesTest();
         //mapperTest();
-        //functionTRtest();
+
+        //functionTRTest();
         //functionTRDefaultAndStaticTest();
         //predicateTtest();
+        //supplierTest();
+
         //functionalUtilTest();
+
         //methodReferenceIntroTest();
+        //methodReferencesTest();
+
         //staticMethodReferenceTest();
-        //instanceMethodReferenceTest();
-        //superInstanceMethodReferenceTest();
+        //instanceMethodReferenceExplicitTest();
+        //instanceMethodReferenceImplicitTest();
+        superInstanceMethodReferenceTest();
         //constructorReferencesTest();
+        //arrayConstructorReferencesTest();
+        //genericMethodReferencesTest();
     }
 
-    static void anonymousVsLambdasTest() {
-
-        interface HelloFunctional {
-            String sayHello(String name);
-        }
-
-        var helloAnonymous = new HelloFunctional() {
-            @Override
-            public String sayHello(String name) {
-                return "Hola, " + name + "!(anonymous)";
-            }
-        };
-
-        HelloFunctional helloLambda = name -> "Hola, " + name + "!(lambda)";
-
-        String result1 = helloAnonymous.sayHello("Fulanito");
-        String result2 = helloLambda.sayHello("Menganito");
-
-        System.out.println(result1);
-        System.out.println(result2);
-
-        //Expresion lambda con cuerpo definido mediante un bloque
-        HelloFunctional other1 =
-                (final String name) -> {
-                    return "Hola, " + name + "!(lambda)";
-                };
-
-        System.out.println(other1.sayHello("Zutanito"));
-    }
-
-
-    static void lambdasBridging() {
-        //Una expresion lambda es una instancia de una interfaz funcional
-        //Crear una nueva instancia requiere que el tipo este definido en el lado izquierdo
-        Predicate<String> isNull = text -> text == null;
-        Predicate<String> isNull1 = Objects::isNull; //Mediante referencia a metodo Objets.isNull(Object)
-
-        //var isNull = text -> text == null; //NO COMPILA pq no se puede inferir el tipo
-        //La firma del metodo SAM de la interfaz Predicate<String> se puede inferir:
-        //boolean test(String input)
-
-        interface LikePredicate<T> {
-            boolean test(T value); //El SAM es identico a la de Predicate<T>
-        }
-
-        LikePredicate<String> isNull2 = value -> value == null;
-        //Predicate<String> isNull3 =  isNull2; //NO COMPILA
-        //Predicate<String> isNull4 = (Predicate<String>) isNull2; //COMPILA pero provocara una ClassCastException
-
-        Predicate<String> isNull5 = isNull2::test; // Puentear mediante una referencia a metodo
-
-        //Debido a esta incompatibilidad, no debemos definir nuevos interfaces funcionales
-        //sino hacer uso de las interfaces funcionales disponibles en el paquete java.util.function
-
-        class Filters {
-            static List<String> filter1(List<String> values, Predicate<String> predicate) {
-                List<String> result = new ArrayList<>();
-                for(String value : values) {
-                    if (predicate.test(value)) {
-                        result.add(value);
-                    }
-                }
-                return result;
-            }
-
-            static List<String> filter2(List<String> values, LikePredicate<String> predicate) {
-                //return filter1(values, predicate::test); //Puentear
-                return values.stream()
-                        .filter(predicate::test)
-                        .toList();
-            }
-
-            //Este metodo devuelve una funcion lambda  (una instancia de Predicate<Integer>)
-            static Predicate<Integer> isGreaterThan(int value) {
-                //Lexical scoping, captura del parametro value por la expresion lambda
-                return compareValue -> compareValue > value;
-            }
-        }
-
-        var values = Arrays.asList("a", null, "c");
-        //Lambdas creadas ad hoc como argumentos de llamada no sufren la incompatibilidad
-        //El compilador infiere correctamente a partir de la firma del metodo
-        var result1 = Filters.filter1(values, value -> value == null);
-        var result2 = Filters.filter2(values, value -> value == null);
-
-        //De nuevo tendremos que puentear
-        LikePredicate<Integer> isGreaterThan10 = Filters.isGreaterThan(10)::test;
-
-        //Probar si 9 es mayor que 20 llamando a la lambda
-        Filters.isGreaterThan(20).test(9);
-
-        //Para ejecutar la expresion lambda tenemos que llamar al SAM de la interfaz funcional
-        isGreaterThan10.test(19);
-    }
 
     private static void mapperTest() {
         System.out.println("Mapear nombres a su longitud:");
@@ -136,10 +46,10 @@ public class FunctionalDemo {
 
         int[] lengthMapping = Mapper.mapToInt(
                 names,
-                name -> name.length());
+                name -> name.length() //Expresion lambda, entra un String sale un int
+        );
 
         printMapping(names, lengthMapping);
-
 
         System.out.println("Mapear enteros a sus cuadrados:");
 
@@ -151,13 +61,13 @@ public class FunctionalDemo {
     }
 
 
-    //Function<T,R>
+    //--------- Function<T,R> -----------------------------------
 
-    static void functionTRtest() {
-        Function<Integer, Integer> square1 = x -> x * x;
-        IntFunction<Integer> square2 = x -> x * x;
-        ToIntFunction<Integer> square3 = x -> x * x;
-        UnaryOperator<Integer> square4 = x -> x * x;
+    static void functionTRTest() {
+        Function<Integer, Integer> square1 = x -> x * x; //T,R
+        IntFunction<Integer> square2 = x -> x * x;  //Recibe un int - Dev T
+        ToIntFunction<Integer> square3 = x -> x * x; //Devuelve un int - Rec T
+        UnaryOperator<Integer> square4 = x -> x * x; // T,T
 
         System.out.println(square1.apply(5));
         System.out.println(square2.apply(5));
@@ -190,7 +100,7 @@ public class FunctionalDemo {
         System.out.println("Identidad: " + identity.apply(num));
     }
 
-    // Predicate<T>
+    // ----------- Predicate<T> ----------------------------------
 
     // default Predicate<T> negate()
     // default Predicate<T> and(Predicate<? super T> other)
@@ -224,15 +134,22 @@ public class FunctionalDemo {
         System.out.println("equalToTen = " + equalToTen.test(num));
     }
 
+    static void supplierTest() {
+        Supplier<List<? extends Persona>> supplier = () -> Empleados.EMPLEADOS;
+        List<? extends Persona> personas = supplier.get();
+        FunctionalUtil.forEach(personas, p -> System.out.println(p));
+        //FunctionalUtil.forEach(personas, System.out::println);
+    }
+
     static void functionalUtilTest() {
-        List<Persona> list = Personas.PERSONAS;
+        List<? extends Persona> list = Empleados.EMPLEADOS;
 
         System.out.println("Lista original de personas: ");
         FunctionalUtil.forEach(list,
                 p -> System.out.println(p));
 
         //Filtrar solo hombres
-        List<Persona> maleList = FunctionalUtil.filter(list,
+        List<? extends Persona> maleList = FunctionalUtil.filter(list,
                 p -> p.getSexo() == Persona.Sexo.HOMBRE);
 
         System.out.println("Lista de hombres: ");
@@ -258,7 +175,7 @@ public class FunctionalDemo {
 
 
     static void methodReferencesTest() {
-        List<Persona> personas = Personas.PERSONAS;
+        List<? extends Persona> personas = Empleados.EMPLEADOS;
         String[] result = personas.stream()
                 .filter(persona -> persona.isMujer())
                 .map(persona -> persona.getNombre())
@@ -276,6 +193,7 @@ public class FunctionalDemo {
                 .toArray(String[]::new);
 
     }
+
     static void methodReferenceIntroTest() {
         ToIntFunction<String> lengthFunction = s -> s.length();
         String name = "Aitor Tilla";
@@ -314,14 +232,9 @@ public class FunctionalDemo {
         System.out.println(func21.apply(15));
         System.out.println(func22.apply("15"));
         System.out.println(func23.apply("1111", 2));
-
-        Supplier<List<Persona>> supplier = () -> Personas.PERSONAS; // Personas::getPersonas;
-        List<Persona> personas = supplier.get();
-        FunctionalUtil.forEach(personas, p -> System.out.println(p));
-        //FunctionalUtil.forEach(personas, System.out::println);
     }
 
-    static void instanceMethodReferenceTest() {
+    static void instanceMethodReferenceExplicitTest() {
         Supplier<Integer> supplier = () -> "Armando".length();
         System.out.println(supplier.get());
 
@@ -334,18 +247,26 @@ public class FunctionalDemo {
         Consumer<String> consumer1 = System.out::println;
         consumer1.accept("Adios");
 
-        List<Persona> personaList = Personas.PERSONAS;
+        //
+        List<? extends Persona> personaList = Empleados.EMPLEADOS;
         FunctionalUtil.forEach(personaList, System.out::println);
+    }
 
-        Function<Persona, String> nombreFunction = p -> p.getNombre();
-        Function<Persona, String> nombreFunction1 = Persona::getNombre;
+    static void instanceMethodReferenceImplicitTest() {
 
+        //Ejemplo con Persona.getNombre() -- Recive min una Persona, Dev String
+        Function<? super Persona, String> nombreFunction = p -> p.getNombre();
+        Function<? super Persona, String> nombreFunction1 = Persona::getNombre;
 
+        System.out.println(nombreFunction.apply(Empleados.AMADOR));
+
+        //Ejemplo con String.length() -- Recibe instancia String - Devuelve Int
         Function<String, Integer> stringLength = String::length;
         String name = "Santiago";
         int len = stringLength.apply(name);
         System.out.println("nombre= " + name + ", longitud= " + len);
 
+        // Otro ejemplo con String.concat(String) -> String
         String greeting = "Hola";
         String name1 = "Federico";
         BiFunction<String, String, String> concat = (s1, s2) -> s1.concat(s2);
@@ -354,12 +275,14 @@ public class FunctionalDemo {
         BiFunction<String, String, String> concat1 = String::concat;
         System.out.println(concat1.apply(greeting, name1));
 
+        // referencia a instancia implicita Clase::metodoInstancia
+        // Function<? super Persona,String> -- obj.getNombre() -> String
+        List<? extends Persona> personaList = Empleados.EMPLEADOS;
         List<String> nombresPersonas = FunctionalUtil.map(
                 personaList,
                 Persona::getNombre
         );
         FunctionalUtil.forEach(nombresPersonas, System.out::println);
-
     }
 
     static void superInstanceMethodReferenceTest() {
@@ -401,7 +324,17 @@ public class FunctionalDemo {
 
         //Usando una referencia a un constructor de array
         IntFunction<int[]> arrayCreator1 = int[]::new;
-        int[] nums1 = arrayCreator1.apply(10);
+        int[] nums1 = arrayCreator1.apply(20);
+
+        for(int i=0; i<nums.length; i++) {
+            nums[i] = i * i;
+        }
+        System.out.println(Arrays.toString(nums));
+
+        for(int i=0; i<nums1.length; i++) {
+            nums1[i] = i * i;
+        }
+        System.out.println(Arrays.toString(nums1));
     }
 
     static void genericMethodReferencesTest() {
@@ -409,8 +342,16 @@ public class FunctionalDemo {
         List<String> names = Arrays.asList("Rafael", "Ramon", "Emilio");
         List<String> names1 = Arrays.asList(new String[]{"Ramon", "Emilio"});
 
+        /*
+        //La lista no permite añadir
+        try {
+            names.add("Federico");
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+        }*/
+
         Function<String[], List<String>> asListFunction = Arrays::asList;
-        String[] namesArray = {"Rafael", "Ramon", "Emilio"};
+        String[] namesArray = {"Rafael", "Ramon", "Emilio", "Raul"};
         List<String> namesList = asListFunction.apply(namesArray);
         FunctionalUtil.forEach(namesList, System.out::println);
     }

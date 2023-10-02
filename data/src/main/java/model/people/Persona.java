@@ -15,15 +15,13 @@ public class Persona {
     private String apellidos;
     private Sexo sexo;
     private LocalDate nacimiento;
-    private double sueldo;
 
-    public Persona(long id, String nombre, String apellidos, Sexo sexo, LocalDate nacimiento, double sueldo) {
+    public Persona(long id, String nombre, String apellidos, Sexo sexo, LocalDate nacimiento) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.sexo = sexo;
         this.nacimiento = nacimiento;
-        this.sueldo = sueldo;
     }
 
     public long getId() {
@@ -42,6 +40,14 @@ public class Persona {
         this.nombre = nombre;
     }
 
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
     public Sexo getSexo() {
         return sexo;
     }
@@ -56,14 +62,6 @@ public class Persona {
 
     public void setNacimiento(LocalDate nacimiento) {
         this.nacimiento = nacimiento;
-    }
-
-    public double getSueldo() {
-        return sueldo;
-    }
-
-    public void setSueldo(double sueldo) {
-        this.sueldo = sueldo;
     }
 
     public boolean isHombre() {
@@ -82,7 +80,6 @@ public class Persona {
                 .add("apellidos='" + apellidos + "'")
                 .add("sexo=" + sexo)
                 .add("nacimiento=" + nacimiento)
-                .add("sueldo=" + sueldo)
                 .toString();
     }
 }

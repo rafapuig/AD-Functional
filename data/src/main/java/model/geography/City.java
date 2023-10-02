@@ -1,5 +1,6 @@
 package model.geography;
 
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -27,9 +28,12 @@ public class City {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", City.class.getSimpleName() + "[", "]")
-                .add(name)
-                .add("population=" + population)
-                .toString();
+        StringJoiner joiner = new StringJoiner(", ", City.class.getSimpleName() + "[", "]")
+                .add(name);
+
+        population.ifPresent(
+                p -> joiner.add("poblacion=" + new DecimalFormat().format(p.longValue())));
+
+        return joiner.toString();
     }
 }

@@ -1,8 +1,9 @@
 package es.rafapuig.exercises.personas;
 
 
+import model.people.Empleado;
 import model.people.Persona;
-import model.people.Personas;
+import model.people.Empleados;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,16 +16,16 @@ public class PersonasProcess {
 
     public static void main(String[] args) {
 
-        String[] result = getNombresMujeres(Personas.PERSONAS);
+        String[] result = getNombresMujeres(Empleados.EMPLEADOS);
         System.out.println(Arrays.toString(result));
 
-        System.out.println(Arrays.toString(getNombresMujeresFunctional(Personas.PERSONAS)));
+        System.out.println(Arrays.toString(getNombresMujeresFunctional(Empleados.EMPLEADOS)));
 
-        System.out.println(getSueldoMedioHombresMujeresImperative(Personas.PERSONAS));
-        System.out.println(getSueldoMedioHombresMujeresFunctional(Personas.PERSONAS));
+        System.out.println(getSueldoMedioHombresMujeresImperative(Empleados.EMPLEADOS));
+        System.out.println(getSueldoMedioHombresMujeresFunctional(Empleados.EMPLEADOS));
     }
 
-    static String[] getNombresMujeres(List<Persona> personas) {
+    static String[] getNombresMujeres(List<? extends Persona> personas) {
         List<String> resultList = new ArrayList<>();
 
         for (Persona persona : personas) {
@@ -38,7 +39,7 @@ public class PersonasProcess {
         return resultList.toArray(new String[resultList.size()]);
     }
 
-    static String[] getNombresMujeresFunctional(List<Persona> personas) {
+    static String[] getNombresMujeresFunctional(List<? extends Persona> personas) {
 
         List<String> resultList = new ArrayList<>();
 
@@ -58,12 +59,12 @@ public class PersonasProcess {
         return resultList.toArray(new String[resultList.size()]);
     }
 
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeres(List<Persona> personas) {
+    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeres(List<Empleado> empleados) {
 
         Map<Persona.Sexo, Double> sueldosMedios = new HashMap<>();
         Map<Persona.Sexo, Integer> contador = new HashMap<>();
 
-        for (Persona persona : personas) {
+        for (Empleado persona : empleados) {
             Persona.Sexo sexo = persona.getSexo();
             if (!sueldosMedios.containsKey(sexo)) {
                 sueldosMedios.put(sexo, 0.0);
@@ -86,16 +87,16 @@ public class PersonasProcess {
         return sueldosMedios;
     }
 
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresImperative(List<Persona> personas) {
+    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresImperative(List<Empleado> empleados) {
 
         Map<Persona.Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
 
-        for (Persona persona : personas) {
-            Persona.Sexo sexo = persona.getSexo();
+        for (Empleado empleado : empleados) {
+            Persona.Sexo sexo = empleado.getSexo();
             if (!sueldosPorSexo.containsKey(sexo)) {
                 sueldosPorSexo.put(sexo, new ArrayList<>());
             }
-            double sueldo = persona.getSueldo();
+            double sueldo = empleado.getSueldo();
             sueldosPorSexo.get(sexo).add(sueldo);
         }
 
@@ -112,32 +113,32 @@ public class PersonasProcess {
     }
 
 
-    static BiFunction<Persona.Sexo,List<Double>,List<Double>> addSueldoToList(Persona persona) {
+    static BiFunction<Persona.Sexo,List<Double>,List<Double>> addSueldoToList(Empleado empleado) {
         return (sexo, sueldos) -> {
-            sueldos.add(persona.getSueldo());
+            sueldos.add(empleado.getSueldo());
             return sueldos;
         };
     };
 
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional(List<Persona> personas) {
+    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional(List<Empleado> empleados) {
 
         Map<Persona.Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
 
-        /*personas.forEach( persona ->
-            sueldosPorSexo.compute(persona.getSexo(),
+        /*empleados.forEach( empleado ->
+            sueldosPorSexo.compute(empleado.getSexo(),
                     (sexo1, sueldos) -> {
                         if (sueldos == null) {
                             sueldos = new ArrayList<>();
                         } else {
-                            sueldos.add(persona.getSueldo());
+                            sueldos.add(empleado.getSueldo());
                         }
                         return sueldos;
                     })
         );*/
 
-        personas.forEach(persona -> {
-                    sueldosPorSexo.computeIfAbsent(persona.getSexo(), sexo -> new ArrayList<>());
-                    sueldosPorSexo.computeIfPresent(persona.getSexo(), addSueldoToList(persona));
+        empleados.forEach(empleado -> {
+                    sueldosPorSexo.computeIfAbsent(empleado.getSexo(), sexo -> new ArrayList<>());
+                    sueldosPorSexo.computeIfPresent(empleado.getSexo(), addSueldoToList(empleado));
                 }
         );
 
