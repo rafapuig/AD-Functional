@@ -7,10 +7,7 @@ import model.people.Empleados;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 
 public class PersonasProcess {
 
@@ -119,6 +116,7 @@ public class PersonasProcess {
             return sueldos;
         };
     };
+
 
     static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional(List<Empleado> empleados) {
 
