@@ -26,12 +26,12 @@ public class Empleados {
 
     public static Empleado BELEN = new Empleado(2, "Belen","Tilla",
             Persona.Sexo.MUJER,
-            LocalDate.of(1983, Month.APRIL, 12),
+            LocalDate.of(1983, Month.DECEMBER, 6),
             2100);
 
     public static Empleado ESTHER = new Empleado(3, "Esther","Malgin",
             Persona.Sexo.MUJER,
-            LocalDate.of(1988, Month.JULY, 5),
+            LocalDate.of(1988, Month.JULY, 4),
             1800);
 
     public static Empleado AMADOR = new Empleado(4, "Amador","Denador",
@@ -49,7 +49,18 @@ public class Empleados {
             LocalDate.of(1977, Month.FEBRUARY, 19),
             1500);
 
+    public static Empleado VICTOR = new Empleado(7, "Victor","Nado",
+            Persona.Sexo.HOMBRE,
+            LocalDate.of(1998, Month.JUNE, 30),
+            2500);
+
+    public static Empleado PEDRO = new Empleado(8, "Pedro","Gado",
+            Persona.Sexo.HOMBRE,
+            LocalDate.of(2002, Month.APRIL, 23),
+            1100);
+
+
     public static List<Empleado> EMPLEADOS =
-            List.of(ARMANDO, BELEN, ESTHER, AMADOR, AITOR, SANDRA);
+            List.of(ARMANDO, BELEN, ESTHER, AMADOR, AITOR, SANDRA, VICTOR, PEDRO);
 
 }
