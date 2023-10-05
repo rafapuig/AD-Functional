@@ -3,6 +3,9 @@ import model.astronomy.Satellite;
 import model.geography.City;
 import model.geography.Countries;
 import model.geography.Country;
+import model.geography.Provincia;
+
+import java.util.Comparator;
 
 public class StreamsExamples {
 
@@ -10,6 +13,7 @@ public class StreamsExamples {
         countriesInfo();
         worldCapitals();
         getPlanetMoonsFlat();
+        getProvincias();
     }
 
     static void countriesInfo() {
@@ -32,6 +36,17 @@ public class StreamsExamples {
         Planets.SOLAR_SYSTEM_PLANETS.stream()
                 .flatMap(planet -> planet.getSatellites().stream())
                 .forEach(System.out::println);
+    }
+
+    static void getProvincias() {
+        var provincias = Countries.SPAIN.getAutonomias().stream()
+                .flatMap(autonomia -> autonomia.getProvincias().stream())
+                //.map(Provincia::getName)
+                .sorted(Comparator.comparing(Provincia::getName))
+                .toList();
+
+        System.out.println(provincias);
+        provincias.forEach(System.out::println);
     }
 
 }

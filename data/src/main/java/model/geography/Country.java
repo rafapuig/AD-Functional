@@ -4,15 +4,20 @@ import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringJoiner;
+import java.util.*;
 
 public class Country {
 
     private String iso3;
     private String name;
     private City capital;
+
+    private Set<Autonomia> autonomias = new TreeSet<>();
+
+    public Set<Autonomia> getAutonomias() {
+        return autonomias;
+    }
+
     private Optional<Integer> surfaceArea = Optional.empty();
 
     public Country(String iso3, String name, City capital) {
