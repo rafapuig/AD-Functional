@@ -1,3 +1,4 @@
+import model.astronomy.Planet;
 import model.astronomy.Planets;
 import model.astronomy.Satellite;
 import model.geography.City;
@@ -12,6 +13,7 @@ public class StreamsExamples {
     public static void main(String[] args) {
         countriesInfo();
         worldCapitals();
+        printPlanets();
         getPlanetMoonsFlat();
         getProvincias();
     }
@@ -30,6 +32,15 @@ public class StreamsExamples {
                 .toList();
 
         System.out.println(result);
+    }
+
+    static void printPlanets() {
+        var planets = Planets.SOLAR_SYSTEM_PLANETS.stream()
+                //.map(Planet::getName)
+                .toList();
+
+        planets.forEach(System.out::println);
+
     }
 
     static void getPlanetMoonsFlat() {

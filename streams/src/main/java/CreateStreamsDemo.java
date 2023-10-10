@@ -123,6 +123,7 @@ public class CreateStreamsDemo {
                 .limit(1_000_000)
                 .forEach(System.out::println);
 
+        //Stream.generate creaa un stream no ordenado (unordered) sequencial
         Stream.generate(Math::random)
                 .limit(5)
                 .forEach(System.out::println);
