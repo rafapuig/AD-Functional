@@ -1,6 +1,7 @@
 package model.astronomy;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -24,6 +25,14 @@ public class Planet {
         return name;
     }
 
+    public Optional<Double> getMassInKg() {
+        return massInKg;
+    }
+
+    public Optional<Double> getRadiusInKm() {
+        return radiusInKm;
+    }
+
     public List<Satellite> getSatellites() {
         return satellites;
     }
@@ -33,13 +42,14 @@ public class Planet {
         StringJoiner joiner = new StringJoiner(", ", Planet.class.getSimpleName() + "[", "]")
                 .add(name);
 
+
         massInKg.ifPresent(
-                m -> joiner.add(new DecimalFormat().format(m.doubleValue())  + " Kg"));
+                m -> joiner.add(String.format("%.2E", m) + " Kg"));
 
         radiusInKm.ifPresent(
-                r -> joiner.add(new DecimalFormat().format(r.doubleValue())  + " Km"));
+                r -> joiner.add(new DecimalFormat().format(r.doubleValue()) + " Km"));
 
-        if(!satellites.isEmpty()) {
+        if (!satellites.isEmpty()) {
             joiner.add("satellites=" + satellites);
         }
         return joiner.toString();

@@ -8,39 +8,47 @@ public class Planets {
 
     static {
         Planet mercury = new Planet.Builder("Mercurio")
-                .setMass(3.30 * 1023).setRadius(2_439.7).build();
+                .setMass(3.30E23).setRadius(2_439.7).build();
 
         Planet venus = new Planet.Builder("Venus")
-                .setMass(4.87 * 1024).setRadius(6_051.8).build();
+                .setMass(4.87E24).setRadius(6_051.8).build();
 
         Planet earth = new Planet.Builder("La Tierra")
-                .setMass(5.97 * 1024)
+                .setMass(5.97E24)
+                .setRadius(6.371)
                 .addSatellite("Luna").build();
 
         Planet mars = new Planet.Builder("Marte")
-                .setMass(6.42 * 1023)
+                .setMass(6.42E23)
                 .setRadius(3_389.5)
                 .addSatellites("Phobos", "Deimos").build();
 
-        Planet jupiter = new Planet("Jupiter",
-                List.of(new Satellite("Calixto"),
-                        new Satellite("Io"),
-                        new Satellite("Europa"),
-                        new Satellite("Ganimedes")));
+        Planet jupiter = new Planet.Builder("Jupiter")
+                .setMass(1.90E27)
+                .setRadius(69_911)
+                .addSatellites("Calixto", "Io", "Europa", "Ganimedes")
+                .build();
 
-        Planet saturn = new Planet("Saturno",
-                List.of(new Satellite("Titan"),
-                        new Satellite("Encelado")));
+        Planet saturn = new Planet.Builder("Saturno")
+                .setMass(5.68E26)
+                .setRadius(58_232)
+                .addSatellites("Titan", "Encelado")
+                .build();
 
         Planet uranus = new Planet.Builder("Urano")
-                .setMass(8.68 * 1025)
+                .setMass(8.68E25)
                 .setRadius(25_362)
                 .addSatellites("Titania", "Oberon", "Ariel", "Umbriel", "Miranda")
                 .build();
 
+        Planet neptune = new Planet.Builder("Neptuno")
+                .setMass(1.02E26)
+                .setRadius(24_622)
+                .build();
+
         SOLAR_SYSTEM_PLANETS = Collections.unmodifiableSet(
                 new LinkedHashSet<>(
-                        List.of(mercury, venus, earth, mars, jupiter, saturn, uranus)));
+                        List.of(mercury, venus, earth, mars, jupiter, saturn, uranus, neptune)));
     }
 
 

@@ -6,16 +6,20 @@ import model.geography.Countries;
 import model.geography.Country;
 import model.geography.Provincia;
 
-import java.util.Comparator;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StreamsExamples {
 
     public static void main(String[] args) {
-        countriesInfo();
-        worldCapitals();
-        printPlanets();
-        getPlanetMoonsFlat();
-        getProvincias();
+        //countriesInfo();
+        //worldCapitals();
+        //printPlanets();
+        //getPlanetMoonsFlat();
+        //getProvincias();
+        //getAverageRadius();
+        getPlanetRadiusMap();
     }
 
     static void countriesInfo() {
@@ -58,6 +62,41 @@ public class StreamsExamples {
 
         System.out.println(provincias);
         provincias.forEach(System.out::println);
+    }
+
+    static void getAverageRadius() {
+
+        var map = Planets.SOLAR_SYSTEM_PLANETS.stream()
+                .collect(Collectors.toMap(Planet::getName, Function.identity()));
+
+        var map2 = Planets.SOLAR_SYSTEM_PLANETS.stream()
+                .collect(Collectors.toMap(Planet::getName, Planet::getRadiusInKm, (o, n) -> n, LinkedHashMap::new));
+
+        System.out.println(map2);
+
+
+        var radius = Planets.SOLAR_SYSTEM_PLANETS.stream()
+                .filter(planet -> planet.getRadiusInKm().isPresent())
+                .collect(Collectors.averagingDouble(planet -> planet.getRadiusInKm().get()));
+
+        System.out.println("Radio medio = " + radius);
+    }
+
+    static void getPlanetRadiusMap() {
+        var map2 = Planets.SOLAR_SYSTEM_PLANETS.stream()
+                .sorted(Comparator.comparing(planet -> planet.getRadiusInKm().get()))
+                .collect(Collectors.toMap(
+                        Planet::getName, Planet::getRadiusInKm, (o, n) -> n, LinkedHashMap::new));
+
+        System.out.println(map2);
+
+        System.out.println(
+                Arrays.toString(
+                        map2.values().stream()
+                                .filter(Optional::isPresent)
+                                .mapToDouble(Optional::get)
+                                .toArray()));
+
     }
 
 }
