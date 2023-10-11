@@ -32,7 +32,7 @@ public class Planets {
         Planet saturn = new Planet.Builder("Saturno")
                 .setMass(5.68E26)
                 .setRadius(58_232)
-                .addSatellites("Titan", "Encelado")
+                .addSatellites("Titan", "Rea", "Jápeto", "Dione", "Tetis", "Encelado")
                 .build();
 
         Planet uranus = new Planet.Builder("Urano")
@@ -44,6 +44,7 @@ public class Planets {
         Planet neptune = new Planet.Builder("Neptuno")
                 .setMass(1.02E26)
                 .setRadius(24_622)
+                .addSatellites("Tritón", "Proteo", "Nereida")
                 .build();
 
         SOLAR_SYSTEM_PLANETS = Collections.unmodifiableSet(

@@ -15,11 +15,15 @@ public class StreamsExamples {
     public static void main(String[] args) {
         //countriesInfo();
         //worldCapitals();
-        //printPlanets();
+        printPlanets();
         //getPlanetMoonsFlat();
         //getProvincias();
+        getMoonlessPlanets();
         //getAverageRadius();
-        getPlanetRadiusMap();
+        //getPlanetRadiusMap();
+        //getHeaviestPlanet();
+        //getLightestPlanet();
+        //getPlanetNameToMoonsMap();
     }
 
     static void countriesInfo() {
@@ -64,6 +68,15 @@ public class StreamsExamples {
         provincias.forEach(System.out::println);
     }
 
+    static void getMoonlessPlanets() {
+        Set<Planet> moonlessPlanets = Planets.SOLAR_SYSTEM_PLANETS
+                .stream()
+                .filter(planet -> planet.getSatellites().isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        System.out.println(moonlessPlanets);
+    }
+
     static void getAverageRadius() {
 
         var map = Planets.SOLAR_SYSTEM_PLANETS.stream()
@@ -97,6 +110,51 @@ public class StreamsExamples {
                                 .mapToDouble(Optional::get)
                                 .toArray()));
 
+    }
+
+    static void getHeaviestPlanet() {
+        Optional<Planet> heaviestPlanet = Planets.SOLAR_SYSTEM_PLANETS
+                .stream()
+                .filter(planet -> planet.getMassInKg().isPresent())
+                .max(Comparator.comparing(planet -> planet.getMassInKg().get()));
+
+        heaviestPlanet.ifPresent(
+                planet -> System.out.println(
+                            "El planeta más pesado es " + planet.getName() +
+                                    " con " + planet.getMassInKg().get() / 1000 + " Toneladas"));
+
+    }
+
+    static void getLightestPlanet() {
+        Optional<Planet> lightestPlanet = Planets.SOLAR_SYSTEM_PLANETS
+                .stream()
+                .filter(planet -> planet.getMassInKg().isPresent())
+                .collect(Collectors.minBy(
+                        Comparator.comparing(planet -> planet.getMassInKg().get())));
+
+
+        lightestPlanet.ifPresent(
+                planet -> System.out.println(
+                        "El planeta más ligero es " + planet.getName() +
+                                " con " + planet.getMassInKg().get() / 1000 + " Toneladas"));
+
+    }
+
+    static void getPlanetNameToMoonsMap() {
+        Map<String, String> planetNameToMoonsNamesMap =
+                Planets.SOLAR_SYSTEM_PLANETS
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Planet::getName,
+                                planet -> planet.getSatellites()
+                                        .stream()
+                                        .map(Satellite::getName)
+                                        .collect(Collectors.joining(", ","'","'")),
+                                (oldValue, newValue) -> newValue,
+                                LinkedHashMap::new
+                        ));
+
+        System.out.println(planetNameToMoonsNamesMap);
     }
 
 }

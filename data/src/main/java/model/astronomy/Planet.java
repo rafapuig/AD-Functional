@@ -10,6 +10,8 @@ public class Planet {
     private final String name;
     private Optional<Double> massInKg = Optional.empty();
     private Optional<Double> radiusInKm = Optional.empty();
+
+    private Long distanceToSun = null;
     private final List<Satellite> satellites;
 
     public Planet(String name) {

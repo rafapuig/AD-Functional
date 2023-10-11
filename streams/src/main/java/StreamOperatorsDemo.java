@@ -4,6 +4,7 @@ import model.people.Persona;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -34,7 +35,12 @@ public class StreamOperatorsDemo {
         //testSummaryStats();
         //testSummaryStatsOnSueldos();
         //testMinBySueldo();
-        testCollectToMapIDNames();
+        //testCollectToMapIDToNames();
+        //testCollectToMapGenderToNamesWrong();
+        testCollectToMapGenderToNamesRight();
+        testCollectToMapGenderToNamesWithMapSupplier();
+        testCollectToMapCountByGender();
+        testCollectToMapEmpleadoMejorPagadoPorSexo();
     }
 
     static void testPeek() {
@@ -526,19 +532,77 @@ public class StreamOperatorsDemo {
         Optional<Empleado> empleado = Empleados.EMPLEADOS
                 .stream()
                 .collect(Collectors.<Empleado>minBy(Comparator.comparing(Empleado::getSueldo)));
-                // se puede reemplazar por .min(Comparator.comparing(Empleado::getSueldo));
+        // se puede reemplazar por .min(Comparator.comparing(Empleado::getSueldo));
 
         empleado.ifPresent(
-                emp ->System.out.println("Empleado con el sueldo menor = " + emp));
+                emp -> System.out.println("Empleado con el sueldo menor = " + emp));
     }
 
     //------- Collectors.toMap() --------------------------------------
-    static void testCollectToMapIDNames() {
-        Map<Long,String> idToNameMap = Empleados.EMPLEADOS
+    static void testCollectToMapIDToNames() {
+        Map<Long, String> idToNameMap = Empleados.EMPLEADOS
                 .stream()
-                .collect(Collectors.toMap(Persona::getId,Persona::getNombreCompleto));
+                .collect(Collectors.toMap(Persona::getId, Persona::getNombreCompleto));
 
         System.out.println(idToNameMap);
+    }
+
+    static void testCollectToMapGenderToNamesWrong() {
+        try {
+            Map<Persona.Sexo, String> genderToNamesMap = Empleados.EMPLEADOS
+                    .stream()
+                    .collect(Collectors.toMap(
+                            Persona::getSexo,
+                            Persona::getNombreCompleto));
+        } catch (IllegalStateException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    static void testCollectToMapGenderToNamesRight() {
+
+        Map<Persona.Sexo, String> genderToNamesMap = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.toMap(
+                        Persona::getSexo,               //keyMapper
+                        Persona::getNombreCompleto,     //valueMapper
+                        (oldValue, newValue) -> String.join(", ", oldValue, newValue))); //mergeFunc
+
+        System.out.println(genderToNamesMap);
+    }
+
+    static void testCollectToMapGenderToNamesWithMapSupplier() {
+        Map<Persona.Sexo, String> genderSortedToNamesMap = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.toMap(Persona::getSexo,
+                        Persona::getNombreCompleto,
+                        (oldValue, newValue) ->
+                                String.join(", ", oldValue, newValue),
+                        TreeMap::new));
+
+        System.out.println(genderSortedToNamesMap);
+    }
+
+    static void testCollectToMapCountByGender() {
+        Map<Persona.Sexo, Long> countByGender = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.toMap(
+                        Persona::getSexo,
+                        empleado -> 1L,
+                        (oldCount, newCount) -> oldCount + 1));
+        System.out.println(countByGender);
+    }
+
+    static void testCollectToMapEmpleadoMejorPagadoPorSexo() {
+        Map<Persona.Sexo, Empleado> mejorPagadoPorSexo = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.toMap(
+                        Persona::getSexo,
+                        Function.identity(),
+                        (mejorPagado, candidato) ->
+                                candidato.getSueldo() > mejorPagado.getSueldo() ? candidato : mejorPagado));
+
+        System.out.println(mejorPagadoPorSexo);
     }
 
 }
