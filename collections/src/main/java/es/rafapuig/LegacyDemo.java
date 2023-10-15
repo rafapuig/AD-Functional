@@ -60,7 +60,7 @@ public class LegacyDemo {
         List<String> names = List.of("Rafa", "Raul", "Ruben", "Ramon");
 
         Iterable<String> iterable = names;
-        Iterator<String> iterator = names.iterator();
+        Iterator<String> iterator = iterable.iterator();
 
         while (iterator.hasNext()) {
             String name = iterator.next();

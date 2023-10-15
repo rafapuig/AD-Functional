@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 //Una expresion lambda es una funcion anonima, cuyo tipo se obtenda por el contexto
@@ -21,6 +22,7 @@ public class LambdaDemo {
         targetTypingMethodCall();
         targetTypingOverloadedMethodCall();
         lambdasBridging();
+        testCheckIfStartsWith();
     }
 
     static void anonymousVsLambdas() {
@@ -191,5 +193,36 @@ public class LambdaDemo {
 
         //Para ejecutar la expresion lambda tenemos que llamar al SAM de la interfaz funcional
         isGreaterThan10.test(19);
+    }
+
+    static boolean checkIf(String value, Predicate<String> checkCriteria) {
+        return checkCriteria.test(value);
+    }
+
+    //Closure (una expresion lambda que accede a una variable dentro de su ambito
+    static Predicate<String> checkIfStartsWith(String letter) {
+        return name -> name.startsWith(letter);
+    }
+
+    static void testCheckIfStartsWith() {
+
+        System.out.println(
+                checkIfStartsWith("R").test("Rafael"));
+        System.out.println(
+                checkIfStartsWith("P").test("Rafael"));
+
+        //Funcion creada dentro de una funcion
+        Function<String, Predicate<String>> startsWithLetter =
+                letter -> name -> name.startsWith(letter);
+
+        System.out.println(
+                startsWithLetter.apply("R").test("Rafael"));
+        System.out.println(
+                startsWithLetter.apply("P").test("Rafael"));
+
+        System.out.println(
+        checkIf("Rafael", startsWithLetter.apply("R")));
+        System.out.println(
+                checkIf("Rafael", startsWithLetter.apply("P")));
     }
 }

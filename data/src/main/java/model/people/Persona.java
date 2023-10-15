@@ -1,14 +1,16 @@
 package model.people;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.StringJoiner;
 
-public class Persona {
-
-    public static enum Sexo {
-        HOMBRE,
-        MUJER
+public class Persona implements Comparable<Persona> {
+    @Override
+    public int compareTo(Persona other) {
+       return other.getNacimiento().compareTo(this.getNacimiento());
     }
+
+    public static enum Sexo { HOMBRE, MUJER }
 
     private long id;
     private String nombre;
@@ -66,6 +68,10 @@ public class Persona {
 
     public void setNacimiento(LocalDate nacimiento) {
         this.nacimiento = nacimiento;
+    }
+
+    public long getEdad() {
+        return ChronoUnit.YEARS.between(this.nacimiento, LocalDate.now());
     }
 
     public boolean isHombre() {

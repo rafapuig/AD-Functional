@@ -2,6 +2,7 @@ import model.people.Empleado;
 import model.people.Empleados;
 import model.people.Persona;
 
+import java.time.Month;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -37,10 +38,15 @@ public class StreamOperatorsDemo {
         //testMinBySueldo();
         //testCollectToMapIDToNames();
         //testCollectToMapGenderToNamesWrong();
-        testCollectToMapGenderToNamesRight();
-        testCollectToMapGenderToNamesWithMapSupplier();
-        testCollectToMapCountByGender();
-        testCollectToMapEmpleadoMejorPagadoPorSexo();
+        //testCollectToMapGenderToNamesRight();
+        //testCollectToMapGenderToNamesWithMapSupplier();
+        //testCollectToMapCountByGender();
+        //testCollectToMapEmpleadoMejorPagadoPorSexo();
+        testPartitionedByMaleGender();
+        testNamesPartitionedByMaleGender();
+
+        //testCalendarWrong();
+        testCalendar();
     }
 
     static void testPeek() {
@@ -604,5 +610,75 @@ public class StreamOperatorsDemo {
 
         System.out.println(mejorPagadoPorSexo);
     }
+
+    static void testPartitionedByMaleGender() {
+        Map<Boolean, List<Persona>> patitionedByMaleGender =
+                Empleados.EMPLEADOS
+                        .stream()
+                        .collect(Collectors.partitioningBy(Persona::isHombre));
+
+        System.out.println(patitionedByMaleGender);
+    }
+
+    static void testNamesPartitionedByMaleGender() {
+        Map<Boolean, String> patitionedByMaleGender =
+                Empleados.EMPLEADOS
+                        .stream()
+                        .collect(Collectors.partitioningBy(
+                                Persona::isHombre,
+                                Collectors.mapping(
+                                        Persona::getNombreCompleto,
+                                        Collectors.joining(", "))));
+
+        System.out.println(patitionedByMaleGender);
+    }
+
+    static void testCollectionAndThenUnmodifiableList() {
+        List<String> names = Empleados.EMPLEADOS
+                .stream()
+                .map(Persona::getNombreCompleto)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        Collections::unmodifiableList)); //Se consigue los mismo utilizando directamente .toList()
+
+        System.out.println(names);
+
+    }
+
+    static void testCalendarWrong() {
+        Map<Month, String> dobCalendar = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.groupingBy(
+                        p -> p.getNacimiento().getMonth(),
+                        Collectors.mapping(
+                                Persona::getNombreCompleto,
+                                Collectors.joining(", "))));
+
+        dobCalendar.entrySet().forEach(System.out::println);
+    }
+
+    static void testCalendar() {
+        Map<Month, String> dobCalendar = Empleados.EMPLEADOS
+                .stream()
+                .collect(Collectors.collectingAndThen(
+                            Collectors.groupingBy(
+                                p -> p.getNacimiento().getMonth(),
+                                Collectors.mapping(
+                                    Persona::getNombreCompleto,
+                                    Collectors.joining(", "))),
+                            result -> {
+                                //Añadir los meses faltantes
+                                for (Month m : Month.values()) {
+                                    result.putIfAbsent(m, "Nadie");
+                                }
+                                //Devuelve un map no modificable y ordenado
+                                return Collections.unmodifiableMap(
+                                        new TreeMap<>(result)
+                                );
+                            }));
+
+        dobCalendar.entrySet().forEach(System.out::println);
+    }
+
 
 }

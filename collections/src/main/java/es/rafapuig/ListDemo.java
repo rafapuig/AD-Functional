@@ -18,7 +18,6 @@ public class ListDemo {
             }
         });
 
-
         alumnoList.add(
                 new Alumno("12345678", "AMADOR",
                         new String[] {"DENADOR", "PEREZ"}, 34));
@@ -27,9 +26,7 @@ public class ListDemo {
     }
 
     public static void main(String[] args) {
-        listTest();
-
-        //arrayListTest();
+        //listTest();
     }
 
     //Metodo auxiliar para imprimir por consola una lista mediante foreach
@@ -39,32 +36,10 @@ public class ListDemo {
         }
     }
 
-
     //Metodo auxiliar para imprimir directamente la lista por consola
     static void print(List<?> list) {
         System.out.println(list);
     }
-
-
-    private static void foreachListTest() {
-        List<Alumno> alumnoList = getAlumnos();
-
-        for (Alumno alumno : alumnoList) {
-            System.out.println(alumno);
-        }
-
-        printList(alumnoList);
-    }
-
-    static void linkedListTest() {
-        //Crear una lista enlazada a partir de los elementos de una otra coleccion
-        LinkedList<Alumno> alumnoList = new LinkedList<>(getAlumnos());
-
-        alumnoList.descendingIterator();
-    }
-
-
-
 
     static void listTest() {
 
@@ -84,7 +59,7 @@ public class ListDemo {
         String ingrediente = ingredients.get(2);
         System.out.println("ingredientes[2] = " + ingrediente);
 
-        //Estebler un nuevo elemento en la posicion, en sustitucion del elem anterior
+        //Esteblecer un nuevo elemento en la posicion, en sustitucion del elem anterior
         ingredients.set(2, "cafe en polvo");
         print(ingredients);
 
@@ -131,7 +106,14 @@ public class ListDemo {
         //ingredients.sort(String::compareTo); //Ordenacion indicando comaparador
         ingredients.sort((s1, s2) -> s1.compareTo(s2));
         print(ingredients);
+    }
 
+
+    static void linkedListTest() {
+        //Crear una lista enlazada a partir de los elementos de una otra coleccion
+        LinkedList<Alumno> alumnoList = new LinkedList<>(getAlumnos());
+
+        alumnoList.descendingIterator();
     }
 
 }
