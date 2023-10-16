@@ -16,6 +16,7 @@ public class PersonasUtilTest {
         testGetNombresPersonasSortByApellidos();
         testNombresPorSexo();
         testPersonasCountPorSexo();
+        testAllPersonasHablanEspañol();
     }
 
     static void testGetAllPersonasSorted() {
@@ -83,5 +84,13 @@ public class PersonasUtilTest {
                 getPersonasCountByGender(Empleados.EMPLEADOS));
         System.out.println(
                 getPersonasCountByGenderFunctional(Empleados.EMPLEADOS));
+    }
+
+    static void testAllPersonasHablanEspañol() {
+        System.out.println("\nComprobar si todas las personas hablan español:");
+        System.out.println("------------------------------------------------------");
+
+        System.out.println(
+                allPersonasHablanEspañol(Empleados.EMPLEADOS));
     }
 }

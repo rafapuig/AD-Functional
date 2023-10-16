@@ -47,6 +47,14 @@ public class StreamOperatorsDemo {
 
         //testCalendarWrong();
         testCalendar();
+
+        testMakingOver2400();
+        testFlatMapping();
+
+        testCheckAllHombres();
+        testCheckAnyBornIn1970();
+        testFindAnyHombre();
+        testFindFirstHombre();
     }
 
     static void testPeek() {
@@ -661,23 +669,87 @@ public class StreamOperatorsDemo {
         Map<Month, String> dobCalendar = Empleados.EMPLEADOS
                 .stream()
                 .collect(Collectors.collectingAndThen(
-                            Collectors.groupingBy(
+                        Collectors.groupingBy(
                                 p -> p.getNacimiento().getMonth(),
                                 Collectors.mapping(
-                                    Persona::getNombreCompleto,
-                                    Collectors.joining(", "))),
-                            result -> {
-                                //Añadir los meses faltantes
-                                for (Month m : Month.values()) {
-                                    result.putIfAbsent(m, "Nadie");
-                                }
-                                //Devuelve un map no modificable y ordenado
-                                return Collections.unmodifiableMap(
-                                        new TreeMap<>(result)
-                                );
-                            }));
+                                        Persona::getNombreCompleto,
+                                        Collectors.joining(", "))),
+                        result -> {
+                            //Añadir los meses faltantes
+                            for (Month m : Month.values()) {
+                                result.putIfAbsent(m, "Nadie");
+                            }
+                            //Devuelve un map no modificable y ordenado
+                            return Collections.unmodifiableMap(
+                                    new TreeMap<>(result)
+                            );
+                        }));
 
         dobCalendar.entrySet().forEach(System.out::println);
+    }
+
+    static void testMakingOver2400() {
+        Map<Persona.Sexo, List<Empleado>> makingOver2400 =
+                Empleados.EMPLEADOS.stream()
+                        .collect(Collectors.groupingBy(
+                                Persona::getSexo,
+                                Collectors.filtering(
+                                        e -> e.getSueldo() > 2400,
+                                        Collectors.toList())));
+
+        System.out.println(makingOver2400);
+    }
+
+    static void testFlatMapping() {
+        Map<Persona.Sexo, Set<Persona.Idioma>> langByGender =
+                Empleados.EMPLEADOS.stream()
+                        .collect(Collectors.groupingBy(
+                                Persona::getSexo,
+                                Collectors.flatMapping(
+                                        e -> e.getIdiomas().stream(),
+                                        Collectors.toSet())));
+
+        System.out.println(langByGender);
+    }
+
+    static void testCheckAllHombres() {
+        boolean allHombres = Empleados.EMPLEADOS
+                .stream()
+                .allMatch(Persona::isHombre);
+        System.out.println("Todos Hombres? " + allHombres);
+    }
+
+
+    static void testCheckAnyBornIn1970() {
+        boolean anyoneBornIn1970 = Empleados.EMPLEADOS
+                .stream()
+                .anyMatch(empleado -> empleado.getNacimiento().getYear() == 1970);
+        System.out.println("Alguien nació en 1970 ? " + anyoneBornIn1970);
+    }
+
+    static void testFindAnyHombre() {
+        Optional<? extends Persona> anyMale = Empleados.EMPLEADOS
+                .stream()
+                .findAny();
+
+        if (anyMale.isPresent()) {
+            System.out.println("Algun hombre = " + anyMale.get());
+        } else {
+            System.out.println("No hay hombres.");
+        }
+    }
+
+
+    static void testFindFirstHombre() {
+        Optional<? extends Persona> anyMale = Empleados.EMPLEADOS
+                .stream()
+                .findFirst();
+
+        if (anyMale.isPresent()) {
+            System.out.println("Primer hombre = " + anyMale.get());
+        } else {
+            System.out.println("No hay hombres.");
+        }
     }
 
 

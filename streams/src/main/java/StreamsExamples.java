@@ -5,6 +5,8 @@ import model.geography.City;
 import model.geography.Countries;
 import model.geography.Country;
 import model.geography.Provincia;
+import model.people.Empleados;
+import model.people.Persona;
 
 import java.util.*;
 import java.util.function.Function;
@@ -24,6 +26,8 @@ public class StreamsExamples {
         //getHeaviestPlanet();
         //getLightestPlanet();
         //getPlanetNameToMoonsMap();
+        allEmpleadosHablanEspañol();
+        allMujeresHablanIngles();
     }
 
     static void countriesInfo() {
@@ -155,6 +159,21 @@ public class StreamsExamples {
                         ));
 
         System.out.println(planetNameToMoonsNamesMap);
+    }
+
+    static void allEmpleadosHablanEspañol() {
+        boolean allEspañol = Empleados.EMPLEADOS
+                .stream()
+                .allMatch(empleado -> empleado.getIdiomas().contains(Persona.Idioma.ESPAÑOL));
+        System.out.println("Todos los empleados hablan español ? = " + allEspañol);
+    }
+
+    static void allMujeresHablanIngles() {
+        boolean allEspañol = Empleados.EMPLEADOS
+                .stream()
+                .filter(Persona::isMujer)
+                .allMatch(empleado -> empleado.getIdiomas().contains(Persona.Idioma.INGLES));
+        System.out.println("Todos las empleadas hablan ingles ? = " + allEspañol);
     }
 
 }

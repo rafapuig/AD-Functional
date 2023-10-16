@@ -12,24 +12,6 @@ import java.util.stream.Collector;
 
 public class PersonasUtil {
 
-    public static void main(String[] args) {
-
-        getAllPersonasSorted();
-        getAllEmpleadosSortedByHireDate();
-
-        //testNombresPorSexo();
-
-        //testPersonasCountPorSexo();
-
-        //testEmpleadoMejorPagadoPorSexo();
-    }
-
-
-
-
-
-
-
     public static List<? extends Persona> getAllPersonasSorted() {
         List<Persona> sorted = new ArrayList<>(Empleados.EMPLEADOS);
         sorted.sort(Comparator.naturalOrder());
@@ -203,6 +185,19 @@ public class PersonasUtil {
         );
 
         return map;
+    }
+
+    static boolean allPersonasHablanEspañol(List<? extends Persona> personas) {
+        boolean all = false;
+        for (Persona persona : personas) {
+            if(persona.getIdiomas().contains(Persona.Idioma.ESPAÑOL)) {
+                all = true;
+            } else {
+                all = false;
+                break;
+            }
+        }
+        return all;
     }
 
 }
