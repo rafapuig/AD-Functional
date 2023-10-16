@@ -23,7 +23,7 @@ public class PersonasUtilTest {
         System.out.println("\nTodas las personas ordenadas de forma natural:");
         System.out.println("------------------------------------------------------");
 
-        List<? extends Persona> personasSorted = getAllPersonasSorted();
+        List<? extends Persona> personasSorted = getAllPersonasSorted(Empleados.EMPLEADOS);
 
         for (Persona p : personasSorted) {
             String nombre = p.getNombreCompleto();

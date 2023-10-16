@@ -12,18 +12,11 @@ import java.util.stream.Collector;
 
 public class PersonasUtil {
 
-    public static List<? extends Persona> getAllPersonasSorted() {
-        List<Persona> sorted = new ArrayList<>(Empleados.EMPLEADOS);
+    public static List<? extends Persona> getAllPersonasSorted(List<? extends Persona> personas) {
+        List<Persona> sorted = new ArrayList<>(personas);
         sorted.sort(Comparator.naturalOrder());
         return sorted;
     }
-
-    static List<Empleado> getAllEmpleadosSortedByHireDate() {
-        List<Empleado> sorted = new ArrayList<>(Empleados.EMPLEADOS);
-        sorted.sort(Comparator.comparing(Empleado::getHireDate));
-        return sorted;
-    }
-
 
     static String[] getNombresMujeresMayusculas(List<? extends Persona> personas) {
         List<String> resultList = new ArrayList<>();

@@ -27,7 +27,7 @@ public class EmpleadosUtilTest {
     static void testGetAllEmpleadosSortedByHireDate() {
         System.out.println("\nTodos las empleados ordenados por fecha de contratación:");
         System.out.println("----------------------------------------------------------");
-        List<Empleado> empleados = PersonasUtil.getAllEmpleadosSortedByHireDate();
+        List<Empleado> empleados = getAllEmpleadosSortedByHireDate(Empleados.EMPLEADOS);
         for (Empleado e : empleados) {
             long antiguedad = ChronoUnit.YEARS.between(
                     e.getHireDate(),

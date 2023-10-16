@@ -1,6 +1,7 @@
 package es.rafapuig.exercises.personas;
 
 import model.people.Empleado;
+import model.people.Empleados;
 import model.people.Persona;
 
 import java.time.LocalDate;
@@ -77,6 +78,13 @@ public class EmpleadosUtil {
             }
         }
         return result;
+    }
+
+
+    static List<Empleado> getAllEmpleadosSortedByHireDate(List<Empleado> empleados) {
+        List<Empleado> sorted = new ArrayList<>(empleados);
+        sorted.sort(Comparator.comparing(Empleado::getHireDate));
+        return sorted;
     }
 
 
