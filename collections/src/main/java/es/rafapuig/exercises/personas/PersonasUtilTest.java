@@ -92,5 +92,8 @@ public class PersonasUtilTest {
 
         System.out.println(
                 allPersonasHablanEspañol(Empleados.EMPLEADOS));
+
+        System.out.println(
+                allPersonasHablanEspañolFunctional(Empleados.EMPLEADOS));
     }
 }

@@ -1,8 +1,9 @@
 package es.rafapuig.exercises.personas;
 
 import model.people.Empleado;
-import model.people.Empleados;
 import model.people.Persona;
+
+import static model.people.Persona.Sexo;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -10,8 +11,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
+import java.util.stream.IntStream;
 
 public class EmpleadosUtil {
 
@@ -88,16 +91,15 @@ public class EmpleadosUtil {
     }
 
 
-
     //------------ Sueldo medio hombres y mujeres
 
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeres(List<Empleado> empleados) {
+    static Map<Sexo, Double> getSueldoMedioHombresMujeres(List<Empleado> empleados) {
 
-        Map<Persona.Sexo, Double> sueldosMedios = new HashMap<>();
-        Map<Persona.Sexo, Integer> contador = new HashMap<>();
+        Map<Sexo, Double> sueldosMedios = new HashMap<>();
+        Map<Sexo, Integer> contador = new HashMap<>();
 
         for (Empleado persona : empleados) {
-            Persona.Sexo sexo = persona.getSexo();
+            Sexo sexo = persona.getSexo();
             if (!sueldosMedios.containsKey(sexo)) {
                 sueldosMedios.put(sexo, 0.0);
             }
@@ -119,12 +121,12 @@ public class EmpleadosUtil {
         return sueldosMedios;
     }
 
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresImperative(List<Empleado> empleados) {
+    static Map<Sexo, Double> getSueldoMedioHombresMujeresImperative(List<Empleado> empleados) {
 
-        Map<Persona.Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
+        Map<Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
 
         for (Empleado empleado : empleados) {
-            Persona.Sexo sexo = empleado.getSexo();
+            Sexo sexo = empleado.getSexo();
             if (!sueldosPorSexo.containsKey(sexo)) {
                 sueldosPorSexo.put(sexo, new ArrayList<>());
             }
@@ -132,9 +134,9 @@ public class EmpleadosUtil {
             sueldosPorSexo.get(sexo).add(sueldo);
         }
 
-        Map<Persona.Sexo, Double> result = new HashMap<>();
+        Map<Sexo, Double> result = new HashMap<>();
 
-        for (Persona.Sexo sexo : sueldosPorSexo.keySet()) {
+        for (Sexo sexo : sueldosPorSexo.keySet()) {
             double sum = 0.0;
             for (Double sueldo : sueldosPorSexo.get(sexo)) {
                 sum += sueldo;
@@ -145,7 +147,10 @@ public class EmpleadosUtil {
     }
 
 
-    static BiFunction<Persona.Sexo, List<Double>, List<Double>> addSueldoToList(Empleado empleado) {
+    //Esto es una closure
+    //La funcion devuelve una expresion lambda que ha capturado por el ambito lexico el valor del parametro
+    //de entrada empleado del metodo addSueldoToList
+    static BiFunction<Sexo, List<Double>, List<Double>> addSueldoToList(Empleado empleado) {
         return (sexo, sueldos) -> {
             sueldos.add(empleado.getSueldo());
             return sueldos;
@@ -287,6 +292,16 @@ public class EmpleadosUtil {
         return map;
     }
 
+
+    static <T, K extends Comparable<K>> T maxBy(Function<T, K> keyExtractor, T t1, T t2) {
+        return (keyExtractor.apply(t1)).compareTo(keyExtractor.apply(t2)) > 0 ? t1 : t2;
+    }
+
+    //En version Closure, devuelve la expresion lambda
+    static <T, K extends Comparable<K>> BiFunction<T, T, T> maxBy(Function<T, K> keyExtractor) {
+        return (t1, t2) -> (keyExtractor.apply(t1)).compareTo(keyExtractor.apply(t2)) > 0 ? t1 : t2;
+    }
+
     static Map<Persona.Sexo, Empleado> getEmpleadoMejorPagadoPorSexoFunctional(List<Empleado> empleados) {
 
         Map<Persona.Sexo, Empleado> map = new HashMap<>();
@@ -294,8 +309,7 @@ public class EmpleadosUtil {
         empleados.forEach(
                 empleado -> {
                     map.computeIfPresent(empleado.getSexo(),
-                            (sexo, mejorPagado) ->
-                                    empleado.getSueldo() > mejorPagado.getSueldo() ? empleado : mejorPagado);
+                            (sexo, mejorPagado) -> maxBy(Empleado::getSueldo, empleado, mejorPagado));
 
                     map.computeIfAbsent(empleado.getSexo(), sexo -> empleado);
                 }
@@ -313,13 +327,30 @@ public class EmpleadosUtil {
                             empleado.getSexo(),
                             empleado,
                             (mejorPagado, candidato) -> //oldValue, newValue
-                                    candidato.getSueldo() > mejorPagado.getSueldo() ? candidato : mejorPagado);
+                                    //maxBy(Empleado::getSueldo, mejorPagado, candidato));
+                                    maxBy(Empleado::getSueldo).apply(mejorPagado, candidato));
+                    //candidato.getSueldo() > mejorPagado.getSueldo() ? candidato : mejorPagado);
                 }
         );
         return map;
     }
 
+    /**
+     * Obtiene el empleado mejor pagado por cada sexo mediante programación funcional y
+     * haciendo uso del método de orden superior compute() de la clase Map<K,V>
+     *
+     * @param empleados
+     * @return
+     */
+
     static Map<Persona.Sexo, Empleado> getEmpleadoMejorPagadoPorSexoFunctionalCompute(List<Empleado> empleados) {
+
+        //Esta función recibe una función que recibe un Empleado y devuelve un Double
+        //Y devuelve un BinaryOperator
+        //Es una expresión lambda que genera otra expresión lambda
+        Function<ToDoubleFunction<Empleado>, BinaryOperator<Empleado>> max =
+                (keyExtractor) -> (e1, e2) -> Double.compare(
+                        keyExtractor.applyAsDouble(e1), keyExtractor.applyAsDouble(e2)) > 0 ? e1 : e2;
 
         Map<Persona.Sexo, Empleado> map = new HashMap<>();
 
@@ -327,16 +358,32 @@ public class EmpleadosUtil {
                 empleado -> {
                     map.compute(
                             empleado.getSexo(),
-                            (sexo, mejorPagado) ->
-                                    (mejorPagado == null) ?
-                                            empleado :
-                                            empleado.getSueldo() > mejorPagado.getSueldo() ?
+                            (sexo, mejorPagado) -> // entradas: la clave y valor actual asociado a la clave
+                                    (mejorPagado == null) ? //Si el valor actual es null es porque no existe
+                                            empleado :  //el nuevo valor asociado a la clave es el empleado
+                                            //Si no, será el mejor pagado entre empleado y el mejorPagado
+                                            /* empleado.getSueldo() > mejorPagado.getSueldo() ?
                                                     empleado :
-                                                    mejorPagado);
+                                                    mejorPagado*/
+                                            //maxBy(Empleado::getSueldo).apply(mejorPagado, empleado)
+                                            max.apply(Empleado::getSueldo).apply(mejorPagado, empleado));
 
                 }
         );
         return map;
     }
+
+    //TODO
+    static void getSumaSueldos(List<Empleado> empleados) {
+
+        BiFunction<Double, Empleado, Function<Empleado, Double>> accumulator =
+                (d, e) -> (e1) -> d + e.getSueldo() + e1.getSueldo();
+
+        empleados.forEach(empleado -> {
+            accumulator.apply(0.0, empleado).apply(empleado);
+        });
+
+    }
+
 
 }

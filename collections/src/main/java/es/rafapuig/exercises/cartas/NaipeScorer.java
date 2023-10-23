@@ -1,7 +1,7 @@
 package es.rafapuig.exercises.cartas;
 
 @FunctionalInterface
-interface Scorer {
+interface NaipeScorer {
 
     int score(Naipe naipe);
 

@@ -3,8 +3,7 @@ package es.rafapuig.exercises.cartas;
 import java.util.*;
 import java.util.function.ToIntFunction;
 
-import static es.rafapuig.exercises.cartas.Naipes.generateBaraja;
-import static es.rafapuig.exercises.cartas.Naipes.scoring;
+import static es.rafapuig.exercises.cartas.Naipes.*;
 
 public class CartasDemo {
 
@@ -12,7 +11,9 @@ public class CartasDemo {
 
         //barajaPlayersTest();
 
-        puntuadorTest();
+        //puntuadorTest();
+
+        testFilterNaipe();
     }
 
     private static void barajaPlayersTest() {
@@ -85,11 +86,31 @@ public class CartasDemo {
         System.out.println("puntos = " + points);
 
 
-        Scorer scorer1 = new BriscaScorer();
+        NaipeScorer scorer1 = new BriscaScorer();
         scorer1 = n -> n.getValor().getNumber() * 3;
         scorer1 = Naipes::scoreByBriscaValue;
-        scorer1 = Scorer::getDefaultScore;
+        scorer1 = NaipeScorer::getDefaultScore;
 
     }
+
+    static void testGetAses() {
+
+        List<Naipe> ases = getAses(BARAJA);
+
+        System.out.println(ases);
+    }
+
+    static void testFilterNaipe() {
+
+        EnumSet<Valor> figurasSet = EnumSet.of(Valor.SOTA, Valor.CABALLO, Valor.REY);
+
+        NaipeFilter figurasFilter = naipe -> figurasSet.contains(naipe.getValor());
+
+        List<Naipe> figuras = getNaipesFilteredBy(BARAJA, figurasFilter);
+
+        System.out.println(figuras);
+    }
+
+
 
 }

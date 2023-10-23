@@ -59,6 +59,7 @@ public class CreateStreamsDemo {
         //Para tipos por valor / primitivos
         int[] numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         IntStream intStream = Arrays.stream(numbers);
+        IntStream intStream1 = IntStream.of(numbers);
 
         int sum = intStream.sum(); //Caso especial de reduccion equivale a reduce(0,Integer::sum)
         System.out.println("Suma = " + sum);

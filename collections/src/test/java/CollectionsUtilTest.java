@@ -1,0 +1,53 @@
+import es.rafapuig.exercises.CollectionsUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+public class CollectionsUtilTest {
+
+    static List<String> nombres1 = List.of("Emilio", "Rafa", "Ramon", "Raul", "Ramon");
+    static List<String> nombres2 = List.of("Rafa", "Ramon", "Emilio", "Raul", "Ramon");
+    static List<String> nombres3 = List.of( "Ramon", "Emilio", "Raul", "Ramon");
+    static List<String> nombres4 = List.of("Rafa", "Emilio", "Raul", "Ramon");
+    static List<String> nombres5 = List.of("Lucas", "Ramon", "Emilio", "Raul", "Ramon");
+
+
+    static Stream<Arguments> testCollectionEqualsIgnoreOrder() {
+        return Stream.of(
+                Arguments.of(nombres1, nombres2, true),
+                Arguments.of(nombres1, nombres3, false),
+                Arguments.of(nombres1, nombres4, false),
+                Arguments.of(nombres1, nombres5, false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource //("collectionEqualsIgnoreOrderArguments")
+    <T> void testCollectionEqualsIgnoreOrder(Collection<T> one, Collection<T> other, boolean expected) {
+
+        Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrder(one, other));
+
+    }
+
+    @Test
+    void testCollectionEqualsIgnoreOrderImperative() {
+
+        Assertions.assertTrue(
+                CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres2));
+
+        Assertions.assertFalse(
+                CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres3));
+
+        Assertions.assertFalse(
+                CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres4));
+
+        Assertions.assertFalse(
+                CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres5));
+    }
+}

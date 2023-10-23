@@ -245,9 +245,8 @@ public class PersonasUtil {
      * Comprobar si todos los elementos (Persona) de la lista proporcionada
      * hablan el idioma Español
      * @param personas
-     * @return un valor boolean que sera true si se cumple la condicion y false si no
+     * @return un valor boolean que sera true si se cumple la condición y false si no
      */
-
     static boolean allPersonasHablanEspañol(List<? extends Persona> personas) {
         boolean all = false;
         for (Persona persona : personas) {
@@ -261,7 +260,15 @@ public class PersonasUtil {
         return all;
     }
 
-    static boolean allPersonasHablanEspañolFuctional_v1(List<? extends Persona> personas) {
+    static boolean allPersonasHablanEspañol_v2(List<? extends Persona> personas) {
+        boolean all = false;
+        for (Persona persona : personas) {
+            if (!(all = persona.getIdiomas().contains(Idioma.ESPAÑOL))) break;
+        }
+        return all;
+    }
+
+    static boolean allPersonasHablanEspañolFunctional_v1(List<? extends Persona> personas) {
 
         Predicate<Persona> hablaEspañol = persona -> persona.getIdiomas().contains(Idioma.ESPAÑOL);
 
@@ -288,17 +295,12 @@ public class PersonasUtil {
         boolean all = false;
 
         for (T item : list) {
-            if (predicate.test(item)) {
-                all = true;
-            } else {
-                all = false;
-                break;
-            }
+            if (!(all = predicate.test(item))) break;
         }
         return all;
     }
 
-    static boolean allPersonasHablanEspañolFuctional(List<? extends Persona> personas) {
+    static boolean allPersonasHablanEspañolFunctional(List<? extends Persona> personas) {
 
         Predicate<Persona> hablaEspañol = persona -> persona.getIdiomas().contains(Idioma.ESPAÑOL);
 
