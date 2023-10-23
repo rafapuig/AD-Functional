@@ -176,4 +176,6 @@ public class StreamsExamples {
         System.out.println("Todos las empleadas hablan ingles ? = " + allEspañol);
     }
 
+
+
 }

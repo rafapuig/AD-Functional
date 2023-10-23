@@ -1,4 +1,4 @@
-package es.rafapuig.exercises.cartas;
+package model.cartas;
 
 public enum Valor {
     AS(1),

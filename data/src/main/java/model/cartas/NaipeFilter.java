@@ -1,6 +1,4 @@
-package es.rafapuig.exercises.cartas;
-
-import model.cartas.Naipe;
+package model.cartas;
 
 @FunctionalInterface
 public interface NaipeFilter {

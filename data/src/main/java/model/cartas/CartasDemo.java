@@ -1,22 +1,29 @@
-package es.rafapuig.exercises.cartas;
+package model.cartas;
 
-import es.rafapuig.exercises.cartas.scoring.BriscaScorer;
-import es.rafapuig.exercises.cartas.scoring.NaipeScorer;
-import model.cartas.Naipe;
-import model.cartas.Palo;
-import model.cartas.Valor;
+import model.cartas.scoring.BriscaScorer;
+import model.cartas.scoring.NaipeScorer;
 
 import java.util.*;
+import java.util.function.ToIntFunction;
 
-import static es.rafapuig.exercises.cartas.Naipes.*;
+import static model.cartas.Naipes.*;
 
 public class CartasDemo {
 
     public static void main(String[] args) {
 
+        testGenerateBaraja();
         //barajaPlayersTest();
-        testPuntuadorPorDefecto();
-        testFilterNaipe();
+
+        //puntuadorTest();
+
+        //testFilterNaipe();
+    }
+
+    static void testGenerateBaraja() {
+        List<Naipe> baraja = generateBaraja();
+        baraja.add(new Naipe(Palo.OROS, Valor.REY));
+        System.out.println(baraja);
     }
 
     private static void barajaPlayersTest() {
@@ -68,30 +75,38 @@ public class CartasDemo {
         int points = Naipes.scoring(naipe);
         System.out.println("puntos = " + points);
 
-        NaipeScorer scorer = NaipeScorer.DEFAULT;
+        ToIntFunction<Naipe> scorer = NaipeScorer.DEFAULT::score;
 
         points = Naipes.scoring(naipe, scorer);
         System.out.println("puntos = " + points);
     }
 
-    static void testPuntuadorAnonimo() {
+    static void testPuntuadorLambda1() {
 
         Naipe naipe = new Naipe(Palo.BASTOS, Valor.REY);
 
         System.out.println("Puntuando la carta: " + naipe);
 
-        NaipeScorer scorer = new NaipeScorer() {
-            @Override
-            public int score(Naipe naipe) {
-                return switch (naipe.getValor()) {
-                    case AS -> 11;
-                    case TRES -> 10;
-                    case REY -> 4;
-                    case CABALLO -> 3;
-                    case SOTA -> 2;
-                    default -> 0;
-                };
-            }
+        //Expresion lambda
+        ToIntFunction<Naipe> scorer = n -> n.getValor().getNumber() * 3;
+
+        int points = Naipes.scoring(naipe, scorer);
+        System.out.println("puntos = " + points);
+    }
+
+    static void testPuntuadorLambda2() {
+
+        Naipe naipe = new Naipe(Palo.BASTOS, Valor.REY);
+
+        System.out.println("Puntuando la carta: " + naipe);
+
+        ToIntFunction<Naipe> scorer = n -> switch (n.getValor()) {
+            case AS -> 11;
+            case TRES -> 10;
+            case REY -> 4;
+            case CABALLO -> 3;
+            case SOTA -> 2;
+            default -> 0;
         };
 
         int points = Naipes.scoring(naipe, scorer);
@@ -104,7 +119,7 @@ public class CartasDemo {
 
         System.out.println("Puntuando la carta: " + naipe);
 
-        NaipeScorer scorer = new BriscaScorer();
+        ToIntFunction<Naipe> scorer = new BriscaScorer()::score;
 
         int points = Naipes.scoring(naipe, scorer);
         System.out.println("puntos = " + points);
@@ -114,15 +129,21 @@ public class CartasDemo {
 
         Naipe naipe = new Naipe(Palo.BASTOS, Valor.REY);
 
-        int points = Naipes.scoreByBriscaValue(naipe);
+        //Referencia a metodo statico
+        ToIntFunction<Naipe> scorer = Naipes::scoreByBriscaValue;
+        int points = Naipes.scoring(naipe, scorer);
         System.out.println("puntos = " + points);
 
-        points = NaipeScorer.getDefaultScore(naipe);
+        //Referencia a metodo instancia implicita
+        ToIntFunction<Naipe> scorer1 = new BriscaScorer()::score;
+        points = Naipes.scoring(naipe, scorer);
+        System.out.println("puntos = " + points);
+
+        //Metodo referencia estatico
+        ToIntFunction<Naipe> scorer2 = NaipeScorer::getDefaultScore;
+        points = Naipes.scoring(naipe, scorer);
         System.out.println("puntos = " + points);
     }
-
-
-    //--------------filtrado de la listas de cartas
 
     static void testGetAses() {
 
@@ -141,16 +162,6 @@ public class CartasDemo {
 
         System.out.println(figuras);
     }
-
-    static void testFilterNaipe2() {
-
-        NaipeFilter figurasFilter = Naipes::isFigura;
-
-        List<Naipe> figuras = getNaipesFilteredBy(BARAJA, figurasFilter);
-
-        System.out.println(figuras);
-    }
-
 
 
 }

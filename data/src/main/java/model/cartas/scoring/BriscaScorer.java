@@ -1,4 +1,7 @@
-package es.rafapuig.exercises.cartas;
+package model.cartas.scoring;
+
+import model.cartas.Naipe;
+import model.cartas.Naipes;
 
 public class BriscaScorer implements NaipeScorer {
     @Override

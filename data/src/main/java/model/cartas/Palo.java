@@ -1,3 +1,3 @@
-package es.rafapuig.exercises.cartas;
+package model.cartas;
 
 public enum Palo {OROS, COPAS, ESPADAS, BASTOS}

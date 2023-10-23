@@ -1,7 +1,6 @@
-package es.rafapuig.exercises.cartas;
+package model.cartas;
 
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public class Naipe {
     private Palo palo;

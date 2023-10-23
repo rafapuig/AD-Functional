@@ -1,4 +1,7 @@
 import es.rafapuig.exercises.cartas.*;
+import model.cartas.Naipe;
+import model.cartas.Palo;
+import model.cartas.Valor;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;

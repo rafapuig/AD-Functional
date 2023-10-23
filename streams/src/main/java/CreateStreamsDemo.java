@@ -141,6 +141,5 @@ public class CreateStreamsDemo {
                 .toList();
 
         System.out.println(result);
-
     }
 }

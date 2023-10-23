@@ -1,5 +1,11 @@
 package es.rafapuig.exercises.cartas;
 
+import es.rafapuig.exercises.cartas.scoring.BriscaScorer;
+import es.rafapuig.exercises.cartas.scoring.NaipeScorer;
+import model.cartas.Naipe;
+import model.cartas.Palo;
+import model.cartas.Valor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -7,7 +13,6 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 
 public class Naipes {
-
     public static final List<Naipe> BARAJA =
             Collections.unmodifiableList(generateBaraja());
 
@@ -24,27 +29,20 @@ public class Naipes {
         return baraja;
     }
 
-    static ToIntFunction<Naipe> defaultScorer =
-            naipe -> naipe.getValor().getNumber();
+
 
     public static int scoring(Naipe naipe) {
-        return scoring(naipe, defaultScorer);
+        return scoring(naipe, NaipeScorer.DEFAULT);
     }
 
-    public static int scoring(Naipe naipe, ToIntFunction<? super Naipe> scorer) {
-        return scorer.applyAsInt(naipe);
+    public static int scoring(Naipe naipe, NaipeScorer scorer) {
+        return scorer.score(naipe);
     }
 
     public static int scoreByBriscaValue(Naipe naipe) {
-        return switch (naipe.getValor()) {
-            case AS -> 11;
-            case TRES -> 10;
-            case REY -> 4;
-            case CABALLO -> 3;
-            case SOTA -> 2;
-            default -> 0;
-        };
+        return new BriscaScorer().score(naipe);
     }
+
 
     public static boolean isFigura(Naipe naipe) {
         EnumSet<Valor> figurasSet = EnumSet.of(Valor.SOTA, Valor.CABALLO, Valor.REY);

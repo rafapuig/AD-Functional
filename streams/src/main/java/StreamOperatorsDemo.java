@@ -20,7 +20,7 @@ public class StreamOperatorsDemo {
         //testForEachIncreaseFemalesIncome();
         //testMapGetEmployeesNames();
         //testMapIntStream();
-        //testFlatMapNumbersAndSqueres();
+        //testFlatMapNumbersAndSquares();
         //testFlatMapCountNumberOfAs();
         //testFilterOnlyMales();
         //testFilterMalesIncomeMoreThan2000();
@@ -119,7 +119,7 @@ public class StreamOperatorsDemo {
 
     // ----------- FlatMap --------------------------------------------
 
-    static void testFlatMapNumbersAndSqueres() {
+    static void testFlatMapNumbersAndSquares() {
         Stream.of(1, 2, 3)
                 .flatMap(n -> Stream.of(n, n * n))
                 .forEach(System.out::println);
