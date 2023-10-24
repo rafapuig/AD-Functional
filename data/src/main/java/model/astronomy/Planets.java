@@ -15,7 +15,7 @@ public class Planets {
 
         Planet earth = new Planet.Builder("La Tierra")
                 .setMass(5.97E24)
-                .setRadius(6.371)
+                .setRadius(6_371)
                 .addSatellite("Luna").build();
 
         Planet mars = new Planet.Builder("Marte")
