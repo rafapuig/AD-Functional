@@ -1,5 +1,6 @@
 package es.rafapuig.exercises.cartas;
 
+import es.rafapuig.exercises.cartas.filtering.NaipeFilter;
 import es.rafapuig.exercises.cartas.scoring.BriscaScorer;
 import es.rafapuig.exercises.cartas.scoring.NaipeScorer;
 import model.cartas.Naipe;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 public class Naipes {
     public static final List<Naipe> BARAJA =

@@ -1,4 +1,6 @@
-package model.cartas;
+package model.cartas.filtering;
+
+import model.cartas.Naipe;
 
 @FunctionalInterface
 public interface NaipeFilter {

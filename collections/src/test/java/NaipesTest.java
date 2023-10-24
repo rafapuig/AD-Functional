@@ -1,9 +1,8 @@
 import es.rafapuig.exercises.cartas.*;
+import es.rafapuig.exercises.cartas.filtering.NaipeFilter;
 import model.cartas.Naipe;
 import model.cartas.Palo;
 import model.cartas.Valor;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;

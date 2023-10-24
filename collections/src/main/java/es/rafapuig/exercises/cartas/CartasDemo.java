@@ -1,5 +1,6 @@
 package es.rafapuig.exercises.cartas;
 
+import es.rafapuig.exercises.cartas.filtering.NaipeFilter;
 import es.rafapuig.exercises.cartas.scoring.BriscaScorer;
 import es.rafapuig.exercises.cartas.scoring.NaipeScorer;
 import model.cartas.Naipe;

@@ -35,6 +35,20 @@ public class CollectionsUtilTest {
 
     }
 
+    @ParameterizedTest
+    @MethodSource("testCollectionEqualsIgnoreOrder")
+    <T> void testCollectionEqualsIgnoreOrderStreams(Collection<T> one, Collection<T> other, boolean expected) {
+
+        Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrderStreams(one, other));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCollectionEqualsIgnoreOrder")
+    <T> void testCollectionEqualsIgnoreOrderStreams2(Collection<T> one, Collection<T> other, boolean expected) {
+
+        Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrderStreams2(one, other));
+    }
+
     @Test
     void testCollectionEqualsIgnoreOrderImperative() {
 
