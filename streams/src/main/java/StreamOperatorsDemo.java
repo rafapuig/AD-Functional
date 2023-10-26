@@ -429,36 +429,36 @@ public class StreamOperatorsDemo {
 
     static void testCollectPeopleNames() {
         //1) Necesitamos un supplier que nos proporcione el ArratList<String> donde almacenar los nombres
-        // Usando una expresion lambda
+        // Usando una expresión lambda
         Supplier<ArrayList<String>> supplier = () -> new ArrayList<String>();
-        //Usando una referencia a constructor
+        // O Usando una referencia a constructor
         Supplier<ArrayList<String>> supplier1 = ArrayList::new;
 
         //2) Crear un acumulador que recibe 2 argumentos
-        //El primero: EL contenedor proporcionado por el supplier
-        //El segundo: El elemento correspondiente del stream en la iteracion
+        //El primero: El contenedor proporcionado por el supplier
+        //El segundo: El elemento correspondiente del stream en la iteración
         //El acumulador en este caso simplemente debe añadir el nombre a la lista
 
-        //Usando una expresion lambda
+        //Usando una expresión lambda
         BiConsumer<ArrayList<String>, String> accumulator = (list, name) -> list.add(name);
-        //Usando una referencia a metodo
+        //O Usando una referencia a método
         BiConsumer<ArrayList<String>, String> accumulator1 = ArrayList::add;
 
         //3) Necesitamos un combiner que combinará los resultados acumulados en dos ArrayList en uno
-        // El combiner se usa cunado se colecciona en paralelo
-        //Usando una expresion lambda
+        // El combiner se usa cuando se colecciona en paralelo
+        //Usando una expresión lambda
         BiConsumer<ArrayList<String>, ArrayList<String>> combiner = (list1, list2) -> list1.addAll(list2);
-        //Usando una referencia a metodo
+        //Usando una referencia a método
         BiConsumer<ArrayList<String>, ArrayList<String>> combiner1 = ArrayList::addAll;
 
-        //Ya podemos usar el metodo collect para coleccionar los nombres de todas las personas en la lista
+        //Ya podemos usar el método collect para coleccionar los nombres de todas las personas en la lista
 
         List<String> names = Empleados.EMPLEADOS
                 .stream()
                 .map(Persona::getNombreCompleto)
-                .collect(ArrayList::new,
-                        ArrayList::add,
-                        ArrayList::addAll);
+                .collect(ArrayList::new,    //supplier
+                        ArrayList::add,     //accumulator
+                        ArrayList::addAll); //combiner
 
         //Podemos hacer algo similar para coleccionar en un Set o un Map
 
@@ -478,7 +478,7 @@ public class StreamOperatorsDemo {
         Set<String> uniqueNames = Empleados.EMPLEADOS
                 .stream()
                 .map(Persona::getNombreCompleto)
-                .collect(Collectors.toSet()); //Se puede reemplazar simplemente por toList()
+                .collect(Collectors.toSet());
 
         System.out.println(uniqueNames); //Como es un Set no habrá duplicados
     }
