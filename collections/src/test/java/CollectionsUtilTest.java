@@ -1,4 +1,5 @@
 import es.rafapuig.exercises.CollectionsUtil;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +9,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+
 
 public class CollectionsUtilTest {
 
@@ -39,14 +44,24 @@ public class CollectionsUtilTest {
     @MethodSource("testCollectionEqualsIgnoreOrder")
     <T> void testCollectionEqualsIgnoreOrderStreams(Collection<T> one, Collection<T> other, boolean expected) {
 
-        Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrderStreams(one, other));
+        Assertions.assertEquals(expected,
+                CollectionsUtil.collectionEqualsIgnoreOrderStreams(one, other));
     }
 
     @ParameterizedTest
     @MethodSource("testCollectionEqualsIgnoreOrder")
     <T> void testCollectionEqualsIgnoreOrderStreams2(Collection<T> one, Collection<T> other, boolean expected) {
 
-        Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrderStreams2(one, other));
+        Assertions.assertEquals(expected,
+                CollectionsUtil.collectionEqualsIgnoreOrderStreams2(one, other));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCollectionEqualsIgnoreOrder")
+    <T> void testCollectionEqualsIgnoreOrderStreams3(Collection<T> one, Collection<T> other, boolean expected) {
+
+        Assertions.assertEquals(expected,
+                CollectionsUtil.collectionEqualsIgnoreOrderStreams2(one, other));
     }
 
     @Test
@@ -63,5 +78,11 @@ public class CollectionsUtilTest {
 
         Assertions.assertFalse(
                 CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres5));
+    }
+
+    @Test
+    void testCollectionEqualsAssertions() {
+        assertThat(nombres1, Matchers.containsInAnyOrder(nombres2.toArray()));
+        assertThat(nombres1, Matchers.not(Matchers.containsInAnyOrder(nombres3.toArray())));
     }
 }

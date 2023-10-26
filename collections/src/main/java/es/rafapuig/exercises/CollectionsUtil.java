@@ -61,10 +61,7 @@ public class CollectionsUtil {
                 map.computeIfPresent(key, (k, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
             }
         }
-        /*for (int i : map.values()) {
-            if (i != 0) return false;
-        }
-        return true*/
+
         return map.isEmpty();
     }
 
@@ -111,4 +108,32 @@ public class CollectionsUtil {
 
         return map.isEmpty(); //si el mapa ha quedado vacío es porque las listas eran iguales en contenido
     }
+
+
+    public static <T> boolean collectionEqualsIgnoreOrderStreams3(Collection<T> c1, Collection<T> c2) {
+
+        final Function<Map<T,Integer>, Consumer<T>> decrementElementCountOrRemoveIfOne =
+                map -> key -> map.computeIfPresent(
+                        key,
+                        (aKey, oldCount) -> oldCount > 1 ? oldCount -1 : null);
+
+
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
+        Map<T, Integer> map = c1.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(
+                                Function.identity(),
+                                t -> 1,
+                                (oldCount, newCount) -> oldCount + 1),
+                        result -> { //ahora al resultado le vamos quitando los elementos de c2
+                            c2.stream()
+                                    .takeWhile(result::containsKey)
+                                    .forEach(decrementElementCountOrRemoveIfOne.apply(result));
+                            return result;
+                        }
+                ));
+
+        return map.isEmpty(); //si el mapa ha quedado vacío es porque las listas eran iguales en contenido
+    }
+
 }

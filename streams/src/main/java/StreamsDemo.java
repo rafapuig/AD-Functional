@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class StreamsDemo {
 
     public static void main(String[] args) {
-        //example1();
+        example1();
         example2();
     }
 
@@ -47,7 +47,7 @@ public class StreamsDemo {
 
         //Obtener un stream de numeros impares
         Predicate<Integer> oddFilter = number -> number % 2 == 1;
-        Predicate<Integer> evenFilter = Predicate.not(oddFilter);
+        Predicate<Integer> evenFilter = Predicate.not(oddFilter); // o tambien oddFilter.negate();
         //Stream<Integer> oddNumbersStream = numbersStream.filter(n -> n % 2 == 1);
         Stream<Integer> oddNumbersStream = numbersStream.filter(oddFilter);
 

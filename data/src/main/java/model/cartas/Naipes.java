@@ -17,7 +17,7 @@ public class Naipes {
 
         return Arrays.stream(Palo.values())
                 .flatMap(palo -> Arrays.stream(Valor.values())
-                        .map(valor -> new Naipe(palo,valor)))
+                        .map(valor -> new Naipe(palo, valor)))
                 .toList();
     }
 
