@@ -24,7 +24,7 @@ public class StreamOperatorsDemo {
         //testFlatMapCountNumberOfAs();
         //testFilterOnlyMales();
         //testFilterMalesIncomeMoreThan2000();
-        //testDropWhileOrdered();
+        testDropWhileOrdered();
         //testDropWhileUnordered();
         //testReduceSumaSalariosWithOtherReduceMethodCombinerSequential();
         //testReduceSumaSalariosWithOtherReduceMethodCombinerParallel();
@@ -57,6 +57,9 @@ public class StreamOperatorsDemo {
         testFindFirstHombre();
     }
 
+    // El operador peek devuelve el stream sin "tocarlo", solamente realiza la accion
+    // que se le indica mediante el Consumer proporcionado
+    // Sirve para depurar operaciones con streams
     static void testPeek() {
         int sum = IntStream.of(1, 2, 3, 4, 5)
                 .peek(value -> System.out.println("Tomando entero: " + value))
@@ -69,10 +72,14 @@ public class StreamOperatorsDemo {
         System.out.println("Suma = " + sum);
     }
 
+    //------------forEach ---------------------------------------------------------
+
+    // El operador forEach realiza una accion por cada elemento del stream de entrada
+    // La accion se proprciona mediante un Consumer
     static void testForEachGetFemaleDetails() {
         Empleados.EMPLEADOS.stream()
                 .filter(Persona::isMujer)
-                .forEach(System.out::println);
+                .forEach(System.out::println);  //referencia a método instancia explicita
     }
 
     static void testForEachIncreaseFemalesIncome() {
@@ -85,11 +92,15 @@ public class StreamOperatorsDemo {
                 .filter(Persona::isMujer)
                 .forEach(e -> e.setSueldo(e.getSueldo() * 1.2));
 
-        System.out.println("Despues del aumento salarial");
+        System.out.println("Después del aumento salarial");
         empleados.forEach(System.out::println);
     }
 
     //---------MAP --------------------------------------
+    // El operador map devuelve un stream resultado de aplicar la operación
+    // proporcionada mediante un Function denominado mapper
+    // a cada elemento del stream de entrada
+    // El stream resultante contiene el mismo número de elementos que el resultante
     static void testMapGetEmployeesNames() {
         Empleados.EMPLEADOS.stream()
                 .map(Persona::getNombreCompleto)
@@ -118,7 +129,15 @@ public class StreamOperatorsDemo {
     }
 
     // ----------- FlatMap --------------------------------------------
-
+    // Este operador realiza primero una operación de mapeo mediante una función mapper
+    // que se aplica a cada elemento del stream de entrada
+    // El resultado de aplicar la función como resultado genera otro stream
+    // De este modo lo que tenemos como resultado de aplicar la operación para cada elemento
+    // es un stream de streams (cada elemento del stream es a su vez un stream)
+    // Es una operación 1 a muchos
+    // Por eso, en segundo lugar se realiza una operación de aplanamiento (flat)
+    // Esta operación va uniendo todos los streams (del stream de streams)
+    // en un único stream final
     static void testFlatMapNumbersAndSquares() {
         Stream.of(1, 2, 3)
                 .flatMap(n -> Stream.of(n, n * n))
@@ -127,6 +146,7 @@ public class StreamOperatorsDemo {
 
     static void testFlatMapCountNumberOfAs() {
 
+        //Contar el número de letras 'a' que hay en total en todas las palabras
         long count = Stream.of("Rafael", "Ramon", "Raul", "Emilio")
                 .map(String::chars)
                 .flatMap(intStream -> intStream.mapToObj(n -> (char) n))
@@ -159,6 +179,7 @@ public class StreamOperatorsDemo {
                 .map(Persona::getNombreCompleto)
                 .forEach(System.out::println);
 
+        //Peor opcion dado que es menor paralelizable el proceso de filtrado
         Empleados.EMPLEADOS.stream()
                 .filter(empleado -> empleado.isHombre() && empleado.getSueldo() > 2000.0)
                 .map(Persona::getNombreCompleto)
@@ -167,14 +188,14 @@ public class StreamOperatorsDemo {
 
     static void testDropWhileOrdered() {
         Stream.of(1, 2, 3, 4, 5, 6, 7)
-                .dropWhile(e -> e < 5)
+                .dropWhile(n -> n < 5)
                 .forEach(System.out::println);
     }
 
     static void testDropWhileUnordered() {
 
         Stream.of(1, 5, 6, 2, 3, 4, 7)
-                .dropWhile(e -> e < 5)
+                .dropWhile(n -> n < 5)
                 .forEach(System.out::println);
     }
 
@@ -189,9 +210,9 @@ public class StreamOperatorsDemo {
             //Combinar el resultado parcial en sum con el siguiente elemento
             sum = sum + num;
         }
-        //El ultimo resultado parcial es el resultado de la reduccion
+        //El último resultado parcial es el resultado de la reducción
         System.out.println("sum = " + sum);
-        //Si la lista hubiera estado vacia el valor inicial seria directamente el resultado
+        //Si la lista hubiera estado vacía el valor inicial sería directamente el resultado
     }
 
     static void testReduceSumaSalariosImperativeStyle() {
@@ -300,10 +321,10 @@ public class StreamOperatorsDemo {
 
     static void testReduceToMaxInteger() {
         Optional<Integer> max = Stream.of(1, 2, 3, 4, 5)
-                .reduce(Integer::sum);
+                .reduce(Integer::max);
 
         if (max.isPresent()) {
-            System.out.println("max.get() = " + max.get());
+            System.out.println("Máximo = " + max.get());
         } else {
             System.out.println("no hay max");
         }
@@ -311,10 +332,10 @@ public class StreamOperatorsDemo {
 
     static void testReduceToMaxIntegerEmptyStream() {
         Optional<Integer> max = Stream.<Integer>empty()
-                .reduce(Integer::sum);
+                .reduce(Integer::max);
 
         if (max.isPresent()) {
-            System.out.println("max.get() = " + max.get());
+            System.out.println("Máximo = " + max.get());
         } else {
             System.out.println("no hay max");
         }
@@ -335,6 +356,7 @@ public class StreamOperatorsDemo {
     //------ Reducciones especializadas sum, min, max, count
 
     static void testSumSpecializedReduction() {
+        //Obtiene la suma de los sueldos de todos los empleados
         double totalIncome = Empleados.EMPLEADOS.stream()
                 .mapToDouble(Empleado::getSueldo)
                 .sum();
@@ -343,6 +365,7 @@ public class StreamOperatorsDemo {
     }
 
     static void testMaxEmpleadoSueldoStream() {
+        //Obtenemos el empleado que más gana
         Optional<Empleado> empleado = Empleados.EMPLEADOS.stream()
                 .max(Comparator.comparingDouble(Empleado::getSueldo));
 
@@ -354,6 +377,7 @@ public class StreamOperatorsDemo {
     }
 
     static void testMaxSueldoDoubleStream() {
+        // Aquí solamente obtenemos el sueldo del empleado que más gana
         OptionalDouble income = Empleados.EMPLEADOS.stream()
                 .mapToDouble(Empleado::getSueldo)
                 .max();
@@ -390,7 +414,9 @@ public class StreamOperatorsDemo {
 
     static void testCountEmpleados4() {
         long empleadosCount = Empleados.EMPLEADOS.stream()
-                .reduce(0L, (partialCount, empleado) -> partialCount + 1L, Long::sum);
+                .reduce(0L,
+                        (partialCount, empleado) -> partialCount + 1L,
+                        Long::sum);
 
         System.out.println("Cuantos empleados  = " + empleadosCount);
     }
