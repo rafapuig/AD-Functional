@@ -4,10 +4,7 @@ import model.people.Persona;
 
 import java.time.Month;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.IntUnaryOperator;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -37,19 +34,19 @@ public class StreamOperatorsDemo {
         //testSummaryStatsOnSueldos();
         //testMinBySueldo();
         //testCollectToMapIDToNames();
-        //testCollectToMapGenderToNamesWrong();
+        testCollectToMapGenderToNamesWrong();
         //testCollectToMapGenderToNamesRight();
         //testCollectToMapGenderToNamesWithMapSupplier();
         //testCollectToMapCountByGender();
         //testCollectToMapEmpleadoMejorPagadoPorSexo();
-        testPartitionedByMaleGender();
-        testNamesPartitionedByMaleGender();
+        //testPartitionedByMaleGender();
+        //testNamesPartitionedByMaleGender();
 
         //testCalendarWrong();
-        testCalendar();
+        //testCalendar();
 
-        testMakingOver2400();
-        testFlatMapping();
+        //testMakingOver2400();
+        //testFlatMapping();
 
         testCheckAllHombres();
         testCheckAnyBornIn1970();
@@ -484,7 +481,7 @@ public class StreamOperatorsDemo {
     }
 
     // toCollection() recibe un Supplier lo que nos permite especificar el tipo especifico de coleccion
-    // Si en vez de toSet usamos toCollection y el supplier propociona un TreeSet entonces
+    // Si en vez de toSet usamos toCollection y el supplier proporciona un TreeSet entonces
     // los datos del set estarán ordenados (sorted)
     static void testCollectorsToCollection() {
         Set<String> uniqueSortedNames = Empleados.EMPLEADOS
@@ -524,13 +521,13 @@ public class StreamOperatorsDemo {
     }
 
 
-    // ---- Resumen de estatidisticas ------------------------------------
+    // ---- Resumen de estadísticas ------------------------------------
     static void testSummaryStats() {
         DoubleSummaryStatistics stats = new DoubleSummaryStatistics();
         stats.accept(100);
         stats.accept(500);
         stats.accept(400);
-        //Obtener los estadisticos
+        //Obtener los estadísticos
         long count = stats.getCount();
         double sum = stats.getSum();
         double min = stats.getMin();
@@ -582,11 +579,19 @@ public class StreamOperatorsDemo {
     static void testCollectToMapIDToNames() {
         Map<Long, String> idToNameMap = Empleados.EMPLEADOS
                 .stream()
-                .collect(Collectors.toMap(Persona::getId, Persona::getNombreCompleto));
+                .collect(Collectors.toMap(
+                        Persona::getId,
+                        Persona::getNombreCompleto));
 
         System.out.println(idToNameMap);
     }
 
+
+    // Este método es incorrecto porque el colector creado con el método toMap
+    // no sabe qué hacer cuando se encuentra con una clave duplicada
+    // Si eso sucede, lanza una excepción IllegalStateException
+    // En el ejemplo, aparecerán claves duplicadas dado que el atributo que hace de clave
+    // es el sexo de las personas y en la colección hay personas del mismo sexo
     static void testCollectToMapGenderToNamesWrong() {
         try {
             Map<Persona.Sexo, String> genderToNamesMap = Empleados.EMPLEADOS
@@ -599,6 +604,15 @@ public class StreamOperatorsDemo {
         }
     }
 
+    // La solución es usar una version del método toMap que recibe un tercer parámetro
+    // El tercer parámetro sirve para indicar como resolver "colisiones"
+    // entre dos valores asociados a la misma clave
+    // oldValue hace referencia al valor asociado con la clave que ya existe en el map
+    // newValue hace referencia al valor que ha sido proporcionado al colector y que
+    // debe asociarse con la misma clave que el oldValue
+    // la mergeFuncion es un BinaryOperator<U> donde U es el tipo de los valores
+    // que se encarga de resolver el conflicto y devolver el valor que quedará finalmente
+    // asociado con la clave
     static void testCollectToMapGenderToNamesRight() {
 
         Map<Persona.Sexo, String> genderToNamesMap = Empleados.EMPLEADOS
@@ -606,11 +620,19 @@ public class StreamOperatorsDemo {
                 .collect(Collectors.toMap(
                         Persona::getSexo,               //keyMapper
                         Persona::getNombreCompleto,     //valueMapper
-                        (oldValue, newValue) -> String.join(", ", oldValue, newValue))); //mergeFunc
+                        (oldValue, newValue) ->
+                                String.join(", ", oldValue, newValue))); //mergeFunction
 
         System.out.println(genderToNamesMap);
     }
 
+
+    // Otra version de sobrecarga del método toMap permite especificar un cuarto parámetro
+    // Este parámetro nos permite especificar el tipo concreto de Map que debe usar el colector
+    // El parámetro es de tipo Supplier y su objeto es proporcionar al ser invocado una instancia
+    // de un objeto que implemente la interfaz Map
+    // En el ejemplo, usamos como Supplier una referencia a constructor por defecto de la clase TreeMap
+    // Con este logramos que el Map esté ordenado por orden natural de las claves
     static void testCollectToMapGenderToNamesWithMapSupplier() {
         Map<Persona.Sexo, String> genderSortedToNamesMap = Empleados.EMPLEADOS
                 .stream()
@@ -618,7 +640,7 @@ public class StreamOperatorsDemo {
                         Persona::getNombreCompleto,
                         (oldValue, newValue) ->
                                 String.join(", ", oldValue, newValue),
-                        TreeMap::new));
+                        TreeMap::new)); //mapFactory
 
         System.out.println(genderSortedToNamesMap);
     }
@@ -633,38 +655,62 @@ public class StreamOperatorsDemo {
         System.out.println(countByGender);
     }
 
+    // En este ejemplo usamos como valueMapper el método estático identity de la interfaz Function
+    // el valueMapper es una Function<T,U> donde
+    // T es el tipo de los elementos del stream y U el tipo de las claves del Map
+    // Dado que el streams es de empleados y los valores del map también lo son
+    // En este caso T es U, es decir la función recibe un T (Empleado) y devuelve un U (empleado)
+    // La interfaz Function cuenta con um método estático identity() que
+    // devuelve exactamente el mismo valor que ha recibido como argumento de entrada
     static void testCollectToMapEmpleadoMejorPagadoPorSexo() {
+
+        BinaryOperator<Empleado> mejorPagadoEntreDos =
+                (mejorPagado, candidato) ->
+                        candidato.getSueldo() > mejorPagado.getSueldo() ?
+                                candidato : mejorPagado;
+
         Map<Persona.Sexo, Empleado> mejorPagadoPorSexo = Empleados.EMPLEADOS
                 .stream()
                 .collect(Collectors.toMap(
-                        Persona::getSexo,
-                        Function.identity(),
+                        Persona::getSexo,   //keyMapper
+                        Function.identity(),    //valueMapper
                         (mejorPagado, candidato) ->
-                                candidato.getSueldo() > mejorPagado.getSueldo() ? candidato : mejorPagado));
+                                candidato.getSueldo() > mejorPagado.getSueldo() ?
+                                        candidato : mejorPagado));
 
         System.out.println(mejorPagadoPorSexo);
     }
 
+    //--------- partitioningBy ----------------------------
+
+    // El colector generado a partir del método partitioningBy genera un Map<Boolean, List<T>>
+    // Es decir divide en 2 grupos los elementos de tipo T del stream de entrada
+    // En grupo están los que cumplen la condición indicada en el Predicate y el valor de la clave es true
+    // En el segundo grupo están los que no la cumplen y el valor de la clave en el Map para este grupo es false
+
     static void testPartitionedByMaleGender() {
-        Map<Boolean, List<Persona>> patitionedByMaleGender =
+        Map<Boolean, List<Persona>> partitionedByMaleGender =
                 Empleados.EMPLEADOS
                         .stream()
                         .collect(Collectors.partitioningBy(Persona::isHombre));
 
-        System.out.println(patitionedByMaleGender);
+        System.out.println(partitionedByMaleGender);
     }
 
+    // El colector devuelto por partitionBy se puede encadenar con un siguiente colector (downstream)
+    // que recoge como entrada los elementos que resulten de aplicar la partición
+    // y aplica otra operación de recolección/reducción
     static void testNamesPartitionedByMaleGender() {
-        Map<Boolean, String> patitionedByMaleGender =
+        Map<Boolean, String> partitionedByMaleGender =
                 Empleados.EMPLEADOS
                         .stream()
                         .collect(Collectors.partitioningBy(
                                 Persona::isHombre,
-                                Collectors.mapping(
+                                Collectors.mapping( //downstream
                                         Persona::getNombreCompleto,
-                                        Collectors.joining(", "))));
+                                        Collectors.joining(", ")))); // segundo downstream
 
-        System.out.println(patitionedByMaleGender);
+        System.out.println(partitionedByMaleGender);
     }
 
     static void testCollectionAndThenUnmodifiableList() {
@@ -673,7 +719,7 @@ public class StreamOperatorsDemo {
                 .map(Persona::getNombreCompleto)
                 .collect(Collectors.collectingAndThen(
                         Collectors.toList(),
-                        Collections::unmodifiableList)); //Se consigue los mismo utilizando directamente .toList()
+                        Collections::unmodifiableList)); //Se consigue lo mismo utilizando directamente .toList()
 
         System.out.println(names);
 
@@ -702,9 +748,11 @@ public class StreamOperatorsDemo {
                                         Collectors.joining(", "))),
                         result -> {
                             //Añadir los meses faltantes
-                            for (Month m : Month.values()) {
+                            Arrays.stream(Month.values())
+                                    .forEach( month -> result.putIfAbsent(month, "Nadie"));
+                            /* for (Month m : Month.values()) {
                                 result.putIfAbsent(m, "Nadie");
-                            }
+                            }*/
                             //Devuelve un map no modificable y ordenado
                             return Collections.unmodifiableMap(
                                     new TreeMap<>(result)
@@ -718,10 +766,10 @@ public class StreamOperatorsDemo {
         Map<Persona.Sexo, List<Empleado>> makingOver2400 =
                 Empleados.EMPLEADOS.stream()
                         .collect(Collectors.groupingBy(
-                                Persona::getSexo,
-                                Collectors.filtering(
-                                        e -> e.getSueldo() > 2400,
-                                        Collectors.toList())));
+                                Persona::getSexo,   //classifier
+                                Collectors.filtering(   //downstream
+                                        e -> e.getSueldo() > 2400,  //Predicate
+                                        Collectors.toList())));     //downstream
 
         System.out.println(makingOver2400);
     }
@@ -737,6 +785,8 @@ public class StreamOperatorsDemo {
 
         System.out.println(langByGender);
     }
+
+    //--- BUSQUEDA Y MATCHING -----------------------------------------------
 
     static void testCheckAllHombres() {
         boolean allHombres = Empleados.EMPLEADOS

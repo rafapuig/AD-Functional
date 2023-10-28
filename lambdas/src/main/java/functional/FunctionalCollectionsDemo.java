@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import model.astronomy.Planet;
+import model.astronomy.PlanetType;
 import model.astronomy.Planets;
 
 public class FunctionalCollectionsDemo {
@@ -54,8 +55,8 @@ public class FunctionalCollectionsDemo {
         System.out.println(first);
 
         // -----------------------------------------------
-        planets.addFirst(new Planet("Mercurio"));
-        planets.addLast(new Planet("Urano"));
+        planets.addFirst(new Planet("Mercurio", PlanetType.ROCKY, null));
+        planets.addLast(new Planet("Urano", PlanetType.GAS_GIANT, null));
 
         System.out.println("\nPlanetas, con nuevos planetas añadidos");
         planets.forEach(System.out::println);
@@ -65,12 +66,12 @@ public class FunctionalCollectionsDemo {
         UnaryOperator<Planet> planetToUpperCase =
                 planet -> new Planet(
                         planet.getName().toUpperCase(),
-                        planet.getSatellites());
+                        planet.getType(), null, planet.getSatellites());
 
         planets.replaceAll(
                 planet -> new Planet(
                         planet.getName().toUpperCase(),
-                        planet.getSatellites()));
+                        planet.getType(), null, planet.getSatellites()));
 
         //planets.replaceAll(planetToUpperCase);
 
