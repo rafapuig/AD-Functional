@@ -1,11 +1,10 @@
 package model.astronomy;
 
 public enum PlanetType {
-
+    UNKNOWN("Desconocido"),
     ROCKY("Planeta Rocoso"),
     GAS_GIANT("Gigante gasesoso"),
-    DWARF("Planeta Enano"),
-    UNKNOWN("Desconocido");
+    DWARF("Planeta Enano");
 
     private String name;
 

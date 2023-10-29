@@ -160,6 +160,7 @@ public class StreamOperatorsDemo {
         System.out.println("Numero de A's = " + count);
     }
 
+
     // -----------------Filter ---------------------------------------------
 
     static void testFilterOnlyMales() {
