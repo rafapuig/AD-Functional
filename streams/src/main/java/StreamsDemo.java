@@ -44,7 +44,16 @@ public class StreamsDemo {
         toMapGroupingByStringToStatistics();
 
         toMapPartitionByHasCorners();
+        toMapPartitionByHasCornersGroupingByCorners();
 
+        joiningExample();
+
+        toListExample();
+        toArrayExample();
+
+        findAnyExample();
+        anyMatchExample();
+        allMatchExample();
     }
 
     static void example1() {
@@ -420,8 +429,6 @@ public class StreamsDemo {
         System.out.println("Numero de esquinas medio = " + averageCorners);
     }
 
-
-
     static void statisticsExample() {
         printShapes(SAMPLE_SHAPES_ARRAY);
         System.out.println(" <- Original");
@@ -501,6 +508,109 @@ public class StreamsDemo {
 
         System.out.println(map);
     }
+
+    static void toMapPartitionByHasCornersGroupingByCorners() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        Map<Boolean, Map<Integer, List<Shape>>> map = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .collect(Collectors.partitioningBy(
+                        Shape::hasCorners,
+                        Collectors.groupingBy(Shape::corners)));
+
+        System.out.println(map);
+    }
+
+
+    static void joiningExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        String result = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .map(Shape::toString)
+                .collect(Collectors.joining(" - ", "{","}"));
+
+        System.out.println(result);
+    }
+
+
+    static void toListExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        List<Shape> onlyTriangles = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(shape -> shape.corners == 3)
+                .toList();
+
+        printShapes(onlyTriangles);
+        System.out.println(" <- Lista solo triangulos");
+    }
+
+    static void toArrayExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        Shape[] noSquares = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(shape -> shape.corners < 4)
+                .toArray(Shape[]::new);
+
+        printShapes(noSquares);
+        System.out.println(" <- Array sin cuadrados");
+    }
+
+
+    static void findAnyExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        Optional<Shape> shape = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .findAny();
+
+        System.out.println(shape);
+    }
+
+    static void anyMatchExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        boolean anyHasCorners = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .anyMatch(Shape::hasCorners);
+
+        System.out.println("anyHasCorners = " + anyHasCorners);
+
+        Shape[] onlyCircles = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(Predicate.not(Shape::hasCorners))
+                        .toArray(Shape[]::new);
+        printShapes(onlyCircles);
+
+        System.out.println(" <- Original solo círculos");
+
+        anyHasCorners = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(Predicate.not(shape -> shape.corners > 0))
+                .anyMatch(Shape::hasCorners);
+        System.out.println("anyHasCorners = " + anyHasCorners);
+    }
+
+    static void allMatchExample() {
+        printShapes(SAMPLE_SHAPES_ARRAY);
+        System.out.println(" <- Original");
+
+        boolean allHasCorners = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .allMatch(Shape::hasCorners);
+
+        System.out.println("allHasCorners = " + allHasCorners);
+
+        Stream<Shape> noCircles = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(Shape::hasCorners);
+        printStream(noCircles);
+        System.out.println(" <- Original sin círculos");
+
+        allHasCorners = Stream.of(SAMPLE_SHAPES_ARRAY)
+                .filter(shape -> shape.corners > 0)
+                .allMatch(Shape::hasCorners);
+        System.out.println("allHasCorners = " + allHasCorners);
+    }
+
 
 
 
