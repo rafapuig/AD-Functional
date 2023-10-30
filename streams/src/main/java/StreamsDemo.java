@@ -2,10 +2,7 @@ import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public class StreamsDemo {
 
@@ -632,6 +629,8 @@ public class StreamsDemo {
 
         Optional<String> max = Stream.of("naranja", "pera", "limon")
                 .max(Comparator.naturalOrder());
+
+
     }
 
 }
