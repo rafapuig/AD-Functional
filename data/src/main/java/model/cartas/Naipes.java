@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class Naipes {
 
     public static final List<Naipe> BARAJA = generateBaraja(); //ya se devuelve una lista no modificable
-            //Collections.unmodifiableList(generateBaraja());
+    //Collections.unmodifiableList(generateBaraja());
 
     public static List<Naipe> generateBaraja() {
 

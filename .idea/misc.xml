@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/collections/pom.xml" />
         <option value="$PROJECT_DIR$/../Utils/pom.xml" />
         <option value="$PROJECT_DIR$/../Functional/Utils/pom.xml" />
+        <option value="$PROJECT_DIR$/Utils/pom.xml" />
       </list>
     </option>
   </component>

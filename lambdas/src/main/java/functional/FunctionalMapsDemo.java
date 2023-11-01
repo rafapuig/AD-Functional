@@ -3,6 +3,7 @@ package functional;
 import model.geography.City;
 import model.geography.Countries;
 import model.geography.Country;
+import model.geography.Region;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class FunctionalMapsDemo {
 
         countryMap.computeIfPresent("ESP",
                 (k, v) -> v.getCapital().getPopulation().isPresent() ?
-                        v : new Country(k, v.getName(),
+                        v : new Country(k, v.getName(), Region.SOUTHERN_EUROPE,
                         new City(
                                 v.getCapital().getName(),
                                 6_000_000L)));

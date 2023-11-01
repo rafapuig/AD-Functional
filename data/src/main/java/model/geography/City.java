@@ -5,8 +5,8 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 public class City {
-    private String name;
-    private Optional<Long> population;
+    private final String name;
+    private final Optional<Long> population;
 
     public City(String name) {
         this(name, null);
@@ -14,8 +14,7 @@ public class City {
 
     public City(String name, Long population) {
         this.name = name;
-        this.population =
-                population == null ? Optional.empty() : Optional.of(population);
+        this.population = Optional.ofNullable(population);
     }
 
     public String getName() {
@@ -28,7 +27,10 @@ public class City {
 
     @Override
     public String toString() {
-        StringJoiner joiner = new StringJoiner(", ", City.class.getSimpleName() + "[", "]")
+        StringJoiner joiner = new StringJoiner(
+                ", ",
+                City.class.getSimpleName() + "[",
+                "]")
                 .add(name);
 
         population.ifPresent(
