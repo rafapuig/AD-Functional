@@ -34,7 +34,7 @@ public class City {
                 .add(name);
 
         population.ifPresent(
-                p -> joiner.add("poblacion=" + new DecimalFormat().format(p.longValue())));
+                p -> joiner.add(new DecimalFormat().format(p.longValue()) + " habs"));
 
         return joiner.toString();
     }

@@ -1,9 +1,5 @@
 package model.geography;
 
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.*;
 
 public class Country implements Comparable<Country> {
@@ -11,7 +7,8 @@ public class Country implements Comparable<Country> {
     private final String name;
     private final Region region;
     private final City capital;
-    private Integer surfaceArea;
+    private Area surface;
+    private Long population;
 
     private final Set<Autonomia> autonomias = new TreeSet<>();
 
@@ -27,9 +24,10 @@ public class Country implements Comparable<Country> {
         this.capital = capital;
     }
 
-    public Country(String iso3, String name, Region region, Integer surfaceArea, City capital) {
+    public Country(String iso3, String name, Region region, Area surface, Long population, City capital) {
         this(iso3, name, region, capital);
-        this.surfaceArea = surfaceArea;
+        this.surface = surface;
+        this.population = population;
     }
 
     public String getIso3() {
@@ -52,8 +50,18 @@ public class Country implements Comparable<Country> {
         return capital;
     }
 
-    public Optional<Integer> getSurfaceArea() {
-        return Optional.ofNullable(this.surfaceArea);
+    public Optional<Area> getSurface() {
+        return Optional.ofNullable(this.surface);
+    }
+
+    public Long getPopulation() {
+        return this.population;
+    }
+
+    public Optional<Double> getDensity() {
+        if (getPopulation() == null) return Optional.empty();
+        if (this.surface == null) return Optional.empty();
+        return Optional.ofNullable(this.population / (double) this.surface.value());
     }
 
     @Override
@@ -62,10 +70,11 @@ public class Country implements Comparable<Country> {
                 .add("'" + iso3 + "'")
                 .add("'" + name + "'");
 
-        if (getSurfaceArea().isPresent()) {
-            NumberFormat format = new DecimalFormat();
-            String surface = format.format(getSurfaceArea().get());
-            joiner.add(String.format("superficie=%s km^2", surface));
+        if (getSurface().isPresent()) {
+            //NumberFormat format = new DecimalFormat();
+            //String surface = format.format(getSurfaceArea().get().value());
+            //joiner.add(String.format("superficie=%s km^2", surface));
+            joiner.add(getSurface().get().toString());
         }
 
         if (capital != null) {
@@ -90,26 +99,28 @@ public class Country implements Comparable<Country> {
     @Override
     public int compareTo(Country other) {
         return Comparator.comparing(
-                Country::getName,
-                Comparator.nullsLast(Comparator.naturalOrder()))
+                        Country::getName,
+                        Comparator.nullsLast(Comparator.naturalOrder()))
                 .compare(this, other);
         //return this.getName().compareTo(other.getName());
     }
 
     public static Builder builder(String ISO3) {
+        Objects.requireNonNull(ISO3, "El código ISO3 no puede ser nulo dado que identifica el pais");
         return new Builder(ISO3);
     }
 
 
     public static class Builder {
-
         String ISO3;
         String name;
         Region region;
         City capital;
-        Integer surfaceArea;
+        Area surfaceArea;
 
-        public Builder(String ISO3) {
+        Long population;
+
+        protected Builder(String ISO3) {
             this.ISO3 = ISO3;
         }
 
@@ -137,12 +148,18 @@ public class Country implements Comparable<Country> {
         }
 
         Builder setSurface(int surfaceArea) {
-            this.surfaceArea = surfaceArea;
+            this.surfaceArea = new Area(surfaceArea);
+            return this;
+        }
+
+        Builder setPopulation(long population) {
+            this.population = population;
             return this;
         }
 
         Country build() {
-            return new Country(ISO3, name, region, surfaceArea, capital);
+            Objects.requireNonNull(name, "El pais debe tener un nombre");
+            return new Country(ISO3, name, region, surfaceArea, population, capital);
         }
     }
 
