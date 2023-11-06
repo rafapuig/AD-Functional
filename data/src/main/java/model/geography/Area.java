@@ -7,7 +7,7 @@ public record Area(int value, SIPrefix prefix) implements Comparable<Area> {
     @Override
     public String toString() {
         return DecimalFormat.getNumberInstance().format(value)
-                + " " + prefix.getSymbol().toUpperCase() + "m²";
+                + " " + prefix.getSymbol() + "m²";
     }
 
     public Area(int value) {

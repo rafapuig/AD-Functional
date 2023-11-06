@@ -20,7 +20,8 @@ public class CollectionsUtilTest {
     static List<String> nombres2 = List.of("Rafa", "Ramon", "Emilio", "Raul", "Ramon");
     static List<String> nombres3 = List.of( "Ramon", "Emilio", "Raul", "Ramon");
     static List<String> nombres4 = List.of("Rafa", "Emilio", "Raul", "Ramon");
-    static List<String> nombres5 = List.of("Lucas", "Ramon", "Emilio", "Raul", "Ramon");
+    static List<String> nombres5 = List.of("Ramon", "Emilio", "Raul", "Ramon", "Lucas");
+    static List<String> nombres6 = List.of("Rafa", "Ramon", "Emilio", "Raul", "Ramon", "Lucas");
 
 
     static Stream<Arguments> testCollectionEqualsIgnoreOrder() {
@@ -28,7 +29,8 @@ public class CollectionsUtilTest {
                 Arguments.of(nombres1, nombres2, true),
                 Arguments.of(nombres1, nombres3, false),
                 Arguments.of(nombres1, nombres4, false),
-                Arguments.of(nombres1, nombres5, false)
+                Arguments.of(nombres1, nombres5, false),
+                Arguments.of(nombres1, nombres6, false)
         );
     }
 
@@ -61,7 +63,15 @@ public class CollectionsUtilTest {
     <T> void testCollectionEqualsIgnoreOrderStreams3(Collection<T> one, Collection<T> other, boolean expected) {
 
         Assertions.assertEquals(expected,
-                CollectionsUtil.collectionEqualsIgnoreOrderStreams2(one, other));
+                CollectionsUtil.collectionEqualsIgnoreOrderStreams3(one, other));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testCollectionEqualsIgnoreOrder")
+    <T> void testCollectionEqualsIgnoreOrderStreams4(Collection<T> one, Collection<T> other, boolean expected) {
+
+        Assertions.assertEquals(expected,
+                CollectionsUtil.collectionEqualsIgnoreOrderStreams4(one, other));
     }
 
     @Test
@@ -78,6 +88,9 @@ public class CollectionsUtilTest {
 
         Assertions.assertFalse(
                 CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres5));
+
+        Assertions.assertFalse(
+                CollectionsUtil.collectionEqualsIgnoreOrderImperative(nombres1, nombres6));
     }
 
     @Test

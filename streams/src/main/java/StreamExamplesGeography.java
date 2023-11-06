@@ -196,7 +196,7 @@ public class StreamExamplesGeography {
     }
 
     static void getCountriesNamesByContinent() {
-        var result = Countries.WORLD_COUNTRIES.stream()
+        Map<Continent, List<String>> result = Countries.WORLD_COUNTRIES.stream()
                 .collect(Collectors.groupingBy(
                         Country::getContinent,
                         Collectors.mapping(

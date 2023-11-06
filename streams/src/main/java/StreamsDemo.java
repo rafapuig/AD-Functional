@@ -26,13 +26,15 @@ public class StreamsDemo {
 
         // Reducción
         reduceExample();
-        reduceWithoutInitialExample();
+        reduceWithoutInitialValueExample();
         reduceWithoutMapping();
 
         countExample();
         sumExample();
         averageExample();
         statisticsExample();
+
+        aggregateElementsDemo();
 
         toMapGroupingByCorners();
         toMapGroupingByToString();
@@ -51,6 +53,8 @@ public class StreamsDemo {
         findAnyExample();
         anyMatchExample();
         allMatchExample();
+
+        testConcat();
     }
 
     static void example1() {
@@ -319,6 +323,69 @@ public class StreamsDemo {
         System.out.println(" <- .mapMulti()");
     }
 
+    // -------------Reduccion -----------------------------------------
+    // Reduce los elementos del Stream a un resultado individual o único
+    // mediante la aplicación repetidamente del un operador acumulador
+
+    // Tal operador acumulador usa el resultado previo para combinarlo con
+    // el elemento actual en proceso para generar un nuevo resultado
+
+    // Se supone que el acumulador siempre devuelve un valor nuevo sin
+    // requerir una estructura de datos intermedia
+
+
+    static Integer sumReductionImperative(Collection<Integer> numbers) {
+        int result = 0; // Valor inicial, depende del objetivo
+
+        for (Integer value : numbers) { // Aplicada a cada elemento
+            result = Integer.sum(result, value); //Lógica de la reducción, función acumulador
+        }
+        return result;  // El valor de la reducción
+    }
+
+    // Añadimos programación funcional y creamos un método de orden superior
+    // El acumulador será comportamiento parametrizable
+    // mediante una interfaz funcional BinaryOperator<T>
+    static <T> T reduce(Collection<T> elements, T initialValue, BinaryOperator<T> accumulator) {
+        T result = initialValue;
+
+        for (T element : elements) {
+            result = accumulator.apply(result, element);
+        }
+        return result;
+    }
+
+    static <T> Optional<T> reduce(Collection<T> elements, BinaryOperator<T> accumulator) {
+        if (elements.isEmpty()) return Optional.empty();
+        Iterator<T> iterator = elements.iterator();
+        T result = iterator.next();
+        while (iterator.hasNext()) {
+            result = accumulator.apply(result, iterator.next());
+        }
+        return Optional.of(result);
+    }
+
+    //sum() un tipo de reducción especializada consistente en sumar los elementos
+    static Integer sum(Collection<Integer> numbers) {
+        return reduce(numbers, 0, Integer::sum);
+    }
+
+    static Optional<Integer> max(Collection<Integer> numbers) {
+        return reduce(numbers, Math::max);
+    }
+
+    static void reduceTest() {
+        Collection<Integer> numbers = List.of(1, 2, 3, 4, 5);
+        int sum1 = sumReductionImperative(numbers);
+        int sum2 = sum(numbers);
+        int sum3 = reduce(numbers, 0, Integer::sum);
+        Optional<Integer> max1 = max(numbers);
+        Optional<Integer> max2 = reduce(numbers, Math::max);
+
+
+    }
+
+
     static void reduceExample() {
 
         printShapes(SAMPLE_SHAPES_ARRAY);
@@ -336,7 +403,7 @@ public class StreamsDemo {
         System.out.println("result = " + totalCorners);
     }
 
-    static void reduceWithoutInitialExample() {
+    static void reduceWithoutInitialValueExample() {
 
         printShapes(SAMPLE_SHAPES_ARRAY);
         System.out.println(" <- Original");
@@ -344,7 +411,7 @@ public class StreamsDemo {
         OptionalInt totalCorners = Stream.of(SAMPLE_SHAPES_ARRAY)
                 .mapToInt(Shape::corners)
                 .reduce((minPartial, corners) -> {
-                    System.out.println("Minimo parcial = " + minPartial);
+                    System.out.println("Mínimo parcial = " + minPartial);
                     System.out.println("Esquinas del elemento = " + corners);
                     return Math.min(minPartial, corners);
                 });
@@ -437,6 +504,70 @@ public class StreamsDemo {
         System.out.println(stats);
     }
 
+
+    // --- reduccion con operaciones de reducción mutable
+
+    // Se puede usar el operador reduce del API de Streams,
+    // Pero el acumulador NO PUEDE MUTAR la lista que recibe
+    // El operador acumulador recibe la lista con los elementos acumulados
+    // y el elemento actual
+    // y devuelve una NUEVA lista, creando una lista con los mismos elementos
+    // y añadiendole el elemento actual
+    static void aggregateElementsDemoInmutable() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
+                .reduce(new ArrayList<>(),
+                        (acc, fruit) -> { //accumulator
+                            var list = new ArrayList<>(acc);
+                            list.add(fruit);
+                            return list;
+                        },
+                        (lhs, rhs) -> { //combiner
+                            var list = new ArrayList<>(lhs);
+                            list.add(rhs);
+                            return list;
+                        });
+
+        System.out.println(fruits);
+    }
+
+    static void aggregateElementsDemoInmutableCheat() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
+                .reduce(new ArrayList<>(),
+                        (acc, fruit) -> { // BiFunction<A,T,A>  accumulator
+                            var list = acc; // new ArrayList<>(acc);
+                            list.add(fruit);
+                            return list;
+                        },
+                        (lhs, rhs) -> { //combiner
+                            var list = new ArrayList<>(lhs);
+                            list.add(rhs);
+                            return list;
+                        });
+
+        System.out.println(fruits);
+    }
+
+    static void aggregateElementsDemo() {
+        aggregateElementsDemoInmutable();
+        aggregateElementsDemoInmutableCheat();
+        collectDemo();
+    }
+
+    static void collectDemo() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
+                .collect(Collector.of(ArrayList::new,
+                                ArrayList::add, //BiConsumer<A,T> accumulator
+                                (l1, l2) -> {
+                                    l1.addAll(l2);
+                                    return l1;
+                                },
+                                Function.identity()
+                        )
+                );
+        System.out.println(fruits);
+    }
+
+
     static void toMapGroupingByCorners() {
         printShapes(SAMPLE_SHAPES_ARRAY);
         System.out.println(" <- Original");
@@ -525,7 +656,7 @@ public class StreamsDemo {
 
         String result = Stream.of(SAMPLE_SHAPES_ARRAY)
                 .map(Shape::toString)
-                .collect(Collectors.joining(" - ", "{","}"));
+                .collect(Collectors.joining(" - ", "{", "}"));
 
         System.out.println(result);
     }
@@ -577,7 +708,7 @@ public class StreamsDemo {
 
         Shape[] onlyCircles = Stream.of(SAMPLE_SHAPES_ARRAY)
                 .filter(Predicate.not(Shape::hasCorners))
-                        .toArray(Shape[]::new);
+                .toArray(Shape[]::new);
         printShapes(onlyCircles);
 
         System.out.println(" <- Original solo círculos");
@@ -608,7 +739,22 @@ public class StreamsDemo {
         System.out.println("allHasCorners = " + allHasCorners);
     }
 
+    static void testConcat() {
 
+        List<Integer> list1 = Stream.concat(
+                        Stream.of(1, 2, 3),
+                        Stream.of(4, 5))
+                .toList();
+
+        List<Integer> list2 = Stream.of(
+                        Stream.of(1, 2, 3),
+                        Stream.of(4, 5))
+                .flatMap(Function.identity())
+                .toList();
+
+        System.out.println(list1);
+        System.out.println(list2);
+    }
 
 
     static void xxx() {

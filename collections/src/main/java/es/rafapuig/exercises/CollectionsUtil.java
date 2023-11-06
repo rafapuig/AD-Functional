@@ -67,6 +67,8 @@ public class CollectionsUtil {
 
     public static <T> boolean collectionEqualsIgnoreOrderStreams(Collection<T> c1, Collection<T> c2) {
 
+        if (c1.size() != c2.size()) return false;
+
         //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
         Map<T, Integer> map = c1.stream()
                 .collect(Collectors.toMap(
@@ -88,6 +90,8 @@ public class CollectionsUtil {
     }
 
     public static <T> boolean collectionEqualsIgnoreOrderStreams2(Collection<T> c1, Collection<T> c2) {
+
+        if (c1.size() != c2.size()) return false;
 
         //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
         Map<T, Integer> map = c1.stream()
@@ -112,11 +116,12 @@ public class CollectionsUtil {
 
     public static <T> boolean collectionEqualsIgnoreOrderStreams3(Collection<T> c1, Collection<T> c2) {
 
-        final Function<Map<T,Integer>, Consumer<T>> decrementElementCountOrRemoveIfOne =
+        final Function<Map<T, Integer>, Consumer<T>> decrementElementCountOrRemoveIfOne =
                 map -> key -> map.computeIfPresent(
                         key,
-                        (aKey, oldCount) -> oldCount > 1 ? oldCount -1 : null);
+                        (aKey, oldCount) -> oldCount > 1 ? oldCount - 1 : null);
 
+        if (c1.size() != c2.size()) return false;
 
         //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
         Map<T, Integer> map = c1.stream()
@@ -132,6 +137,34 @@ public class CollectionsUtil {
                             return result;
                         }
                 ));
+
+        return map.isEmpty(); //si el mapa ha quedado vacío es porque las listas eran iguales en contenido
+    }
+
+    public static <T> boolean collectionEqualsIgnoreOrderStreams4(Collection<T> c1, Collection<T> c2) {
+
+        final Function<Map<T, Long>, Consumer<T>> decrementElementCountOrRemoveIfOne =
+                map -> key -> map.computeIfPresent(
+                        key,
+                        (aKey, oldCount) -> oldCount > 1 ? oldCount - 1 : null);
+
+
+
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
+        Map<T, Long> map = c1.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.groupingBy(
+                                Function.identity(),
+                                Collectors.counting()),
+                        result -> { //ahora al resultado le vamos quitando los elementos de c2
+                            if (result.size() != c2.stream().distinct().count()) return result;
+                            c2.stream()
+                                    .takeWhile(result::containsKey) //AQUI FALLA
+                                    .forEach(decrementElementCountOrRemoveIfOne.apply(result));
+                            return result;
+                        }
+                ));
+
 
         return map.isEmpty(); //si el mapa ha quedado vacío es porque las listas eran iguales en contenido
     }
