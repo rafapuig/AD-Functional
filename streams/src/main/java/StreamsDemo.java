@@ -551,6 +551,7 @@ public class StreamsDemo {
         aggregateElementsDemoInmutable();
         aggregateElementsDemoInmutableCheat();
         collectDemo();
+        collectDemo2();
     }
 
     static void collectDemo() {
@@ -564,6 +565,15 @@ public class StreamsDemo {
                                 Function.identity()
                         )
                 );
+        System.out.println(fruits);
+    }
+
+    static void collectDemo2() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
+                .collect(ArrayList::new, //Supplier<A>
+                        ArrayList::add, //BiConsumer<A,T> accumulator
+                        ArrayList::addAll); //BiConsumer<A,A> combiner
+
         System.out.println(fruits);
     }
 
