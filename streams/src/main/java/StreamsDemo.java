@@ -786,6 +786,8 @@ public class StreamsDemo {
         Optional<String> max = Stream.of("naranja", "pera", "limon")
                 .max(Comparator.naturalOrder());
 
+        fruits.mapToInt(String::length).mapToObj(Integer::toString);
+
 
     }
 
