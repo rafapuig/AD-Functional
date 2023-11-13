@@ -11,32 +11,32 @@ public class CollectionsUtil {
 
     public static <T> boolean collectionEqualsIgnoreOrderImperative(Collection<T> c1, Collection<T> c2) {
 
-        Map<T, Integer> map = new HashMap<>();
+        Map<T, Integer> map = new HashMap<>();  //Mapa que a cada elemento le asocia el número de veces que se repite
 
-        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
-        for (T key : c1) {
-            Integer value = map.get(key);
-            if (value == null) {
-                map.put(key, 1);
-            } else {
-                map.replace(key, value + 1);
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la colección 1
+        for (T item : c1) {  // Para cada elemento contenido en la colección 1
+            if (!map.containsKey(item)) {   // Si el elemento aún no está en el mapa
+                map.put(item, 1);           // Ponemos como valor inicial un 1, (ese elemento aparece una vez)
+            } else {                        // Si el elemento ya está en el mapa
+                Integer value = map.get(item);  // Buscamos su valor asociado, veces que lo hemos encontrado al iterar
+                map.replace(item, value + 1);   // Ampliamos en una unidad el valor, para reflejar que está una vez más
             }
         }
 
-        //Comparamos con los elementos de la otra colección
-        for (T key : c2) {
-            //Si la otra coleccion tiene un elemento que no estaba en la primera entonces no son iguales
-            if (!map.containsKey(key)) return false;
-                //Si lo contiene restamos una unidad del mapa que cuenta cuantos repeticiones hay del elemento
+        //Ahora comparamos con los elementos de la otra colección
+        for (T item : c2) {
+            //Si la otra colección tiene un elemento que no estaba en la primera entonces no son iguales
+            if (!map.containsKey(item)) return false;
+                //Si lo contiene restamos una unidad del mapa que cuenta cuantas repeticiones hay del elemento
             else {
-                Integer oldValue = map.get(key);
+                Integer oldValue = map.get(item);
                 Integer newValue = oldValue > 1 ? oldValue - 1 : null;
                 if (newValue != null) {
-                    map.put(key, newValue);
+                    map.put(item, newValue);
                 } else {
-                    map.remove(key);
+                    map.remove(item);
                 }
-                //map.computeIfPresent(key, (k, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
+                //map.computeIfPresent(item, (k, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
             }
         }
         /*for (int i : map.values()) {
@@ -46,19 +46,26 @@ public class CollectionsUtil {
         return map.isEmpty();
     }
 
+
     public static <T> boolean collectionEqualsIgnoreOrder(Collection<T> c1, Collection<T> c2) {
+
         Map<T, Integer> map = new HashMap<>();
 
-        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
-        c1.forEach(key -> map.merge(key, 1, (oldValue, newValue) -> oldValue + 1));
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la colección 1
+        c1.forEach(key -> map.merge(
+                key,    //Clave
+                1,      //Valor que se asigna si la clave todavía no existe en el map
+                (oldValue, newValue) -> oldValue + 1)); // Si ya tiene valor nuevo = sumar 1 al valor que tenia
 
-        //Comparamos con los elementos de la otra collecion
-        for (T key : c2) {
-            //Si la otra coleccion tiene un elemento que no estaba en la primera entonces no son iguales
-            if (!map.containsKey(key)) return false;
-                //Si lo contiene restamos una unidad del mapa que cuenta cuantos repeticiones hay del elemento
+        //Comparamos con los elementos de la otra colección
+        for (T item : c2) {
+            //Si la otra colección tiene un elemento que no estaba en la primera entonces no son iguales
+            if (!map.containsKey(item)) return false;
+                //Si lo contiene restamos una unidad del mapa que cuenta cuantas repeticiones hay del elemento
             else {
-                map.computeIfPresent(key, (k, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
+                map.computeIfPresent(   //Método de orden superior (que hacer con valores de claves existentes)
+                        item, //Clave a la que se va a asociar el nuevo valor (si se encuentra)
+                        (key, oldValue) -> oldValue > 1 ? oldValue - 1 : null); //BiFunction<K,V,V> remapping
             }
         }
 
@@ -67,7 +74,7 @@ public class CollectionsUtil {
 
     public static <T> boolean collectionEqualsIgnoreOrderStreams(Collection<T> c1, Collection<T> c2) {
 
-        if (c1.size() != c2.size()) return false;
+        //if (c1.size() != c2.size()) return false;
 
         //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
         Map<T, Integer> map = c1.stream()
@@ -76,15 +83,18 @@ public class CollectionsUtil {
                         t -> 1,
                         (oldValue, newValue) -> oldValue + 1));
 
-        Consumer<T> decrementElementCountOrRemoveIfOne = key ->
+        Consumer<T> decrementElementCountOrRemoveIfOne = item ->
                 map.computeIfPresent(
-                        key,
-                        (k, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
+                        item,
+                        (key, oldValue) -> oldValue > 1 ? oldValue - 1 : null);
 
-        //Comparamos con los elementos de la otra collecion
-        c2.stream()
+        //Comparamos con los elementos de la otra colección
+        long itemsCount = c2.stream()
                 .takeWhile(map::containsKey)
-                .forEach(decrementElementCountOrRemoveIfOne);
+                .peek(decrementElementCountOrRemoveIfOne)
+                .count();
+
+        if(itemsCount< c2.size()) return false;
 
         return map.isEmpty();
     }
@@ -147,7 +157,6 @@ public class CollectionsUtil {
                 map -> key -> map.computeIfPresent(
                         key,
                         (aKey, oldCount) -> oldCount > 1 ? oldCount - 1 : null);
-
 
 
         //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
