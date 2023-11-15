@@ -1,8 +1,7 @@
 package model.academic;
 
-public class Alumno {
-
-    private String NIA;
-    private String nombre;
-    private String apellidos;
-}
+public record Alumno (
+     String NIA,
+     String nombre,
+     String apellidos
+) {}

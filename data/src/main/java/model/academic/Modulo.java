@@ -25,6 +25,8 @@ public record Modulo(
         return Objects.hash(ciclo, abreviatura);
     }
 
+
+
     public static class Builder{
         Integer horasSemanales;
         Integer horasTotal;
@@ -65,6 +67,23 @@ public record Modulo(
             return new Modulo(ciclo, abreviatura, nombre, curso, horasTotal, horasSemanales);
         }
 
+        public Builder setCiclo(Ciclo ciclo) {
+            this.ciclo = ciclo;
+            return  this;
+        }
+
+        public Builder(Modulo original) {
+            this.nombre = original.nombre;
+            this.abreviatura = original.abreviatura;
+            this.curso = original.curso;
+            this.ciclo = original.ciclo;
+
+            if(original.horasSemanales.isPresent()) {
+                setHorasSemanales(original.horasSemanales.getAsInt());
+            } else {
+                setHorasTotales(original.horas);
+            }
+        }
 
     }
 
