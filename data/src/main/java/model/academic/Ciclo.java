@@ -1,11 +1,18 @@
 package model.academic;
 
 import java.util.Objects;
+import java.util.Set;
 
 public record Ciclo(
      String abreviatura,
-     String nombre)
+     String nombre
+    )
 {
+
+    public Set<Modulo> getModulos() {
+        return Modulos.MODULOS_BY_CICLO.get(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

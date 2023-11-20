@@ -1,9 +1,6 @@
 package model.academic;
 
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -162,4 +159,10 @@ public class Modulos {
                             Function.identity()
                     ));
 
+    public static Map<Ciclo, Set<Modulo>> MODULOS_BY_CICLO =
+            MODULOS.stream()
+                    .collect(Collectors.groupingBy(
+                            Modulo::ciclo,
+                            Collectors.toSet()
+                    ));
 }

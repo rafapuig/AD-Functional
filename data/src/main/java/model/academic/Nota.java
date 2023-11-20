@@ -1,7 +1,5 @@
 package model.academic;
 
-import java.util.StringJoiner;
-
 public enum Nota {
     NE((byte) 0),
     CERO((byte) 0),
@@ -19,7 +17,7 @@ public enum Nota {
 
     private final byte value;
 
-    public byte getValue() {
+    public byte getNumericValue() {
         return value;
     }
 
