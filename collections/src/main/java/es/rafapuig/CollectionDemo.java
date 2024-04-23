@@ -28,7 +28,7 @@ public class CollectionDemo {
         paises.add("Inglaterra");
         print(paises);
 
-        //Añadir elementos a la colleccion
+        //Añadir elementos a la colección
 
         //Comprobamos que no se puede añadir elementos a una coleccion inmutable
         try {
@@ -49,7 +49,7 @@ public class CollectionDemo {
         paises.remove("Francia");
         print(paises);
 
-        //Elimina los elementos coincidientes con los de la coleccion proporcionada
+        //Elimina los elementos coincidentes con los de la colección proporcionada
         paises.removeAll(List.of("Portugal", "Brasil", "Colombia"));
         print(paises);
 

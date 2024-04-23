@@ -13,7 +13,7 @@ public class PersonEventsTest {
     }
 
     //Metodo callback
-    //Este metodo se puede usar como funcion manejadora de eventos porque su firma
+    //Este metodo se puede usar como función manejadora de eventos porque su firma
     //es compatible con la firma del método invoke de la interfaz EventHandler<S,T>
     static void person_yearTurned(Person p, EventArgs e) {
         System.out.println("La persona '" + p.getName() + "' acaba de cumplir "

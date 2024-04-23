@@ -32,8 +32,8 @@ public class Empleado extends Persona {
         this.hireDate = hireDate;
     }
 
-    public long getAntiguedad() {
-        return ChronoUnit.YEARS.between(this.hireDate, LocalDate.now());
+    public int getAntiguedad() {
+        return (int) ChronoUnit.YEARS.between(this.hireDate, LocalDate.now());
     }
 
     @Override

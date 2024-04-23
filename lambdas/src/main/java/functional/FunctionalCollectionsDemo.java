@@ -14,13 +14,14 @@ public class FunctionalCollectionsDemo {
 
     public static void main(String[] args) {
 
-        // Metodos de orden superior de la interfaz Iterable: forEach
+        // Métodos de orden superior de la interfaz Iterable: forEach
 
         Consumer<? super Planet> printPlanet = System.out::println;
 
-        Planets.SOLAR_SYSTEM_PLANETS.forEach(planet -> System.out.println(planet));
-        Planets.SOLAR_SYSTEM_PLANETS.forEach(System.out::println);
-        Planets.SOLAR_SYSTEM_PLANETS.forEach(printPlanet);
+        // Tres formas de hacer lo mismo: por cada planeta de la colección, imprimirlo
+        Planets.SOLAR_SYSTEM_PLANETS.forEach(planet -> System.out.println(planet)); //expresión lambda
+        Planets.SOLAR_SYSTEM_PLANETS.forEach(System.out::println);      // referencia a método
+        Planets.SOLAR_SYSTEM_PLANETS.forEach(printPlanet);              // instancia de interfaz funcional
 
         Consumer<? super Planet> printPlanetName = planet -> System.out.println(planet.getName());
 
@@ -31,22 +32,26 @@ public class FunctionalCollectionsDemo {
         Planets.SOLAR_SYSTEM_PLANETS.forEach(printPlanetName);
 
 
+
         //Crear una lista modificable a partir del conjunto de planetas SOLAR_SYSTEM_PLANETS
         List<Planet> planets = new ArrayList<>(Planets.SOLAR_SYSTEM_PLANETS);
 
         // ----- default method from Collection interface higher-order removeIf
 
+        //Expresión lambda que, Dado un planeta indicar si NO tiene satélites
         Predicate<? super Planet> planetWithoutSatellites = planet -> planet.getSatellites().isEmpty();
 
+        // Eliminar los planetas que no tienen satélites de la lista
         planets.removeIf(
                 planet -> planet.getSatellites().isEmpty()
         );
 
+        // Otra forma usando la variable que contiene la instancia de la interfaz funcional / lambda
         //planets.removeIf(planetWithoutSatellites);
 
-
-        System.out.println("\nPlanetas con satelites");
+        System.out.println("\nPlanetas con satélites");
         planets.forEach(System.out::println);
+
 
         //SequencedCollection<Planet> sc = planets;
 
@@ -75,7 +80,7 @@ public class FunctionalCollectionsDemo {
 
         //planets.replaceAll(planetToUpperCase);
 
-        System.out.println("\nPlanetas reemplazados por su nombre en mayuscula:");
+        System.out.println("\nPlanetas reemplazados por su nombre en mayúscula:");
         planets.forEach(printPlanet);
 
         // --------------------sort ---------------------------

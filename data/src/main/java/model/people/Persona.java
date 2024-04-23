@@ -1,6 +1,7 @@
 package model.people;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -10,7 +11,7 @@ public class Persona implements Comparable<Persona> {
        return other.getNacimiento().compareTo(this.getNacimiento());
     }
 
-    public static enum Sexo { HOMBRE, MUJER }
+    public enum Sexo { HOMBRE, MUJER }
     public static enum Idioma {INGLES, ESPAÑOL, ITALIANO, FRANCES, ALEMAN, JAPONES, RUSO}
 
     private long id;
@@ -76,6 +77,11 @@ public class Persona implements Comparable<Persona> {
         return ChronoUnit.YEARS.between(this.nacimiento, LocalDate.now());
     }
 
+    public boolean isMayorEdad() {
+        return Period.between(nacimiento, LocalDate.now()).getYears() >= 18;
+        //return getEdad() >= 18;
+    }
+
     public boolean isHombre() {
         return this.sexo == Sexo.HOMBRE;
     }
@@ -90,6 +96,10 @@ public class Persona implements Comparable<Persona> {
 
     public void setIdiomas(Set<Idioma> idiomas) {
         this.idiomas = idiomas;
+    }
+
+    public boolean habla(Idioma idioma) {
+        return this.idiomas.contains(idioma);
     }
 
     @Override

@@ -788,7 +788,6 @@ public class StreamsDemo {
 
         fruits.mapToInt(String::length).mapToObj(Integer::toString);
 
-
     }
 
 }

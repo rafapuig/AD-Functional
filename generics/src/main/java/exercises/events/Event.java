@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.logging.Handler;
 
 /**
- * Clase Event para gestionar una lista de manejadores de evento añadiendo y quitando de la lista
+ * Clase Event para gestionar una lista de manejadores de eventos añadiendo y quitando de la lista
  *
  * @param <S> Sender o sujeto que provoca el evento, será una clase que añade un campo de tipo Event
- * @param <T> EventArgs o un subtipo que contiene los datos odicionales que se quieren propocionar junto con el evento
+ * @param <T> EventArgs o un subtipo que contiene los datos adicionales que se quieren proporcionar junto con el evento
  */
 public class Event<S, T extends EventArgs> {
 

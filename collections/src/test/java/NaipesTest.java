@@ -6,6 +6,7 @@ import model.cartas.Valor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import tests.utils.VariableSource;
 
 import java.util.ArrayList;
 import java.util.List;

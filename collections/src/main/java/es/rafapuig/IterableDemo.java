@@ -29,14 +29,14 @@ public class IterableDemo {
         // (esto es lo que hace implicitamente Java para hacer un for-each con arrays)
         Iterable<String> iterable = List.of(NAMES);
 
-        // La referencia que ponemos despues de los : debe ser
+        // La referencia que ponemos después de los : debe ser
         // a una instancia de un objeto cuya clase implemente Iterable<T>
         for (String name : iterable) {
             System.out.println("name = " + name);
         }
     }
 
-    // -- iterar metodo generico
+    // -- iterar método genérico
     static <T> void iterateGeneric(Iterable<T> iterable) {
         for (T item : iterable) {
             System.out.println("item = " + item);
@@ -62,13 +62,13 @@ public class IterableDemo {
         }
     }
 
-    //--- Los ejemplos que vienen a continuacion utilizan PROGRAMACION FUNCIONAL
+    //--- Los ejemplos que vienen a continuación utilizan PROGRAMACIÓN FUNCIONAL
 
     static void testIterableForEachMethod() {
         Iterable<String> iterable = List.of(NAMES);
 
-        //Funcion de orden superior (programacion funcional)
-        //forEach( Consumer<? super T> consumer)
+        //Función de orden superior (programación funcional)
+        //forEach(Consumer<? super T> consumer)
 
         //Se asigna a la variable consumer una expresion lambda (PF)
         Consumer<? super String> consumer = name -> System.out.println(name);
@@ -78,13 +78,19 @@ public class IterableDemo {
         iterable.forEach(name -> System.out.println(name));
 
 
-        // Una referencia a metodo de instacia explicita (tema PF)
-        consumer = System.out::println;  //instancia::metodo
+        // Una referencia a método de instancia explicita (tema PF)
+        consumer = System.out::println;  //instancia::método
         iterable.forEach(consumer);
 
-        //Llamada directa al metodo de orden superior
-        // con la rferencia a metodo
+        //Llamada directa al método de orden superior forEach
+        // con la referencia a método como argumento de llamada
         iterable.forEach(System.out::println);
+
+        //forEach es equivalente a hacer un bucle for de este tipo
+        for(String s : iterable) {
+            consumer.accept(s);
+        }
+
     }
 
     static void testIteratorForEachRemaining() {

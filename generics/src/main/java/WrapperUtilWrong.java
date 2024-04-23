@@ -1,9 +1,8 @@
 //Esta clase es el ejemplo de como NO se deben hacer las cosas
 public class WrapperUtilWrong {
 
-    //Este metodo solamante sirve con objetos con valor del tipo parametrizado Object
+    //Este método solamente sirve con objetos con valor del tipo parametrizado Object
     public static void printDetails(Wrapper<Object> wrapper) {
-        // Codigo del metodo
         Object value = wrapper.get();
         String className = null;
 
@@ -14,7 +13,7 @@ public class WrapperUtilWrong {
         System.out.println("Valor: " + value);
     }
 
-    // ? puede ser cualquier valor para el parametro
+    // ? puede ser cualquier valor para el parámetro
     // Necesitamos asegurar que por lo menos se trata de un Number
     public static double sum(Wrapper<?> n1, Wrapper<?> n2) {
         Number num1 = (Number) n1.get(); //Puede fallar el casting
@@ -24,13 +23,10 @@ public class WrapperUtilWrong {
     }
 
     //Metodo generico
-    //No es lo más adecuado pues solo permite copiar en otro
-    //Wrapper si el valor del parametro es el mismo
+    //No es lo más adecuado, pues solo permite copiar en otro
+    //Wrapper si el valor del parámetro T es el mismo
     public static <T> void copy(Wrapper<T> source, Wrapper<T> dest) {
         T value = source.get();
         dest.set(value);
     }
-
-
-
 }

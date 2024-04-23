@@ -66,9 +66,12 @@ public class CollectionsUtil {
                 map.computeIfPresent(   //Método de orden superior (que hacer con valores de claves existentes)
                         item, //Clave a la que se va a asociar el nuevo valor (si se encuentra)
                         (key, oldValue) -> oldValue > 1 ? oldValue - 1 : null); //BiFunction<K,V,V> remapping
+                // Si el nuevo valor asociado a la clave es null
+                // entonces la entrada con esa clave será eliminada del mapa
             }
         }
 
+        //Si el mapa ha quedado vacío es porque ambas colecciones tenían los mismos elementos
         return map.isEmpty();
     }
 
@@ -76,12 +79,12 @@ public class CollectionsUtil {
 
         //if (c1.size() != c2.size()) return false;
 
-        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la colección 1
         Map<T, Integer> map = c1.stream()
                 .collect(Collectors.toMap(
-                        Function.identity(),
-                        t -> 1,
-                        (oldValue, newValue) -> oldValue + 1));
+                        Function.identity(), // Valor para la clave
+                        t -> 1,              // Valor para el valor asociado con la clave (si la clave no está)
+                        (oldValue, newValue) -> oldValue + 1)); //Función de combinado, si la clave ya tiene valor
 
         Consumer<T> decrementElementCountOrRemoveIfOne = item ->
                 map.computeIfPresent(
@@ -94,7 +97,7 @@ public class CollectionsUtil {
                 .peek(decrementElementCountOrRemoveIfOne)
                 .count();
 
-        if(itemsCount< c2.size()) return false;
+        if (itemsCount < c2.size()) return false;
 
         return map.isEmpty();
     }
@@ -103,7 +106,7 @@ public class CollectionsUtil {
 
         if (c1.size() != c2.size()) return false;
 
-        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la coleccion 1
+        //Vamos a contar cuantas repeticiones tenemos de cada elemento de la colección 1
         Map<T, Integer> map = c1.stream()
                 .collect(Collectors.collectingAndThen(
                         Collectors.toMap(
@@ -126,6 +129,7 @@ public class CollectionsUtil {
 
     public static <T> boolean collectionEqualsIgnoreOrderStreams3(Collection<T> c1, Collection<T> c2) {
 
+        // Función cuya entrada es un mapa de elementos con clave T y valor Integer y devuelve un Consumer de un T
         final Function<Map<T, Integer>, Consumer<T>> decrementElementCountOrRemoveIfOne =
                 map -> key -> map.computeIfPresent(
                         key,

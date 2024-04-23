@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 public class Player {
-    private Collection<Dominoes> pieces = new LinkedHashSet<Dominoes>();
+
+    private final Collection<Dominoes> pieces = new LinkedHashSet<Dominoes>();
 
     public Collection<Dominoes> getDominoes() {
         return pieces;

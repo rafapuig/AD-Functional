@@ -24,8 +24,7 @@ public class TennisPlayer {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TennisPlayer)) return false;
-        TennisPlayer that = (TennisPlayer) o;
+        if (!(o instanceof TennisPlayer that)) return false;
         return Objects.equals(name, that.name);
     }
 

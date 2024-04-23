@@ -23,11 +23,10 @@ public class GenericsDemo {
 
         wrapperUtilTest();
 
-        genericConstructorTest();
+        /////genericConstructorTest();
 
-        genericsRuntimeClassTest();
+        //////genericsRuntimeClassTest();
     }
-
 
 
     static void objectWrapperTest() {
@@ -51,10 +50,10 @@ public class GenericsDemo {
         greetingWrapper.set("Buenos dias"); // Espera un String como argumento
         String greeting = greetingWrapper.get(); // Casting no necesario
 
-        //greetingWrapper.set(new Integer(100)); //Error de compilacion
+        //greetingWrapper.set(new Integer(100)); //Error de compilación
 
         Wrapper<Integer> integerWrapper = new Wrapper<>(100);
-        int id = integerWrapper.get();
+        int id = integerWrapper.get().intValue();
         Integer id1 = integerWrapper.get();
 
         //integerWrapper.set("Hola"); //Error
@@ -62,33 +61,43 @@ public class GenericsDemo {
         Wrapper<Person> personWrapper = new Wrapper<>(new Person(1, "Armando Bronca"));
         personWrapper.set(new Person(2, "Amador Denador"));
         Person person = personWrapper.get(); // No casting
-
     }
 
+    //Aunque String es subclase de Object
+    //y se puede asignar una referencia String a una variable Object
+    //Entre un Wrapper<String> y un Wrapper<Object> no hay ninguna relación
+    //Y no se puede asignar un Wrapper<String> a un Wrapper<Object> aunque String derive de Object
+
     static void supersubWrapperTest() {
+        String gretting = "Hola";
+        Object object = gretting;   //upcasting siempre es válido
+
         Wrapper<String> stringWrapper = new Wrapper<>("Hola");
         Wrapper<Object> objectWrapper = new Wrapper<>(new Object());
-        //objectWrapper = stringWrapper; // Error de compilacion
+        //objectWrapper = stringWrapper; // Error de compilacion, no es upcasting
     }
 
     static void rawTypeTest() {
         //Uso del tipo generico Wrapper<T> "en crudo" (sin parametro)
-        Wrapper rawType = new Wrapper("Hola"); //uncheched warning call
+        Wrapper rawType = new Wrapper("Hola"); //unchecked warning call
 
         //Uso como tipo parametrizado con el tipo String
         Wrapper<String> genericType = new Wrapper<>("Adios");
 
-        genericType = rawType; //uchecked warning
+        genericType = rawType; //unchecked warning
 
         //rawType = genericType;
     }
 
+    //El método printDetails espera un Wrapper<Object>
+    //Si se proporciona como argumento de llamada un Wrapper de cualquier otro tipo (String, por ejemplo)
+    //Se produce un error de compilación
     static void unboundedWildcardWrong() {
         Wrapper<Object> objectWrapper = new Wrapper<>(new Object());
         WrapperUtilWrong.printDetails(objectWrapper); //OK
 
         Wrapper<String> stringWrapper = new Wrapper<>("Hola");
-        //WrapperUtilWrong.printDetails(stringWrapper); //Error
+        //WrapperUtilWrong.printDetails(stringWrapper); //Error de compilación
     }
 
     static void unboundedWildcardTestOK() {
@@ -98,15 +107,18 @@ public class GenericsDemo {
         Wrapper<String> stringWrapper = new Wrapper<>("Hola");
         WrapperUtil.printDetails(stringWrapper); //No Error
 
-        //wildCardWrapper tiene tipo de parametro desconocido
-        // (la instancia parametrizada lo tiene, pero por la variable no lo podemos saber)
-        Wrapper<?> wildCardWrapper = stringWrapper;
+        //La variable wildCardWrapper es de tipo genérico de comodín.
+        //wildCardWrapper tiene tipo de parámetro desconocido (Comodín / wildcard)
+        // (la instancia parametrizada lo tiene (tipo), pero por la variable no lo podemos saber)
+        Wrapper<?> wildCardWrapper = stringWrapper; //Ahora T pasa a ser desconocido
         Wrapper<?> unknownWrapper = new Wrapper<String>("Hola"); //Se puede asignar
 
-        Object obj = unknownWrapper.get(); //OK
-        //unknownWrapper.set("Hola"); // No sabemos de que tipo es T ¿No sabemos si T es String
+
+        //String str = unknownWrapper.get(); //Error compilación. No se sabe de que tipo es T
+        Object obj = unknownWrapper.get(); //OK, sea lo que sea T seguro que se puede asignar a Object
+        //unknownWrapper.set("Hola"); // No sabemos de que tipo es T - No sabemos si T es String
         //unknownWrapper.set(new Object()); // No sabemos de que tipo es T ¿Todo object es un T? NO
-        unknownWrapper.set(null); //Null se puede asignar a cualquier referencia
+        unknownWrapper.set(null); //OK, Null se puede asignar a cualquier referencia
     }
 
     //Upper-bounded
@@ -127,27 +139,31 @@ public class GenericsDemo {
         //Nos olvidamos de que es el parametro es un Integer pero al menos sabemos que es un Number
         Wrapper<? extends Number> numberWrapper = integerWrapper; // OK
 
-        //numberWrapper.set(10); // No se puede asegurar el tipo T de Wrapper como Integer
+        //numberWrapper.set(10); // No se puede asegurar el tipo T de numberWrapper como Integer
         //numberWrapper.set(12.3D); // Ni como double
 
-        Number number = null; // A una variable de tipo por refencia siempre se le puede asignar la referencia null
-        //numberWrapper.set(number); // Error, no sabemos el tipo concreto T de Number del parametro
+        Number number = null; // A una variable de tipo por referencia siempre se le puede asignar la referencia null
+        number = 3.12;
+        //numberWrapper.set(number); // Error, no sabemos el tipo concreto T de numberWrapper
+        // (p.e. T podría ser Integer y no todo Number es un Integer)
+
         WrapperUtil.sum(new Wrapper<>(34), new Wrapper<>(3.4D));
     }
 
     static void lowerBoundedCopyTestWrong() {
-        Wrapper<Object> objectWrapper = new Wrapper<>(new Object());;
-        Wrapper<String> stringWrapper = new Wrapper<>("Hola");
-        //WrapperUtilWrong.copy(stringWrapper, objectWrapper); //No funciona (no mismo tipo)
+        Wrapper<Object> objectWrapper = new Wrapper<>(new Object()); //destination
+        Wrapper<String> stringWrapper = new Wrapper<>("Hola");  //source
+
+        //WrapperUtilWrong.copy(stringWrapper, objectWrapper); //No funciona (no mismo tipo T)
 
         WrapperUtilWrong.copy(new Wrapper<>("Hola"), stringWrapper);
     }
 
     static void lowerBoundedCopyTest() {
-        Wrapper<Object> objectWrapper = new Wrapper<>(new Object());
-        Wrapper<String> stringWrapper = new Wrapper<>("Hola");
+        Wrapper<Object> objectWrapper = new Wrapper<>(new Object()); //destino
+        Wrapper<String> stringWrapper = new Wrapper<>("Hola");  //origen
 
-        WrapperUtil.copy(stringWrapper, objectWrapper); //Ahora si funciona
+        WrapperUtil.copy(stringWrapper, objectWrapper); //Ahora sí funciona
 
         WrapperUtil.copy(new Wrapper<>("Hola"), objectWrapper);
         System.out.println("objectWrapper.get() = " + objectWrapper.get());
@@ -157,7 +173,7 @@ public class GenericsDemo {
         Wrapper<Integer> n1 = new Wrapper<>(10);
         Wrapper<Double> n2 = new Wrapper<>(15.6);
 
-        //Imprimir informacion
+        //Imprimir información
         WrapperUtil.printDetails(n1);
         WrapperUtil.printDetails(n2);
 
@@ -170,35 +186,6 @@ public class GenericsDemo {
         WrapperUtil.<Double>copy(n2, holder);
         System.out.println("Despues de copiar: " + holder.get());
     }
-
-
-    static void genericMethodTest() {
-
-    }
-
-    static void genericConstructorTest() {
-        GenericConstructorTest<Number> gct =
-                new <Integer>GenericConstructorTest<Number>(45);
-    }
-
-    static void inferenceTest() {
-        List<String> list = new ArrayList<>();
-    }
-
-    static void genericsRuntimeClassTest() {
-        Wrapper<String> stringWrapper = new Wrapper<>("Hola");
-        Wrapper<Integer> integerWrapper = new Wrapper<>(45);
-
-        Class<?> stringWrapperClass = stringWrapper.getClass();
-        Class<?> integerWrapperClass = integerWrapper.getClass();
-
-        System.out.println("Class para Wrapper<String> = " + stringWrapperClass.getName());
-        System.out.println("Class para Wrapper<Integer> = " + integerWrapperClass.getName());
-
-        System.out.println(
-                "(stringWrapperClass == integerWrapperClass) = " + (stringWrapperClass == integerWrapperClass));
-    }
-
 
 
 }

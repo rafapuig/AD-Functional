@@ -32,6 +32,7 @@ public class DominoGame {
         List<Dominoes> dominoesList = Domino.containsDominoesWith(
                 players.get(0).getDominoes(), 6);
         System.out.println(dominoesList);
+
         dominoesList = Domino.containsDominoesWithStreams(
                 players.get(0).getDominoes(), 6);
         System.out.println(dominoesList);

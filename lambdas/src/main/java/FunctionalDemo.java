@@ -10,11 +10,7 @@ import java.util.function.*;
 
 public class FunctionalDemo {
 
-    public static <T> void printMapping(T[] from, int[] to) {
-        for (int i = 0; i < from.length; i++) {
-            System.out.println(from[i] + " mapeado a " + to[i]);
-        }
-    }
+
 
     public static void main(String[] args) {
         //mapperTest();
@@ -39,26 +35,7 @@ public class FunctionalDemo {
     }
 
 
-    private static void mapperTest() {
-        System.out.println("Mapear nombres a su longitud:");
 
-        String[] names = {"Rafael", "Raul", "Emilio", "Ramon"};
-
-        int[] lengthMapping = Mapper.mapToInt(
-                names,
-                name -> name.length() //Expresion lambda, entra un String sale un int
-        );
-
-        printMapping(names, lengthMapping);
-
-        System.out.println("Mapear enteros a sus cuadrados:");
-
-        Integer[] numbers = {1, 2, 3, 4};
-
-        int[] countMapping = Mapper.mapToInt(numbers, n -> n * n);
-
-        printMapping(numbers, countMapping);
-    }
 
 
     //--------- Function<T,R> -----------------------------------
@@ -76,7 +53,7 @@ public class FunctionalDemo {
     }
 
     static void functionTRDefaultAndStaticTest() {
-        //Creear las funciones
+        //Crear las funciones
         Function<Long, Long> square = x -> x * x;
         Function<Long, Long> addOne = x -> x + 1;
 
