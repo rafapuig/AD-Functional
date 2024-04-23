@@ -1,12 +1,12 @@
 import es.rafapuig.exercises.cartas.*;
 import es.rafapuig.exercises.cartas.filtering.NaipeFilter;
+import es.rafapuig.junit.VariableSource;
 import model.cartas.Naipe;
 import model.cartas.Palo;
 import model.cartas.Valor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
-import tests.utils.VariableSource;
 
 import java.util.ArrayList;
 import java.util.List;

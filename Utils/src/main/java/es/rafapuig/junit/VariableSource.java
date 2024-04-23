@@ -1,4 +1,4 @@
-package tests.utils;
+package es.rafapuig.junit;
 
 import org.junit.jupiter.params.provider.ArgumentsSource;
 

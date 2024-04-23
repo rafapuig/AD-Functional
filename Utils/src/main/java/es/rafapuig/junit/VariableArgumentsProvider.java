@@ -1,4 +1,4 @@
-package tests.utils;
+package es.rafapuig.junit;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,6 +14,7 @@ public class VariableArgumentsProvider implements
     private String variableName;
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+
         return extensionContext.getTestClass()
                 .map(this::getField)
                 .map(this::getValue)
@@ -32,6 +33,7 @@ public class VariableArgumentsProvider implements
     private Stream<Arguments> getValue(Field field) {
         Object value = null;
         try {
+            field.setAccessible(true);
             value = field.get(null);
         } catch (Exception ignored) {}
 
