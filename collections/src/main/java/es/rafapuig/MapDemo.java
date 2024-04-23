@@ -29,15 +29,16 @@ public class MapDemo {
         linkedHashMapTest();
         treeMapTest();
 
-        //mapOfTest();
-        //mapOfEntriesTest();
-        //mapCopyOfTest();
-        //iterateCollectionViewsMapTest();
+        mapOfTest();
+        mapOfEntriesTest();
+        mapCopyOfTest();
+        iterateCollectionViewsMapTest();
         putTest();
 
     }
 
     static void mapTest() {
+        System.out.println(testMap);
         System.out.println(testMap.entrySet());
     }
 
@@ -51,7 +52,7 @@ public class MapDemo {
         map.put("Cuatro", 4);
         map.put("Cinco", 5);
 
-        //Un HashMap NO preserva el orden de insercion
+        //Un HashMap NO preserva el orden de inserción
         System.out.println(map.entrySet());
     }
 
@@ -65,7 +66,7 @@ public class MapDemo {
         map.put("Cuatro", 4);
         map.put("Cinco", 5);
 
-        //Un linkedHashMap SI preserva el orden de insercion
+        //Un linkedHashMap SI preserva el orden de inserción
         System.out.println(map.entrySet());
     }
 
@@ -79,7 +80,8 @@ public class MapDemo {
         map.put("Cuatro", 4);
         map.put("Cinco", 5);
 
-        //Un TreeMap NO preserva el orden de insercion, ordena segun un comparador natural o especificado
+        //Un TreeMap NO preserva el orden de inserción,
+        // ordena según un comparador natural o especificado
         System.out.println(map.entrySet());
     }
 
@@ -92,6 +94,9 @@ public class MapDemo {
                         "Emilio", 47,
                         "Ramon", 48,
                         "Raul", 45);
+
+        // Comprobamos el nombre de la clase del mapa generado
+        System.out.println(map.getClass().getCanonicalName());
 
         //El orden no está garantizado
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
@@ -108,6 +113,9 @@ public class MapDemo {
                 Map.entry("Ramon", 48),
                 Map.entry("Raul", 45)
         );
+
+        // Comprobamos el nombre de la clase del mapa generado
+        System.out.println(map.getClass().getCanonicalName());
 
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             System.out.println(entry);
@@ -128,13 +136,17 @@ public class MapDemo {
 
         Map<String, Integer> map = Map.copyOf(sourceMap);
 
+        // Comprobamos el nombre de la clase del mapa generado
+        System.out.println(map.getClass().getCanonicalName());
+
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             System.out.println(entry);
         }
     }
 
-    static <K, V> void iterateCollectionViewsMap(Map<K, V> map) {
+    static <K, V> void iterateMapCollectionViews(Map<K, V> map) {
 
+        //Colección de claves
         System.out.println(map.keySet());
 
         //Iterar la vista conjunto de claves del mapa
@@ -142,6 +154,7 @@ public class MapDemo {
             System.out.println("key = " + key);
         }
 
+        //Colección de valores asociados a las claves
         System.out.println(map.values());
 
         //Iterar la vista coleccion de valores
@@ -149,6 +162,8 @@ public class MapDemo {
             System.out.println("value = " + value);
         }
 
+
+        //Colección de entradas (Entry) del mapa
         System.out.println(map.entrySet());
 
         //Iterar la vista conjunto de entradas del mapa
@@ -160,7 +175,7 @@ public class MapDemo {
     }
 
     static void iterateCollectionViewsMapTest() {
-        iterateCollectionViewsMap(testMap);
+        iterateMapCollectionViews(testMap);
     }
 
     static void putTest() {
