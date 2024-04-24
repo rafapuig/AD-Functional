@@ -34,7 +34,6 @@ public class MapDemo {
         mapCopyOfTest();
         iterateCollectionViewsMapTest();
         putTest();
-
     }
 
     static void mapTest() {

@@ -6,7 +6,7 @@ public class QueueDemo {
 
     public static void main(String[] args) {
 
-        Queue<String> words = new ArrayDeque<>(1); //16 elementos inicialmente
+        Queue<String> words = new ArrayDeque<>(1); //16 elementos inicialmente por defecto
 
         peekOrElementTest(words);
 
@@ -15,7 +15,7 @@ public class QueueDemo {
 
         words.add("rotulador");
         words.add("borrador");
-        words.offer("estuche");
+        words.offer("estuche"); // offer en caso de fallo NO lanza excepción
 
         String headElement = words.poll();
         System.out.println(headElement);
@@ -41,14 +41,14 @@ public class QueueDemo {
         String word;
 
         try {
-            word = words.element();
+            word = words.element(); //Recupera, pero no quita, el elemento cabeza de la cola
             System.out.println("word = " + word);
         } catch (NoSuchElementException e) {
             System.out.println(e.toString());
             System.out.println("La cola esta vacia.");
         }
 
-        //No causa excepcion si la cola esta vacia
+        //No causa excepción si la cola esta vacía
         if ((word = words.peek()) != null) {
             System.out.println("word = " + word);
         } else {
