@@ -54,32 +54,32 @@ public class RecordWinnersManager {
     @Override
     public String toString() {
 
-        StringJoiner sj = new StringJoiner("\n");
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
 
-        sj.add("Palmares:\n");
+        sj.add("Palmares:");
+        sj.add(System.lineSeparator());
 
         // Procesamos cada entrada del mapa de torneos
         map.forEach(
                 (tournament, tournamentWinnersMap) -> {
-                    sj.add(tournament.getName() + "\n--------------------------");
+                    sj.add(tournament.getName());
+                    sj.add("--------------------------");
 
-                    //Comparator<Map.Entry<TennisPlayer, Integer>> comparator = Map.Entry.comparingByValue();
-                    //Comparator<Map.Entry<TennisPlayer, Integer>> reverse = comparator.reversed();
-
-                    processTournamentWinnersMap1(tournamentWinnersMap, sj);
+                    sj.add(processTournamentWinnersMap1(tournamentWinnersMap));
 
                     //Alternativamente, podríamos hacer uso del Stream API para lo mismo
-                    //processTournamentWinnerMap2(tournamentWinnersMap, sj);
+                    //sj.add(processTournamentWinnersMap2(tournamentWinnersMap));
 
-                    sj.add("\n");
+                    sj.add(System.lineSeparator());
                 }
         );
-
         return sj.toString();
     }
 
-    private static void processTournamentWinnersMap1(
-            Map<TennisPlayer, Integer> tournamentWinnersMap, StringJoiner sj) {
+    private static String processTournamentWinnersMap1(
+            Map<TennisPlayer, Integer> tournamentWinnersMap) {
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
 
         List<Map.Entry<TennisPlayer, Integer>> tournamentWinners =
                 new ArrayList<>(tournamentWinnersMap.entrySet());
@@ -94,11 +94,19 @@ public class RecordWinnersManager {
                 .forEach(winnerEntry ->
                         sj.add(winnerEntry.getKey().getName() + // Nombre del ganador
                                "\t" + winnerEntry.getValue())); // Número de victorias en el torneo
+
+        return sj.toString();
     }
 
 
-    private static void processTournamentWinnersMap2(
-            Map<TennisPlayer, Integer> tournamentWinnersMap, StringJoiner sj) {
+    // Cuando veamos el stream API veremos que se puede implementar el método de esta manera
+    private static String processTournamentWinnersMap2(
+            Map<TennisPlayer, Integer> tournamentWinnersMap) {
+
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
+
+        //Comparator<Map.Entry<TennisPlayer, Integer>> comparator = Map.Entry.comparingByValue();
+        //Comparator<Map.Entry<TennisPlayer, Integer>> reverse = comparator.reversed();
 
         //Usamos el stream API (ya se verá con más detalle en la unidad de Streams)
         tournamentWinnersMap.entrySet().stream()
@@ -106,5 +114,7 @@ public class RecordWinnersManager {
                 .forEachOrdered(winnerEntry ->
                         sj.add(winnerEntry.getKey().getName() +
                                "\t" + winnerEntry.getValue()));
+
+        return sj.toString();
     }
 }
