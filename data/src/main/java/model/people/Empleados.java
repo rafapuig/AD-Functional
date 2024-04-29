@@ -97,7 +97,7 @@ public class Empleados {
         ARMANDO.setIdiomas(EnumSet.of(ESPAÑOL));
         BELEN.setIdiomas(EnumSet.of(ESPAÑOL, INGLES));
         ESTHER.setIdiomas(EnumSet.of(ESPAÑOL, INGLES));
-        AMADOR.setIdiomas(EnumSet.of(ESPAÑOL, ALEMAN));
+        AMADOR.setIdiomas(EnumSet.of( ALEMAN));
         AITOR.setIdiomas(EnumSet.of(ESPAÑOL, FRANCES, INGLES));
         SANDRA.setIdiomas(EnumSet.of(ESPAÑOL, INGLES, RUSO));
         VICTOR.setIdiomas(EnumSet.of(ESPAÑOL, JAPONES));

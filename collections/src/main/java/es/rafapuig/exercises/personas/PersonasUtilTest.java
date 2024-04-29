@@ -17,6 +17,7 @@ public class PersonasUtilTest {
         testNombresPorSexo();
         testPersonasCountPorSexo();
         testAllPersonasHablanEspañol();
+        testAllHablanIdioma();
     }
 
     static void testGetAllPersonasSorted() {
@@ -51,17 +52,22 @@ public class PersonasUtilTest {
     }
 
     static void testGetNombresPersonasSortByApellidos() {
-        System.out.println("\nNombres en mayusculas ordenados por apellidos:");
+        System.out.println("\nNombres en mayúsculas ordenados por apellidos:");
         System.out.println("------------------------------------------------------");
 
 
         List<String> nombres =
-                getNombresPersonasSortByApellidos(Empleados.EMPLEADOS);
+                List.of(getNombresPersonasSortByApellidos(Empleados.EMPLEADOS));
 
         System.out.println(nombres);
 
         System.out.println(
-                getNombresPersonasSortByApellidosFunctional(Empleados.EMPLEADOS));
+                Arrays.toString(
+                        getNombresPersonasSortByApellidosFunctional(Empleados.EMPLEADOS)));
+
+        System.out.println(
+                Arrays.toString(
+                        getNombresPersonasSortByApellidosCollector(Empleados.EMPLEADOS)));
 
         System.out.println("\n(Total: " + nombres.size() + " nombres)");
     }
@@ -94,6 +100,24 @@ public class PersonasUtilTest {
                 allPersonasHablanEspañol(Empleados.EMPLEADOS));
 
         System.out.println(
-                allPersonasHablanEspañolFunctional(Empleados.EMPLEADOS));
+                allPersonasHablanEspañolFunctional_v1(Empleados.EMPLEADOS));
+
+        System.out.println(
+                allPersonasHablanEspañolFunctional_v2(Empleados.EMPLEADOS));
+
+        System.out.println(
+                allPersonasHablanEspañolFunctional_v3(Empleados.EMPLEADOS));
+
+        System.out.println(
+                allPersonasHablanEspañolFunctional_v4(Empleados.EMPLEADOS));
+    }
+
+    static void testAllHablanIdioma() {
+
+        Persona.Idioma idioma = Persona.Idioma.INGLES;
+
+        System.out.println("\nComprobar si todas las hablan idioma:" + idioma);
+
+        System.out.println(allHablanIdioma(Empleados.EMPLEADOS, idioma));
     }
 }

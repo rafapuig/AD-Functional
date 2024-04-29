@@ -7,6 +7,7 @@ public class Item implements Priced {
     private String name = "Desconocido";
     private double price = 0.0;
 
+    //Constructores de la clase Item
     public Item() {
         System.out.println("Llamada al constructor Item()");
     }
