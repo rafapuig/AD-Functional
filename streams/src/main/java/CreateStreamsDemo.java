@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -110,7 +111,7 @@ public class CreateStreamsDemo {
 
         oneToTen.forEach(n-> System.out.print(n + ", "));
 
-        //Equivalente programacion funcional
+        //Equivalente programación funcional
         int seed = 1;
         IntPredicate hasNext = i -> i <= 10;
         IntUnaryOperator next = i -> i + 1;
@@ -124,8 +125,12 @@ public class CreateStreamsDemo {
                 .limit(1_000_000)
                 .forEach(System.out::println);
 
-        //Stream.generate creaa un stream no ordenado (unordered) sequencial
+        //Stream.generate crea un stream no ordenado (unordered) secuencial
         Stream.generate(Math::random)
+                .limit(5)
+                .forEach(System.out::println);
+
+        DoubleStream.generate(Math::random)
                 .limit(5)
                 .forEach(System.out::println);
     }

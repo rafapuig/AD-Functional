@@ -19,13 +19,13 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getAllBodies() {
-        List<CelestialBody> bodies = Heaven.BODIES.stream().toList();
+        List<CelestialBody> bodies = Sky.BODIES.stream().toList();
 
         bodies.forEach(System.out::println);
     }
 
     static void getAllStars() {
-        List<Star> stars = Heaven.BODIES.stream()
+        List<Star> stars = Sky.BODIES.stream()
                 .filter(celestialBody -> celestialBody instanceof Star)
                 .map(celestialBody -> (Star) celestialBody)
                 .toList();
@@ -34,7 +34,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getAllStars2() {
-        List<Star> stars = Heaven.BODIES.stream()
+        List<Star> stars = Sky.BODIES.stream()
                 .filter(Star.class::isInstance) //Comprobar si es es una subclase Star
                 .map(Star.class::cast)
                 .toList();
@@ -43,7 +43,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getAllPlanets() {
-        List<Planet> planets = Heaven.BODIES.stream()
+        List<Planet> planets = Sky.BODIES.stream()
                 .filter(Planet.class::isInstance)
                 .map(Planet.class::cast)
                 .toList();
@@ -52,7 +52,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getAllSatellites() {
-        List<Satellite> planets = Heaven.BODIES.stream()
+        List<Satellite> planets = Sky.BODIES.stream()
                 .filter(Satellite.class::isInstance)
                 .map(Satellite.class::cast)
                 .toList();
@@ -61,7 +61,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getAllPlanetsAndStars() {
-        List<CelestialBody> bodies = Heaven.BODIES.stream()
+        List<CelestialBody> bodies = Sky.BODIES.stream()
                 .collect(Collectors.teeing(
                         Collectors.filtering(Star.class::isInstance, Collectors.toList()),
                         Collectors.filtering(Planet.class::isInstance, Collectors.toList()),
@@ -103,7 +103,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getCelestialBodiesCountByClass() {
-        Map<Class<?>, Long> map = Heaven.BODIES.stream()
+        Map<Class<?>, Long> map = Sky.BODIES.stream()
                 .collect(Collectors.groupingBy(
                         CelestialBody::getClass,
                         Collectors.counting()));
@@ -112,7 +112,7 @@ public class StreamsExamplesAstronomy {
     }
 
     static void getCelestialBodiesCountByClassMap() {
-        Map<String, Long> map = Heaven.BODIES.stream()
+        Map<String, Long> map = Sky.BODIES.stream()
                 .collect(Collectors.toMap(
                         celestialBody -> celestialBody.getClass().getSimpleName(),
                         celestialBody -> 1L,
@@ -128,7 +128,7 @@ public class StreamsExamplesAstronomy {
         //Map<Integer, List<String>> valuesMap = new HashMap<>();
         //valuesMap.put("count", count);
         //valuesMap.put("list", list);
-        Map<String, CountList> map = Heaven.BODIES.stream()
+        Map<String, CountList> map = Sky.BODIES.stream()
                 .collect(Collectors.groupingBy(
                         celestialBody -> celestialBody.getClass().getSimpleName(),
                         Collectors.teeing(

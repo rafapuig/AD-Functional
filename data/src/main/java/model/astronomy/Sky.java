@@ -3,7 +3,7 @@ package model.astronomy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Heaven {
+public class Sky {
 
     public static List<CelestialBody> BODIES = new ArrayList<>() {{
         add(Stars.SUN);

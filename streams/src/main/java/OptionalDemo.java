@@ -1,20 +1,25 @@
 import model.people.Persona;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.random.RandomGenerator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class OptionalDemo {
 
     public static void main(String[] args) {
-        OptionalDemo demo = new OptionalDemo();
-        //testNullPointerExceptionIssue();
-        //testCreateOptionals();
-        demo.testOptionalIfPresent();
-        demo.testExampleStreamAPI1();
+        new OptionalDemo().run();
+    }
+
+    void run() {
+        testNullPointerExceptionIssue();
+        testCreateOptionals();
+        testOptionalIfPresent();
+        testExampleStreamAPI1();
         testExampleStreamAPI2();
         testOtherOptionalMethods();
     }
@@ -26,7 +31,7 @@ public class OptionalDemo {
 
         // getNacimiento() devuelve una referencia null
         // Llamar a un método de instancia mediante una referencia null provoca una NullPointerException
-        // Aqui lo que realmente estamos haciendo es null.getYear()
+        // Aquí lo que realmente estamos haciendo es null.getYear()
 
         int year = victor.getNacimiento().getYear();  //Lanza una NullPointerException
         System.out.println("Victor nació en el año " + year);
@@ -36,7 +41,7 @@ public class OptionalDemo {
     //Los métodos en los que haya casos que no deben devolver nada (null)
     //Deberían devolver un objeto Optional en lugar de devolver null
 
-    @Test
+    @RepeatedTest(10)
     void testCreateOptionals() {
         //Crear un Optional vacío
         Optional<String> empty = Optional.empty();
@@ -44,9 +49,10 @@ public class OptionalDemo {
         //Crear un Optional con el texto "Hola"
         Optional<String> text = Optional.of("Hola");
 
-        //Crear un Optional a partir de una referencia que puede ser nulo
+        //"Echar a suertes" si se instancia un nuevo objeto o no
         boolean instantiatePerson = new Random().nextInt(0, 2) == 0;
 
+        //Crear un Optional a partir de una referencia que puede ser nulo (depende de instantiatePerson)
         Persona p = instantiatePerson ?
                 new Persona(1, "Pedro", "Gado", Persona.Sexo.HOMBRE, null) :
                 null;
@@ -76,10 +82,10 @@ public class OptionalDemo {
         persona.ifPresent(value -> System.out.println("Optional contiene: " + value));
     }
 
-    @Test
+    @RepeatedTest(10)
     void testExampleStreamAPI1() {
         //Obtiene el máximo número impar desde el stream
-        OptionalInt maxOdd = IntStream.of(10, 20, 30)
+        OptionalInt maxOdd = new Random().ints(1,1, 10)
                 .filter(n -> n % 2 == 1)
                 .max();
 
@@ -130,7 +136,8 @@ public class OptionalDemo {
         );
     }
 
-    static void testOtherOptionalMethods() {
+    @Test
+    void testOtherOptionalMethods() {
         List<Optional<Integer>> optionalList = List.of(
                 Optional.of(1),
                 Optional.empty(),
@@ -146,18 +153,27 @@ public class OptionalDemo {
                         System.out::println,
                         () -> System.out.println("Vacío")));
 
+        System.out.println("Ejemplo de uso de Optional.or()");
         //or
         optionalList.stream()
-                .map(opt -> opt.or(() -> Optional.of(0)))
+                .map(opt -> opt.or(() -> Optional.of(0))) //Si no hay valor presente el supplier actúa
+                .forEach(System.out::println);
+
+        System.out.println("Ejemplo de uso de Optional.map()");
+        //map
+        optionalList.stream()
+                .map(opt -> opt.map(value -> value * value)) //Si hay valor presente el mapper actúa
                 .forEach(System.out::println);
 
 
         //Obtener los valores presentes en una lista, (sin vacíos)
         optionalList.stream()
                 .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(Optional::orElseThrow)
                 .forEach(System.out::println);
 
+        //Obtener los valores presentes en una lista, (sin vacíos)
+        System.out.println("Ejemplo de uso de Optional.stream()");
         //Con el método stream de Optional se devuelve un stream
         //por cada Optional (Optional --> stream)
         //Como tenemos un stream de streams aplicamos un flatMap

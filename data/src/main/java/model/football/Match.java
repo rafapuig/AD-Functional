@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Match {
     private final LocalDateTime dateTime;
-    private final League league;
-    private final int matchweek;
+    private final League league;    // liga
+    private final int matchweek;    // jornada
 
     private final Stadium stadium;
     private final Team local;

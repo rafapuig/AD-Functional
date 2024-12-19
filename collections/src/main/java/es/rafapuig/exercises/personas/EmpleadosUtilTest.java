@@ -3,17 +3,18 @@ package es.rafapuig.exercises.personas;
 import model.people.Empleado;
 import model.people.Empleados;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+
 import static es.rafapuig.exercises.personas.EmpleadosUtil.*;
 
 public class EmpleadosUtilTest {
 
     public static void main(String[] args) {
+
         testGetAllEmpleadosSortedByHireDate();
         testGetAllEmpleadosSortedBySueldo();
+
         testFilterEmpleadosAntiguedadSuperior10();
         testFilterEmpleadosSueldoSuperior2000();
         testFilterEmpleadosContratadosDespuesAño2000();
@@ -27,16 +28,15 @@ public class EmpleadosUtilTest {
     static void testGetAllEmpleadosSortedByHireDate() {
         System.out.println("\nTodos las empleados ordenados por fecha de contratación:");
         System.out.println("----------------------------------------------------------");
-        List<Empleado> empleados = getAllEmpleadosSortedByHireDate(Empleados.EMPLEADOS);
-        for (Empleado e : empleados) {
-            long antiguedad = ChronoUnit.YEARS.between(
-                    e.getHireDate(),
-                    LocalDate.now());
 
-            System.out.println(e.getNombreCompleto()
-                    + ": contratado el " + e.getHireDate()
-                    + ", " + antiguedad + " años de antigüedad, "
-                    + "sueldo " + e.getSueldo() + " € / mes");
+        List<Empleado> empleados = getAllEmpleadosSortedByHireDate_Functional(Empleados.EMPLEADOS);
+
+        for (Empleado e : empleados) {
+            System.out.println(
+                    e.getNombreCompleto() + ": " +
+                    (e.isMujer() ? "contratada" : "contratado") + " el " + e.getHireDate() + ", " +
+                    e.getAntiguedad() + " años de antigüedad, " +
+                    "sueldo " + e.getSueldo() + " € / mes");
         }
     }
 
@@ -46,14 +46,15 @@ public class EmpleadosUtilTest {
         System.out.println("----------------------------------------------------------");
 
         List<Empleado> empleados = EmpleadosUtil.getAllEmpleadosSortedByCriteria(
-                Empleados.EMPLEADOS,
-                EmpleadosUtil.COMPARING_BY_SUEDO);
+                Empleados.EMPLEADOS, // pasamos la lista de empleados
+                EmpleadosUtil.COMPARING_BY_SUELDO); // y el criterio para ordenar en un comparador
 
         for (Empleado e : empleados) {
             System.out.println(e.getNombreCompleto()
-                    + ", sueldo " + e.getSueldo() + " € / mes");
+                               + ", sueldo " + e.getSueldo() + " € / mes");
         }
     }
+
 
     static void testGetAllEmpleadosSortedBySueldo2() {
         System.out.println("\nTodos las empleados ordenados por sueldo:");
@@ -65,7 +66,7 @@ public class EmpleadosUtilTest {
 
         for (Empleado e : empleados) {
             System.out.println(e.getNombreCompleto()
-                    + ", sueldo " + e.getSueldo() + " € / mes");
+                               + ", sueldo " + e.getSueldo() + " € / mes");
         }
     }
 
@@ -84,7 +85,7 @@ public class EmpleadosUtilTest {
 
         for (Empleado e : empleados) {
             System.out.println(e.getNombreCompleto()
-                    + ", sueldo " + e.getSueldo() + " € / mes");
+                               + ", sueldo " + e.getSueldo() + " € / mes");
         }
     }
 
@@ -98,7 +99,7 @@ public class EmpleadosUtilTest {
 
         for (Empleado e : empleados) {
             System.out.println(e.getNombreCompleto()
-                    + ", sueldo " + e.getSueldo() + " € / mes");
+                               + ", sueldo " + e.getSueldo() + " € / mes");
         }
     }
 
@@ -112,7 +113,7 @@ public class EmpleadosUtilTest {
 
         for (Empleado e : empleados) {
             System.out.println(e.getNombreCompleto()
-                    + ", sueldo " + e.getSueldo() + " € / mes");
+                               + ", sueldo " + e.getSueldo() + " € / mes");
         }
     }
 
@@ -124,10 +125,10 @@ public class EmpleadosUtilTest {
         List<Empleado> empleados =
                 EmpleadosUtil.filterAntiguedadSuperior10(Empleados.EMPLEADOS);
 
-        for(Empleado empleado : empleados) {
+        for (Empleado empleado : empleados) {
             System.out.println(empleado.getNombreCompleto()
-                    + ", contratado el " + empleado.getHireDate()
-                    + ", antiguedad " + empleado.getAntiguedad() + " años.");
+                               + ", contratado el " + empleado.getHireDate()
+                               + ", antiguedad " + empleado.getAntiguedad() + " años.");
         }
     }
 
@@ -138,10 +139,10 @@ public class EmpleadosUtilTest {
         List<Empleado> empleados =
                 EmpleadosUtil.filterSueldoSuperior2000(Empleados.EMPLEADOS);
 
-        for(Empleado empleado : empleados) {
+        for (Empleado empleado : empleados) {
             System.out.println(empleado.getNombreCompleto()
-                    + ", sueldo "
-                    + String.format("%.0f",empleado.getSueldo()) + " €/mes");
+                               + ", sueldo "
+                               + String.format("%.0f", empleado.getSueldo()) + " €/mes");
         }
     }
 
@@ -150,15 +151,15 @@ public class EmpleadosUtilTest {
         System.out.println("----------------------------------------------------------");
 
         List<Empleado> empleados =
-                EmpleadosUtil.filterByCriteria(
+                EmpleadosUtil.filterBy(
                         Empleados.EMPLEADOS,
                         new EmpleadosUtil.EmpleadoAnteriorAño2000());
 
         empleados.sort(Comparator.comparing(Empleado::getHireDate));
 
-        for(Empleado empleado : empleados) {
+        for (Empleado empleado : empleados) {
             System.out.println(empleado.getNombreCompleto()
-                    + ", contratado el año " + empleado.getHireDate().getYear());
+                               + ", contratado el año " + empleado.getHireDate().getYear());
         }
     }
 
@@ -167,7 +168,7 @@ public class EmpleadosUtilTest {
         System.out.println("----------------------------------------------------------");
 
         List<Empleado> empleados =
-                EmpleadosUtil.filterByCriteria(
+                EmpleadosUtil.filterBy(
                         Empleados.EMPLEADOS,
                         new EmpleadosUtil.EmpleadoPredicate() {
                             @Override
@@ -178,10 +179,10 @@ public class EmpleadosUtilTest {
 
         empleados.sort(Comparator.comparing(Empleado::getSueldo).reversed());
 
-        for(Empleado empleado : empleados) {
+        for (Empleado empleado : empleados) {
             System.out.println(empleado.getNombreCompleto()
-                    + ", sueldo "
-                    + String.format("%.0f",empleado.getSueldo()) + " €/mes");
+                               + ", sueldo "
+                               + String.format("%.0f", empleado.getSueldo()) + " €/mes");
         }
         System.out.println("\nTotal: " + empleados.size());
     }
@@ -191,16 +192,16 @@ public class EmpleadosUtilTest {
         System.out.println("----------------------------------------------------------");
 
         List<Empleado> empleados =
-                EmpleadosUtil.filterByCriteria(
+                EmpleadosUtil.filterBy(
                         Empleados.EMPLEADOS,
                         empleado -> empleado.getSueldo() >= 1500);
 
         empleados.sort(Comparator.comparing(Empleado::getSueldo).reversed());
 
-        for(Empleado empleado : empleados) {
+        for (Empleado empleado : empleados) {
             System.out.println(empleado.getNombreCompleto()
-                    + ", sueldo "
-                    + String.format("%.0f",empleado.getSueldo()) + " €/mes");
+                               + ", sueldo "
+                               + String.format("%.0f", empleado.getSueldo()) + " €/mes");
         }
         System.out.println("\nTotal: " + empleados.size());
     }
@@ -224,6 +225,12 @@ public class EmpleadosUtilTest {
 
         System.out.println(
                 getEmpleadoPeorPagado(Empleados.EMPLEADOS));
+
+        System.out.println(
+                getEmpleadoMinimoSegun(Empleados.EMPLEADOS, COMPARING_BY_SUELDO));
+
+        System.out.println(
+                getEmpleadoMinimoSegun(Empleados.EMPLEADOS, Comparator.comparing(Empleado::getSueldo)));
 
         System.out.println(
                 getEmpleadoPeorPagadoFunctional(Empleados.EMPLEADOS));

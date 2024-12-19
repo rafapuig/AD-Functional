@@ -5,8 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.StringJoiner;
 
 public class Empleado extends Persona {
-    private double sueldo;
 
+    private double sueldo;
     private LocalDate hireDate;
 
     public Empleado(long id, String nombre, String apellidos, Sexo sexo,

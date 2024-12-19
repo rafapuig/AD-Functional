@@ -1,7 +1,5 @@
 import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.*;
 
 public class StreamsDemo {
@@ -9,8 +7,9 @@ public class StreamsDemo {
     public static void main(String[] args) {
         example1();
         example2();
+        example3();
 
-        // Seleccion: filtrado, orden
+        // Selección: filtrado, orden
         filterExample();
         dropWhileExample();
         takeWhileExample();
@@ -57,59 +56,99 @@ public class StreamsDemo {
         testConcat();
     }
 
+    // ¿Cómo calcularíamos la suma de los números impares elevados al cuadrado de una lista?
     static void example1() {
-        List<Integer> numbers = List.of(1, 2, 3, 4, 5);
+        List<Integer> numbers = List.of(1, 2, 3, 4, 5); // la lista de números
 
-        int sum = 0;
-        for (int n : numbers) {
-            if (n % 2 == 1) {
-                int square = n * n;
-                sum += square;
+        // Con programación imperativa este sería el código
+        int sum = 0;    // Una variable (mutable) va mutando mientras se itera
+        for (int n : numbers) { // Se usa un bucle para iterar de forma externa sobre los elementos
+            if (n % 2 == 1) {   // Se filtran los elementos que interesan (los impares)
+                int square = n * n; // Se transforman (mapean) a su valor al cuadrado
+                sum += square;  // Se acumulan (suman) a la suma parcial
             }
         }
-        System.out.println(sum);
+        System.out.println(sum);    //En la variable sum ha quedado al final el resultado
 
-        sum = numbers.stream()
-                .filter(n -> n % 2 == 1) //operacion intermedia / lazy
-                .map(n -> n * n) //operacion intermedia / lazy
+        //Con Stream API generamos un stream a partir de la lista
+        // Y aplicamos operaciones intermedias que devuelven un stream que se encadena
+        // y una operación terminal al final sobre el último stream de la cadena
+        // Estas operaciones sobre el stream pueden ser métodos de orden superior (PF)
+        final int sum1 = numbers.stream()
+                .filter(n -> n % 2 == 1) //operación intermedia / lazy
+                .map(n -> n * n) //operación intermedia / lazy
                 .reduce(0, Integer::sum); //op terminal / eager
 
-        System.out.println(sum);
+        System.out.println(sum1);
 
-        sum = numbers.stream()
+        final int sum2 = numbers.stream()
                 .filter(n -> n % 2 == 1)
                 .map(n -> n * n)
-                .reduce(0, (a, b) -> a + b); //equivalente
+                .reduce(0, (a, b) -> a + b); //equivalente con lambda
 
-        System.out.println(sum);
-
+        System.out.println(sum2);
     }
 
+    // Reescribimos la version funcional con Stream API pero con las instrucciones más detallas
+    // para ver que sucede al detalle
+    // Vemos un uso intensivo de las interfaces funcionales de la programación funcional
+    // El uso de expresiones lambda facilita mucho la creación de las instancias de interfaces funcionales
     static void example2() {
         List<Integer> numbersList = List.of(1, 2, 3, 4, 5);
 
-        // Obtener un stream a partir de la lista
+        // Obtener un stream a partir de la lista, llamando al método stream de la interfaz Collection
         Stream<Integer> numbersStream = numbersList.stream();
 
-        //Obtener un stream de numeros impares
+        //Obtener un stream de números impares
         Predicate<Integer> oddFilter = number -> number % 2 == 1;
-        Predicate<Integer> evenFilter = Predicate.not(oddFilter); // o tambien oddFilter.negate();
+        Predicate<Integer> evenFilter = Predicate.not(oddFilter); // o támbien oddFilter.negate();
         //Stream<Integer> oddNumbersStream = numbersStream.filter(n -> n % 2 == 1);
         Stream<Integer> oddNumbersStream = numbersStream.filter(oddFilter);
 
-        //Obtener un stream de los cuadrados de los numeros impares
-        Function<Integer, Integer> squareNumber = number -> number * number;
+        //Obtener un stream de los cuadrados de los números impares
+        UnaryOperator<Integer> squareNumber = number -> number * number;
         //Stream<Integer> squaredNumbersStream = oddNumbersStream.map(squareNumber);
         Stream<Integer> squaredNumbersStream = oddNumbersStream.map(n -> n * n);
 
         //Sumar todos los enteros del stream
         BinaryOperator<Integer> accumulator = (a, b) -> a + b;
-        //BinaryOperator<Integer> accumulator = Integer::sum; //la clase entero tiene metodo static sum
+        //BinaryOperator<Integer> accumulator = Integer::sum; //la clase Integer tiene método static sum
         int sum = squaredNumbersStream.reduce(0, accumulator);
         //int sum = squaredNumbersStream.reduce(0, (n1, n2) -> n1 + n2);
 
         System.out.println(sum);
     }
+
+    //Versión con stream específico para el tipo primitivo int
+    static void example3() {
+        List<Integer> numbersList = List.of(1, 2, 3, 4, 5);
+
+        // Obtener un stream a partir de la lista, llamando al método stream de la interfaz Collection
+        Stream<Integer> stream = numbersList.stream();
+
+        //Obtener un IntStream (int tipo primitivo) mapeando un Integer a su valor int
+        IntStream numbersStream = stream.mapToInt(Integer::intValue);
+
+        //Obtener un stream de números impares
+        IntPredicate oddFilter = number -> number % 2 == 1;
+        IntPredicate evenFilter = oddFilter.negate();
+        //IntStream oddNumbersStream = numbersStream.filter(n -> n % 2 == 1);
+        IntStream oddNumbersStream = numbersStream.filter(oddFilter);
+
+        //Obtener un stream de los cuadrados de los números impares
+        IntUnaryOperator squareNumber = number -> number * number;
+        //IntStream squaredNumbersStream = oddNumbersStream.map(squareNumber);
+        IntStream squaredNumbersStream = oddNumbersStream.map(n -> n * n);
+
+        //Sumar todos los enteros del stream
+        IntBinaryOperator accumulator = (a, b) -> a + b;
+        //BinaryOperator<Integer> accumulator = Integer::sum; //la clase Integer tiene método static sum
+        int sum = squaredNumbersStream.reduce(0, accumulator);
+        //int sum = squaredNumbersStream.reduce(0, (n1, n2) -> n1 + n2);
+
+        System.out.println(sum);
+    }
+
 
     public record Shape(int corners) implements Comparable<Shape> {
 
@@ -122,6 +161,7 @@ public class StreamsDemo {
             return List.of(this, this);
         }
 
+
         @Override
         public String toString() {
             return switch (corners) {
@@ -132,12 +172,13 @@ public class StreamsDemo {
             };
         }
 
+        // Las formas se comparan en función del número de esquinas
         @Override
         public int compareTo(Shape other) {
             return Integer.compare(corners, other.corners());
         }
 
-        //MÉTODOS FACTORÍA
+        //MÉTODOS FACTORÍA (crean nuevos objetos de tipo Shape)
         public static Shape circle() {
             return new Shape(0);
         }
@@ -151,6 +192,7 @@ public class StreamsDemo {
         }
     }
 
+    // Fuente de datos para los ejemplos
     static Shape[] SAMPLE_SHAPES_ARRAY = new Shape[]{
             Shape.triangle(),
             Shape.square(),
@@ -172,6 +214,7 @@ public class StreamsDemo {
         printShapes(List.of(shapes));
     }
 
+
     // Selección de elementos
 
     static void filterExample() {
@@ -179,8 +222,11 @@ public class StreamsDemo {
         printShapes(SAMPLE_SHAPES_ARRAY);
         System.out.println(" <- Original");
 
-        Stream<Shape> stream = Stream.of(SAMPLE_SHAPES_ARRAY);
+        // Generar un stream a partir de un array
+        //Stream<Shape> stream = Stream.of(SAMPLE_SHAPES_ARRAY); // otra forma de crear el array
+        Stream<Shape> stream = Arrays.stream(SAMPLE_SHAPES_ARRAY);
 
+        // Aplicar la operación intermedia filter para obtener un otro Stream que aplicará el filtro
         Stream<Shape> filtered = stream.filter(Shape::hasCorners);
 
         printStream(filtered);
@@ -283,6 +329,8 @@ public class StreamsDemo {
 
     static void flatMapExample() {
 
+        System.out.println("Ejemplo flatMap -------------------------------------");
+
         printShapes(SAMPLE_SHAPES_ARRAY);
         System.out.println(" <- Original");
 
@@ -313,6 +361,8 @@ public class StreamsDemo {
 
     static void mapMultiExample() {
 
+        System.out.println("Ejemplo mapMulti ------------------------------------");
+
         Stream<Shape> mappedMulti = Stream.of(SAMPLE_SHAPES_ARRAY)
                 .distinct()
                 .mapMulti((shape, shapeConsumer) ->
@@ -323,22 +373,22 @@ public class StreamsDemo {
         System.out.println(" <- .mapMulti()");
     }
 
-    // -------------Reduccion -----------------------------------------
+    // -------------Reducción -----------------------------------------
     // Reduce los elementos del Stream a un resultado individual o único
     // mediante la aplicación repetidamente del un operador acumulador
 
     // Tal operador acumulador usa el resultado previo para combinarlo con
     // el elemento actual en proceso para generar un nuevo resultado
 
-    // Se supone que el acumulador siempre devuelve un valor nuevo sin
-    // requerir una estructura de datos intermedia
+    // Se supone que el acumulador siempre devuelve un valor nuevo, sin
+    // requerir una estructura de datos intermedia que vaya mutando
 
 
     static Integer sumReductionImperative(Collection<Integer> numbers) {
         int result = 0; // Valor inicial, depende del objetivo
 
         for (Integer value : numbers) { // Aplicada a cada elemento
-            result = Integer.sum(result, value); //Lógica de la reducción, función acumulador
+            result = Integer.sum(result, value); //Lógica de la reducción, función acumuladora
         }
         return result;  // El valor de la reducción
     }
@@ -355,6 +405,7 @@ public class StreamsDemo {
         return result;
     }
 
+    // Reducción sin valor inicial o semilla
     static <T> Optional<T> reduce(Collection<T> elements, BinaryOperator<T> accumulator) {
         if (elements.isEmpty()) return Optional.empty();
         Iterator<T> iterator = elements.iterator();
@@ -365,11 +416,12 @@ public class StreamsDemo {
         return Optional.of(result);
     }
 
-    //sum() un tipo de reducción especializada consistente en sumar los elementos
+    //Operación sum() un tipo de reducción especializada consistente en sumar los elementos
     static Integer sum(Collection<Integer> numbers) {
         return reduce(numbers, 0, Integer::sum);
     }
 
+    //Operación max(), una reducción que consiste en quedarse con el elemento mayor de todos
     static Optional<Integer> max(Collection<Integer> numbers) {
         return reduce(numbers, Math::max);
     }
@@ -381,8 +433,6 @@ public class StreamsDemo {
         int sum3 = reduce(numbers, 0, Integer::sum);
         Optional<Integer> max1 = max(numbers);
         Optional<Integer> max2 = reduce(numbers, Math::max);
-
-
     }
 
 
@@ -505,43 +555,44 @@ public class StreamsDemo {
     }
 
 
-    // --- reduccion con operaciones de reducción mutable
+    // --- Reducción con operaciones de reducción mutable
 
     // Se puede usar el operador reduce del API de Streams,
     // Pero el acumulador NO PUEDE MUTAR la lista que recibe
     // El operador acumulador recibe la lista con los elementos acumulados
     // y el elemento actual
     // y devuelve una NUEVA lista, creando una lista con los mismos elementos
-    // y añadiendole el elemento actual
+    // y añadiéndole el elemento actual
     static void aggregateElementsDemoInmutable() {
-        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
-                .reduce(new ArrayList<>(),
-                        (acc, fruit) -> { //accumulator
-                            var list = new ArrayList<>(acc);
-                            list.add(fruit);
-                            return list;
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocotón")
+                .reduce(new ArrayList<String>(), // Un ArrayList vacío para empezar a acumular
+                        (acc, fruit) -> { //accumulator: BiFunction<Acumulador,T,Acumulador>
+                            var list = new ArrayList<>(acc); //Creamos una copia de la lista
+                            list.add(fruit);    //Añadimos el elemento a la copia
+                            return list;        //Devolvemos una copia de la lista con el elemento añadido
                         },
-                        (lhs, rhs) -> { //combiner
-                            var list = new ArrayList<>(lhs);
-                            list.add(rhs);
-                            return list;
+                        (lhs, rhs) -> { //combiner: BinaryOperator<Accumulador>
+                            var list = new ArrayList<>(lhs); // Copia de la lista izquierda (left)
+                            list.addAll(rhs);  // Le añadimos los elementos de la lista derecha (right)
+                            return list; // Devolvemos una lista que combina 2 listas
                         });
 
         System.out.println(fruits);
     }
 
+    //Podemos hacer "trampas" y modificar la colección inicial directamente sin hacer copias
     static void aggregateElementsDemoInmutableCheat() {
-        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
-                .reduce(new ArrayList<>(),
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocotón")
+                .reduce(new ArrayList<String>(),
                         (acc, fruit) -> { // BiFunction<A,T,A>  accumulator
-                            var list = acc; // new ArrayList<>(acc);
-                            list.add(fruit);
-                            return list;
+                            //var list = new ArrayList<>(acc);
+                            acc.add(fruit); //Añadimos directamente a la lista origen
+                            return acc;     //Devolvemos la referencia (es l misma lista origen)
                         },
                         (lhs, rhs) -> { //combiner
-                            var list = new ArrayList<>(lhs);
-                            list.add(rhs);
-                            return list;
+                            //var list = new ArrayList<>(lhs);
+                            lhs.addAll(rhs);
+                            return lhs;
                         });
 
         System.out.println(fruits);
@@ -550,15 +601,33 @@ public class StreamsDemo {
     static void aggregateElementsDemo() {
         aggregateElementsDemoInmutable();
         aggregateElementsDemoInmutableCheat();
-        collectDemo();
+        collectDemo1();
         collectDemo2();
+        reduceVSCollect();
     }
 
-    static void collectDemo() {
-        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
+    // https://docs.oracle.com/en/java/javase/22/docs/api/java.base/java/util/stream/package-summary.html#MutableReduction
+    // Cuando no nos importe (o incluso nos convenga dado que es mas eficiente) mutar el acumulador
+    // Disponemos de otro operador terminal de reducción: collect
+
+    //A diferencia del método reduce, el método collect no usa BiFunctions sino BiConsumers
+    // Se da por hecho que lo que va a hacer es mutar el acumulador proporcionado por el Supplier
+    static void collectDemo1() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocotón")
+                .collect(ArrayList::new, //Supplier<A>
+                        ArrayList::add, //BiConsumer<A,T> accumulator
+                        ArrayList::addAll); //BiConsumer<A,A> combiner
+
+        System.out.println(fruits);
+    }
+
+    //Existe una segunda version de sobrecarga del método que recibe como argumento una referencia a un Collector
+    // El Collector lo podemos obtener (entre otras formas) a partir del método factoría of de la clase Collector
+    static void collectDemo2() {
+        var fruits = Stream.of("manzana", "naranja", "pera", "melocotón")
                 .collect(Collector.of(ArrayList::new,
                                 ArrayList::add, //BiConsumer<A,T> accumulator
-                                (l1, l2) -> {
+                                (l1, l2) -> {   //BinaryOperator<A> combiner
                                     l1.addAll(l2);
                                     return l1;
                                 },
@@ -568,15 +637,25 @@ public class StreamsDemo {
         System.out.println(fruits);
     }
 
-    static void collectDemo2() {
-        var fruits = Stream.of("manzana", "naranja", "pera", "melocoton")
-                .collect(ArrayList::new, //Supplier<A>
-                        ArrayList::add, //BiConsumer<A,T> accumulator
-                        ArrayList::addAll); //BiConsumer<A,A> combiner
+    static void reduceVSCollect() {
 
-        System.out.println(fruits);
+        String[] nombres = new String[]{"Rafa", "Raul", "Emilio", "Ramon"};
+
+        String result = Arrays.stream(nombres).reduce("", String::concat);
+
+        System.out.println(result);
+
+
+        StringJoiner stringJoiner = Arrays.stream(nombres).collect(
+                () -> new StringJoiner(", ", "[", "]"), //Supplier<StringJoiner>
+                StringJoiner::add,  //BiConsumer<StringJoiner, String> añade el String al StringJoiner
+                StringJoiner::merge   //BiConsumer<StringJoiner, StringJoiner> combina 2 StringJoiner
+        );
+        System.out.println(stringJoiner.toString());
     }
 
+
+    //-- Mapas
 
     static void toMapGroupingByCorners() {
         printShapes(SAMPLE_SHAPES_ARRAY);
@@ -767,6 +846,7 @@ public class StreamsDemo {
     }
 
 
+    //No hacer caso
     static void xxx() {
         IntSummaryStatistics stats = IntStream.of(1, 2)
                 .summaryStatistics();

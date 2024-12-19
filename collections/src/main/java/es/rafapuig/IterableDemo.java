@@ -1,5 +1,7 @@
 package es.rafapuig;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -9,6 +11,10 @@ public class IterableDemo {
     static String[] NAMES = {"Rafa", "Raul", "Rodrigo", "Ruben", "Ramon"};
 
     public static void main(String[] args) {
+        new IterableDemo().run();
+    }
+
+    private void run() {
         testIterateOnArrays();
         testIterableForEach();
         testIterateGeneric();
@@ -17,16 +23,18 @@ public class IterableDemo {
         testIteratorForEachRemaining();
     }
 
-    static void testIterateOnArrays() {
+    @Test
+    void testIterateOnArrays() {
         //Los arrays se pueden iterar con un bucle for-each
         for(String name : NAMES) {
             System.out.println(name);
         }
     }
 
-    static void testIterableForEach() {
-        // Adaptamos el array a un lista
-        // (esto es lo que hace implicitamente Java para hacer un for-each con arrays)
+    @Test
+    void testIterableForEach() {
+        // Adaptamos el array a una lista
+        // (esto es lo que hace implícitamente Java para hacer un for-each con arrays)
         Iterable<String> iterable = List.of(NAMES);
 
         // La referencia que ponemos después de los : debe ser
@@ -43,13 +51,14 @@ public class IterableDemo {
         }
     }
 
-    static void testIterateGeneric() {
+    @Test void testIterateGeneric() {
         Iterable<?> iterable = List.of(NAMES);
         iterateGeneric(iterable);
     }
 
     // --- Usar el iterador
-    static void testIterableIterator() {
+    @Test
+    void testIterableIterator() {
         Iterable<String> iterableNames = List.of(NAMES);
 
         //Obtenemos el iterador

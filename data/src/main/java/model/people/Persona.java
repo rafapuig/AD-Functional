@@ -8,6 +8,8 @@ import java.util.*;
 public class Persona implements Comparable<Persona> {
     @Override
     public int compareTo(Persona other) {
+        //Si la otra persona tiene una fecha de nacimiento menor (anterior) a la mia -> -1 this es menor
+        //Si la otra persona nació después de this (fecha de nacimiento mayor) -> 1, this es mayor
        return other.getNacimiento().compareTo(this.getNacimiento());
     }
 

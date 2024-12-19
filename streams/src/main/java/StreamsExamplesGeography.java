@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StreamExamplesGeography {
+public class StreamsExamplesGeography {
 
     public static void main(String[] args) {
         printCountries();
@@ -134,6 +134,9 @@ public class StreamExamplesGeography {
     }
 
 
+    /**
+     * Obtiene todos los paises de Europa
+     */
     static void getAllEuropeanCountries() {
 
         List<Country> result = Countries.WORLD_COUNTRIES.stream()
@@ -173,8 +176,8 @@ public class StreamExamplesGeography {
         var result = Countries.WORLD_COUNTRIES.stream()
                 .filter(country -> country.getContinent() == Continent.EUROPE)
                 .sorted(Comparator.comparing(
-                        country -> country.getSurface().orElse(null),
-                        Comparator.nullsFirst(Comparator.reverseOrder())))
+                        country -> country.getSurface().orElse(null), //keyExtractor
+                        Comparator.nullsFirst(Comparator.reverseOrder())))  //keyComparator
                 .toList();
 
         System.out.println("\nTodos los países de " + Continent.EUROPE + " ordenados por superficie:");
