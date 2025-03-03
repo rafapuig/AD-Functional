@@ -32,9 +32,9 @@ public class GenericsDemo {
     static void objectWrapperTest() {
         ObjectWrapper stringWrapper = new ObjectWrapper("Hola");
         stringWrapper.set("Adios");
-        String s = (String) stringWrapper.get(); //Necesario el casting
+        String s = (String) stringWrapper.get(); //Necesario el downcasting
 
-        stringWrapper.set(Integer.valueOf(100));
+        stringWrapper.set(Integer.valueOf(100)); // Boxing explicito no necesario
         try {
             s = (String) stringWrapper.get();
 
@@ -48,12 +48,12 @@ public class GenericsDemo {
 
         Wrapper<String> greetingWrapper = new Wrapper<String>("Hola");
         greetingWrapper.set("Buenos dias"); // Espera un String como argumento
-        String greeting = greetingWrapper.get(); // Casting no necesario
+        String greeting = greetingWrapper.get(); // downcasting no necesario
 
         //greetingWrapper.set(new Integer(100)); //Error de compilación
 
         Wrapper<Integer> integerWrapper = new Wrapper<>(100);
-        int id = integerWrapper.get().intValue();
+        //int id = integerWrapper.get().intValue();
         Integer id1 = integerWrapper.get();
 
         //integerWrapper.set("Hola"); //Error
@@ -78,7 +78,7 @@ public class GenericsDemo {
     }
 
     static void rawTypeTest() {
-        //Uso del tipo generico Wrapper<T> "en crudo" (sin parametro)
+        //Uso del tipo genérico Wrapper<T> "en crudo" (sin parámetro de tipo)
         Wrapper rawType = new Wrapper("Hola"); //unchecked warning call
 
         //Uso como tipo parametrizado con el tipo String

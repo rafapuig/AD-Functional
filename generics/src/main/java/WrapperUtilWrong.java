@@ -22,9 +22,9 @@ public class WrapperUtilWrong {
         return sum;
     }
 
-    //Metodo generico
-    //No es lo más adecuado, pues solo permite copiar en otro
-    //Wrapper si el valor del parámetro T es el mismo
+    // Metodo genérico
+    // No es lo más adecuado, pues solo permite copiar en otro Wrapper
+    // si el valor del parámetro T es el mismo
     public static <T> void copy(Wrapper<T> source, Wrapper<T> dest) {
         T value = source.get();
         dest.set(value);

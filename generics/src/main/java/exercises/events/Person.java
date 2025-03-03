@@ -21,8 +21,8 @@ public class Person {
         System.out.println(getName() + " está cumpliendo años...");
         age++;
         // LLama al metodo que dispara el evento OnYearTurned
-        // Como no se adjunta junto al evento informacion adicional
-        // pasamos la referencia a la instancia estatica empty declarada con tal fin en la clase EventArgs
+        // Como no se adjunta junto al evento información adicional
+        // pasamos la referencia a la instancia estática empty declarada con tal fin en la clase EventArgs
         onYearTurned(EventArgs.EMPTY);
     }
 

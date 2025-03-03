@@ -16,7 +16,7 @@ import java.util.logging.Handler;
 public class Event<S, T extends EventArgs> {
 
     //Lista interna donde se van a registrar los controladores de evento
-    private List<EventHandler<S, T>> handlers;
+    private final List<EventHandler<S, T>> handlers;
 
     public Event() {
         this.handlers = new LinkedList<>();
