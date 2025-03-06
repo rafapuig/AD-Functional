@@ -133,6 +133,8 @@ public class CollectionDemo {
 
     //-------------- ELIMINAR Y VACIAR  ---------------------------
 
+
+
     @Test
     void testRemove() {
         Collection<String> countries = getEuropeanCountries();
