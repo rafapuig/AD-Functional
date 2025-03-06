@@ -2,8 +2,17 @@ package exercises.observer;
 
 public class Person {
 
-    final Observable<String> name = new Observable<>();
-    final Observable<Integer> age = new Observable<>();
+    private final Observable<String> name;
+    private final Observable<Integer> age;
+
+    public Person(String name, int age) {
+        this.age = new Observable<>(age);
+        this.name = new Observable<>(name);
+    }
+
+    Observable<String> getObservableName() {
+        return this.name;
+    }
 
     String getName() {
         return name.get();
@@ -11,6 +20,11 @@ public class Person {
 
     void setName(String name) {
         this.name.set(name);
+    }
+
+
+    Observable<Integer> getObservableAge() {
+        return this.age;
     }
 
     Integer getAge() {

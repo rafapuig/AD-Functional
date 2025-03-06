@@ -8,6 +8,12 @@ public class Observable<T> {
     T value;
     List<Observer<T>> observers = new ArrayList<>();
 
+    public Observable() { }
+
+    public Observable(T value) {
+        this.value = value;
+    }
+
     T get() {
         return value;
     }
@@ -16,8 +22,12 @@ public class Observable<T> {
         if (this.value != value) {
             T oldValue = this.value;
             this.value = value;
-            observers.forEach(observer -> observer.update(oldValue, value));
+            notifyObservers(oldValue, value);
         }
+    }
+
+    protected void notifyObservers(T oldValue, T newValue) {
+        observers.forEach(observer -> observer.update(oldValue, newValue));
     }
 
     void registerObserver(Observer<T> observer) {

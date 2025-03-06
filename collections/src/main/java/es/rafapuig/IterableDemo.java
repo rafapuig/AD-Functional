@@ -79,11 +79,11 @@ public class IterableDemo {
         //Función de orden superior (programación funcional)
         //forEach(Consumer<? super T> consumer)
 
-        //Se asigna a la variable consumer una expresion lambda (PF)
+        //Se asigna a la variable consumer una expresión lambda (PF)
         Consumer<? super String> consumer = name -> System.out.println(name);
         iterable.forEach(consumer);
 
-        //Llamada directa mediante una expresion lamda
+        //Llamada directa mediante una expresión lambda
         iterable.forEach(name -> System.out.println(name));
 
 
@@ -110,7 +110,7 @@ public class IterableDemo {
 
         //Repetimos el bucle
         // mientras el iterador diga que hay elem siguiente
-        // y no hayamos consumido mas de 2 elementos
+        // y no hayamos consumido más de 2 elementos
         int count = 0;
         while(iterator.hasNext() && count < 2) {
             String name = iterator.next();  //Obtenemos el siguiente elem

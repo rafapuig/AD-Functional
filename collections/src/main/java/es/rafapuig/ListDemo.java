@@ -1,10 +1,82 @@
 package es.rafapuig;
 
 import es.rafapuig.model.Alumno;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ListDemo {
+
+    static final String[] COUNTRIES_ARRAY = {"España", "Francia", "Portugal", "Italia"};
+
+    /**
+     * Metodo auxiliar estático genérico para imprimir por consola una lista mediante foreach
+     */
+    static <T> void printList(List<T> list) {
+        for (T elem : list) { //Como una List hereda de Iterable se puede usar en un foreach
+            System.out.println(elem);
+        }
+    }
+
+    /**
+     * Metodo auxiliar para imprimir directamente la lista por consola
+     * (no genérico, usa el unbounded wildcard para el parámetro de tipo del tipo del parámetro de entrada)
+     */
+    static void print(List<?> list) {
+        System.out.println(list);
+    }
+
+    @Test
+    void testArraysAsList() {
+        String[] countriesArray = {"España", "Francia", "Portugal", "Italia"};
+        //Crear una VISTA en forma de lista del array
+        List<String> countries = Arrays.asList(countriesArray);
+        print(countries);
+
+        // Cambios en la vista de lista (en realidad serán cambios en el array subyacente)
+        countries.set(0, "Holanda");
+        // Y Se reflejan en el array
+        System.out.println(Arrays.toString(countriesArray));
+
+        //Si se modifica el array subyacente
+        countriesArray[1] = "Belgica";
+        // Los cambios se reflejan en la vista
+        print(countries);
+    }
+
+    @Test
+    void testListOf() {
+        try {
+            List<String> countries = List.of("España", "Francia", "Portugal", "Italia");
+
+            //No permitido
+            countries.set(0, "Holanda");
+            print(countries);
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+        }
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            List<String> countries = List.of("España", "Francia", "Portugal", "Italia");
+            countries.set(0, "Holanda");
+        });
+    }
+
+    @Test
+    void testModifyListOfThrowsException() {
+        //Given
+        List<String> countries = List.of("España", "Francia", "Portugal", "Italia");
+
+        //When
+        Executable setCountry = () -> countries.set(0, "Holanda");
+
+        //Then
+        assertThrows(UnsupportedOperationException.class, setCountry);
+    }
+
 
     public static List<Alumno> getAlumnos() {
         List<Alumno> alumnoList = new ArrayList<>();
@@ -20,26 +92,16 @@ public class ListDemo {
 
         alumnoList.add(
                 new Alumno("12345678", "AMADOR",
-                        new String[] {"DENADOR", "PEREZ"}, 34));
+                        new String[]{"DENADOR", "PEREZ"}, 34));
 
         return alumnoList;
     }
 
     public static void main(String[] args) {
         //listTest();
+        testListIterator();
     }
 
-    //Metodo auxiliar para imprimir por consola una lista mediante foreach
-    static <T> void printList(List<T> list) {
-        for (T elem : list) { //Como una List hereda de Iterable se puede usar en un foreach
-            System.out.println(elem);
-        }
-    }
-
-    //Metodo auxiliar para imprimir directamente la lista por consola
-    static void print(List<?> list) {
-        System.out.println(list);
-    }
 
     static void listTest() {
 
@@ -59,7 +121,7 @@ public class ListDemo {
         String ingrediente = ingredients.get(2);
         System.out.println("ingredientes[2] = " + ingrediente);
 
-        //Esteblecer un nuevo elemento en la posicion, en sustitucion del elem anterior
+        //Establecer un nuevo elemento en la posición, en sustitución del elem anterior
         ingredients.set(2, "cafe en polvo");
         print(ingredients);
 
@@ -114,6 +176,137 @@ public class ListDemo {
         LinkedList<Alumno> alumnoList = new LinkedList<>(getAlumnos());
 
         alumnoList.descendingIterator();
+    }
+
+    /**
+     * Devuelve una lista modificable de nombres de ingredientes
+     */
+    static List<String> getIngredientsList() {
+        return new ArrayList<>(List.of("arroz", "leche", "harina"));
+    }
+
+    static void testListIterator() {
+        List<String> ingredients = getIngredientsList();
+
+        ListIterator<String> listIterator = ingredients.listIterator();
+
+        while (listIterator.hasNext()) {
+            int index = listIterator.nextIndex();
+            String ingredient = listIterator.next();
+            System.out.print("index = " + index);
+            System.out.println(", ingrediente = " + ingredient);
+        }
+
+        while (listIterator.hasPrevious()) {
+            int index = listIterator.previousIndex();
+            String ingredient = listIterator.previous();
+            System.out.print("index = " + index);
+            System.out.println(", ingrediente = " + ingredient);
+        }
+
+        while (listIterator.hasNext()) {
+            int index = listIterator.nextIndex();
+            String ingredient = listIterator.next();
+            // Podemos establecer un nuevo elemento en la posición recuperada por next (o previous)
+            listIterator.set(ingredient.toUpperCase());
+        }
+
+        iterateForwards(ingredients.listIterator());
+
+        int initalPosition = ingredients.size(); // Debe ser un valor entre 0 y List.size()
+        iterateBackwards(ingredients.listIterator(initalPosition));
+
+        testAddingWithListIterator();
+        testRemovingWithListIterator();
+    }
+
+    /**
+     * El ListIterator añade un elemento a la lista en la posición indicada por el nextIndex
+     * El cursor se sitúa entre los elementos previousIndex y nextIndex
+     */
+    private static void testAddingWithListIterator() {
+        List<String> ingredients = getIngredientsList();
+        ListIterator<String> listIterator2 = ingredients.listIterator();
+        print(ingredients);
+
+        System.out.println("next index = " + listIterator2.nextIndex());
+        System.out.println("previous index = " + listIterator2.previousIndex());
+        listIterator2.add("azucar".toUpperCase());
+        print(ingredients);
+
+        System.out.println("next index = " + listIterator2.nextIndex());
+        System.out.println("previous index = " + listIterator2.previousIndex());
+        listIterator2.add("chocolate".toUpperCase());
+        print(ingredients);
+
+        listIterator2.next();
+        System.out.println("next index = " + listIterator2.nextIndex());
+        System.out.println("previous index = " + listIterator2.previousIndex());
+        listIterator2.add("limón".toUpperCase());
+        print(ingredients);
+    }
+
+    static void testRemovingWithListIterator() {
+        List<String> ingredients = getIngredientsList();
+        ListIterator<String> listIterator = ingredients.listIterator();
+        print(ingredients);
+
+        System.out.println("next index = " + listIterator.nextIndex());
+        System.out.println("previous index = " + listIterator.previousIndex());
+        try {
+            listIterator.remove();
+        } catch (IllegalStateException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede eliminar con previous index -1");
+        }
+        print(ingredients);
+
+        listIterator.next();
+        System.out.println("next index = " + listIterator.nextIndex());
+        System.out.println("previous index = " + listIterator.previousIndex());
+        listIterator.remove();
+        print(ingredients);
+        System.out.println("next index = " + listIterator.nextIndex());
+        System.out.println("previous index = " + listIterator.previousIndex());
+
+        System.out.println("Avazamos el iterador...");
+        listIterator.next();
+        System.out.println("Avazamos el iterador...");
+        listIterator.next();
+        System.out.println("next index = " + listIterator.nextIndex());
+        System.out.println("previous index = " + listIterator.previousIndex());
+        listIterator.remove();
+        System.out.println("next index = " + listIterator.nextIndex());
+        System.out.println("previous index = " + listIterator.previousIndex());
+        listIterator.remove();
+        print(ingredients);
+
+
+    }
+
+    /**
+     * Recorre una List hacia adelante mediante un ListIterador
+     * El cursor del iterador proporcionado puede encontrarse situado en cualquier posición de la lista
+     */
+    static <T> void iterateForwards(ListIterator<T> listIterator) {
+        while (listIterator.hasNext()) {
+            int index = listIterator.nextIndex();
+            T element = listIterator.next();
+            System.out.print("index = " + index);
+            System.out.println(", element = " + element);
+        }
+    }
+
+    /**
+     * Recorre una List hacia adelante mediante un ListIterador
+     * El cursor del iterador proporcionado puede encontrarse situado en cualquier posición de la lista
+     */
+    static <T> void iterateBackwards(ListIterator<T> listIterator) {
+        while (listIterator.hasPrevious()) {
+            int index = listIterator.previousIndex();
+            T element = listIterator.previous();
+            System.out.print("index = " + index);
+            System.out.println(", element = " + element);
+        }
     }
 
 }

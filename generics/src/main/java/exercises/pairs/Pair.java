@@ -12,6 +12,7 @@ public class Pair<T> {
         this.second = second;
     }
 
+
     public T getFirst() {
         return first;
     }
@@ -20,9 +21,19 @@ public class Pair<T> {
         return second;
     }
 
-    public Pair<T> swap() {
-       return swap(this);
+    public void setFirst(T first) {
+        this.first = first;
     }
+
+    public void setSecond(T second) {
+        this.second = second;
+    }
+
+    public Pair<T> swap() {
+        return swap(this);
+    }
+
+    /*** Pair UTILS ***/
 
     /**
      * Los metodos estáticos no reciben el parámetro de tipo declarado en la clase
@@ -33,8 +44,17 @@ public class Pair<T> {
         return new Pair<>(pair.second, pair.first);
     }
 
-    public static <T> Pair<T> combine(Pair<T> pair, Pair<T> pair2, Combinator<Pair<T>> combinator) {
-        return combinator.combine(pair, pair2);
+    static void printPair(Pair<?> pair) {
+        System.out.println(pair.getFirst() + " y " + pair.getSecond());
+    }
+
+    public static <T> Pair<Pair<? extends T>> join(Pair<? extends T> first, Pair<? extends T> second) {
+        return new Pair<>(first, second);
+    }
+
+    static <T> void fill(T first, T second, Pair<? super T> pair) {
+        pair.setFirst(first);
+        pair.setSecond(second);
     }
 
 }

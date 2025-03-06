@@ -79,12 +79,12 @@ public class ObservableDemo {
 
 
     private static void example00() {
-        Person person = new Person();
+        Person person = new Person("Rafael", 18);
 
-        person.name.registerObserver((oldValue, newValue) ->
+        person.getObservableName().registerObserver((oldValue, newValue) ->
                 System.out.println("Old name: " + oldValue + " New name: " + newValue));
 
-        person.age.registerObserver((oldValue, newValue) ->
+        person.getObservableAge().registerObserver((oldValue, newValue) ->
                 System.out.println("Old age: " + oldValue + " New age: " + newValue));
 
         person.setName("Rafa");

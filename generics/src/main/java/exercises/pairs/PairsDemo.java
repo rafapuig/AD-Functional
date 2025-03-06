@@ -1,13 +1,17 @@
 package exercises.pairs;
 
-import java.util.Comparator;
-
 import static java.util.Comparator.comparing;
 
 public class PairsDemo {
 
     public static void main(String[] args) {
 
+        test();
+        testPairOfPairs();
+
+    }
+
+    private static void test() {
         Pair<String> stringPair = new Pair<>("Blanco", "Negro");
 
         System.out.println(stringPair.getFirst());
@@ -49,7 +53,7 @@ public class PairsDemo {
         Pair<Character> surrogated = new Pair<>('\uD83C', '\uDC63');
 
 
-        Combinator<CharSequence> stringCombinator = new Combinator<>() {
+        /*Combinator<CharSequence, CharSequence> stringCombinator = new Combinator<, CharSequence, >() {
 
             @Override
             public CharSequence combine(CharSequence a, CharSequence b) {
@@ -57,10 +61,67 @@ public class PairsDemo {
             }
         };
 
-        String result = (String) stringCombinator.combine("a", "b");
+        String result = (String) stringCombinator.combine("a", "b");*/
 
+        Pair<Pair<String>> pairOfPairs = new Pair<>(
+                new Pair<>("Hola", "Adios"), new Pair<>("Gato", "Perro")
+        );
+
+        Pair<Pair<? extends Person>> pairOfPersons = new Pair<>(
+                new Pair<>(belen, armando),
+                empPair
+        );
+    }
+
+    static void testPairOfPairs() {
+        Person jose = new Person("Jose", 45);
+        Person maria = new Person("Maria", 32);
+
+        Employee armando = new Employee("Armando Bronca", 36, 1500);
+        Employee belen = new Employee("Belen Tilla", 39, 1800);
+
+        Pair<Person> joseAndMariaPair = new Pair<>(jose, maria);
+        Pair<Employee> armandoAndBelenPair = new Pair<>(armando, belen);
+
+
+        Pair<Person> personPair = joseAndMariaPair;
+        Pair<? extends Person> personPair2 = armandoAndBelenPair;
+
+        Pair.printPair(joseAndMariaPair);
+        Pair.printPair(armandoAndBelenPair);
+
+        Pair<Object> objectPair = new Pair<>(null, null);
+        Pair.fill(armando, belen, objectPair);
+        Pair<Employee> employeePair = new Pair<>(null, null);
+        Pair.fill(armando, belen, employeePair);
+
+        Pair<Pair<? extends Person>> xxxx = Pair.join(joseAndMariaPair, armandoAndBelenPair);
+
+    }
+
+    static void fillPair(Person p1, Person p2, Pair<? super Person> personPair) {
+        personPair.setFirst(p1);
+        personPair.setSecond(p2);
+    }
+
+    static void testCombine() {
+        Pair<Integer> pair1 = new Pair<>(1, 2);
+        Pair<Integer> pair2 = new Pair<>(3, 4);
+
+        Combinator<Integer,Integer,Integer> combinator = new Combinator<Integer, Integer, Integer>() {
+            @Override
+            public Pair<Integer> combine(Pair<? extends Integer> a, Pair<? extends Integer> b) {
+                return new Pair<>(a.getFirst() + b.getFirst(), a.getSecond() + b.getSecond());
+            }
+        };
+
+
+
+        Pair<Short> pair3 = new Pair<>((short) 5, (short) 6);
 
 
 
     }
+
+
 }
