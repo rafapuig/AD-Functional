@@ -2,13 +2,12 @@ package es.rafapuig;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.Array;
 import java.util.*;
 
 public class CollectionDemo {
 
     static final String[] europeanCountriesArray =
-            {"España", "Francia", "Portugal", "Italia"};
+            {"España", "Francia", "Portugal", "Italia", "Suiza"};
 
     static final String[] americanCountriesArray =
             {"EE.UU.", "Canada", "Brasil", "Argentina", "Cuba", "Colombia"};
@@ -24,6 +23,9 @@ public class CollectionDemo {
     }
 
 
+    /**
+     * Colección modificable (mutable), se pueden añadir y quitar elementos
+     */
     static Collection<String> getEuropeanCountries() {
         List<String> countries = List.of(europeanCountriesArray);
 
@@ -43,138 +45,281 @@ public class CollectionDemo {
      * Devuelve una lista no modificable de nombres de países africanos
      */
     static Collection<String> getAfricanCountries() {
+        //Colección inmodificable
+        // No se puede añadir ni eliminar elementos --> lanzaría una UnsupportedOperationException
         return List.of(africanCountriesArray);
     }
 
 
+
+    public static void main(String[] args) {
+        new CollectionDemo().run();
+    }
+
+    void run() {
+        testAddToCollection();
+        testAddToUnmodifiableCollection();
+        testRemove();
+        testRemoveOnUnmodifiableCollection();
+        testRemoveOnUnmodifiableCollectionView();
+        testCheckElementsMethods();
+        testCollectionIterator();
+        testToArray();
+        testToArrayDestinationArrayEnoughSpace();
+        testToArrayDestinationArrayNotEnoughSpace();
+        testToArrayDestinationArrayNotEnoughSpaceSizeCeroFunctional();
+        testCollectionToStream();
+    }
+
+
+    //------------- AÑADIR ELEMENTOS ---------------------------
+
     @Test
-    void addToUnmodifiableCollectionTest() {
+    void testAddToCollection() {
+        Collection<String> countries = getEuropeanCountries();
+        print(countries);
+
+        countries.add("Reino Unido");
+        print(countries);
+
+        countries.add("Bélgica");
+        print(countries);
+
+        //El metodo addAll permite añadir varios elementos que provienen de una colección
+        countries.addAll(Arrays.asList("Suecia", "Noruega"));
+        print(countries);
+
+        countries.addAll(List.of("Alemania", "Austria"));
+        print(countries);
+    }
+
+
+    @Test
+    void testAddToUnmodifiableCollection() {
         //Añadir a una colección no modificable envolviendo la lista inmodificable en una modificable
         Collection<String> countries = new ArrayList<>(getAfricanCountries());
         print(countries);
+        System.out.println("Añadiendo Mozambique...");
         countries.add("Mozambique");
+        print(countries);
 
-        //Añadir a una colección inmodificable lanza una excepción
+        //Obtenemos una VISTA no modificable de la colección
+        //Añadir a una vista no modificable lanza una excepción (aunque la colección subyacente fuera modificable)
+        Collection<String> countriesUnmodifiable = Collections.unmodifiableCollection(countries);
         try {
-            Collection<String> countriesUnmodifiable = Collections.unmodifiableCollection(countries);
-            countriesUnmodifiable.add("Mozambique");
-            print(countriesUnmodifiable);
+            System.out.println("Añadiendo Angola...");
+            //Comprobamos que no se puede añadir elementos a una colección inmodificable
+            countriesUnmodifiable.add("Angola");
         } catch (UnsupportedOperationException e) {
-            e.printStackTrace();
+            System.out.println(e.getClass().getSimpleName() + ": No se puede añadir en una vista no modificable");
+        }
+        finally {
+            print(countriesUnmodifiable);
         }
 
         //List.of devuelve una lista no modificable
+        Collection<String> europeanCountries = List.of(europeanCountriesArray);
         try {
-            Collection<String> countriesUnmodifiable = List.of("España", "Portugal", "Italia");
-            countriesUnmodifiable.add("Francia");
-            print(countriesUnmodifiable);
+            System.out.println("Añadiendo Grecia...");
+            europeanCountries.add("Grecia");
+            print(europeanCountries);
         } catch (UnsupportedOperationException e) {
-            e.printStackTrace();
+            System.out.println(e.getClass().getSimpleName() + ": No se puede añadir en una colección no modificable");
+        } finally {
+            print(europeanCountries);
         }
+    }
+
+
+    //-------------- ELIMINAR Y VACIAR  ---------------------------
+
+    @Test
+    void testRemove() {
+        Collection<String> countries = getEuropeanCountries();
+        print(countries);
+
+        System.out.println("Eliminando Francia...");
+        //Eliminar un elemento
+        countries.remove("Francia");
+        print(countries);
+
+        System.out.println("Eliminando Portugal, Brasil y Colombia...");
+        //Elimina los elementos coincidentes con los de la colección proporcionada
+        countries.removeAll(List.of("Portugal", "Brasil", "Colombia"));
+        print(countries); // Solamente habrá podido eliminar Portugal (los otros no están)
+
+
+        System.out.println("Retener a España, Suiza y Andorra...");
+        //Borra todos los elementos de la colección menos los que están en la colección proporcionada
+        countries.retainAll(List.of("España", "Suiza", "Andorra"));
+        print(countries); // Quedarán España y Suiza (Andorra no pertenece a la colección)
+
+        System.out.println("Vaciando la colección (borrando todos los elementos)...");
+        //Borrar todos los elementos de la colección, la vacía
+        countries.clear();
+        print(countries);
     }
 
     @Test
-    void addToCollectionTest() {
-        Collection<String> europeanCountries = getEuropeanCountries();
-        print(europeanCountries);
-        europeanCountries.add("Reino Unido");
-        print(europeanCountries);
+    void testRemoveOnUnmodifiableCollection() {
+        Collection<String> countries = getAfricanCountries();
+        print(countries);
 
-        europeanCountries.add("Bélgica");
-        print(europeanCountries);
-
-        europeanCountries.addAll(Arrays.asList("Suecia", "Noruega"));
-        print(europeanCountries);
-
-        europeanCountries.addAll(List.of("Alemania", "Austria"));
-        print(europeanCountries);
-    }
-
-
-    void run() {
-        addToCollectionTest();
-        addToUnmodifiableCollectionTest();
-    }
-
-
-    public static void main(String[] args) {
-
-        new CollectionDemo().run();
-
-
-        //Colección modificable (mutable), se pueden añadir y quitar elementos
-        //Collection<String> paises = new LinkedList<>(Arrays.asList(paisesArray));
-        Collection<String> paises = new LinkedList<>(List.of(europeanCountriesArray)); //otra forma
-
-        //Colección inmodificable
-        // No se puede añadir ni eliminar elementos --> lanzaría una UnsupportedOperationExceptio
-        Collection<String> paisesUnmodifiable = List.of(europeanCountriesArray);
-
-        print(paises);
-        paises.add("Inglaterra");
-        print(paises);
-
-        //Añadir elementos a la colección
-
-        //Comprobamos que no se puede añadir elementos a una colección inmodificable
         try {
-            paisesUnmodifiable.add("Belgica");
+            System.out.println("Eliminando Marruecos...");
+            //Eliminar un elemento
+            countries.remove("Marruecos");
+
         } catch (UnsupportedOperationException e) {
-            System.out.println("No se puede insertar en una coleccion inmodificable - " + e);
+            System.out.println(e.getClass().getSimpleName() + ": No se puede eliminar de una colección no modificable");
+        } finally {
+            print(countries);
         }
 
-        //El metodo addAll permite añadir varios elementos que provienen de una colección
-        paises.addAll(List.of("Japon", "Australia"));
-        print(paises);
+        try {
+            System.out.println("Eliminando Marruecos, Brasil y Colombia...");
+            //Elimina los elementos coincidentes con los de la colección proporcionada
+            countries.removeAll(List.of("Marruecos", "Brasil", "Colombia"));
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede eliminar de una colección no modificable");
+        } finally {
+            print(countries);
+        }
 
-        //El metodo List.of permite como argumento un array
-        paises.addAll(List.of(americanCountriesArray));
-        print(paises);
+        try {
+            System.out.println("Retener a España, Marruecos y Andorra...");
+            //Borra todos los elementos de la colección menos los que están en la colección proporcionada
+            countries.retainAll(List.of("España", "Marruecos", "Andorra"));
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede modificar de una colección no modificable");
+        } finally {
+            print(countries);
+        }
 
-        //Eliminar elementos
-        paises.remove("Francia");
-        print(paises);
+        try {
+            System.out.println("Vaciando la colección (borrando todos los elementos)...");
+            //Borrar todos los elementos de la colección, la vacía
+            countries.clear();
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede vaciar una colección no modificable");
+        } finally {
+            print(countries);
+        }
 
-        //Elimina los elementos coincidentes con los de la colección proporcionada
-        paises.removeAll(List.of("Portugal", "Brasil", "Colombia"));
-        print(paises);
+    }
 
-        //Borra todos los elementos de la colección menos los que están en la colección proporcionada
-        paises.retainAll(List.of(americanCountriesArray));
-        print(paises);
+    @Test
+    void testRemoveOnUnmodifiableCollectionView() {
+        Collection<String> countries = Collections.unmodifiableCollection(getEuropeanCountries());
+        print(countries);
 
-        //Borrar todos los elementos de la colección, la vacía
-        paises.clear();
-        print(paises);
+        try {
+            System.out.println("Eliminando Francia...");
+            //Eliminar un elemento
+            countries.remove("Francia");
 
-        paises.addAll(List.of(europeanCountriesArray));
-        System.out.println("paises.contains(\"España\") = " + paises.contains("España"));
-        System.out.println("paises.contains(\"Grecia\") = " + paises.contains("Grecia"));
-        paises.remove("España");
-        System.out.println("paises.contains(\"España\") = " + paises.contains("España"));
-        print(paises);
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede eliminar de una vista no modificable");
+        } finally {
+            print(countries);
+        }
 
-        System.out.println("paises.containsAll(List.of(\"Francia\",\"Portugal\")) = "
-                + paises.containsAll(List.of("Francia", "Portugal")));
+        try {
+            System.out.println("Eliminando Portugal, Brasil y Colombia...");
+            //Elimina los elementos coincidentes con los de la colección proporcionada
+            countries.removeAll(List.of("Portugal", "Brasil", "Colombia"));
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede eliminar de una vista no modificable");
+        } finally {
+            print(countries);
+        }
 
-        System.out.println("paises.isEmpty() = " + paises.isEmpty());
-        System.out.println("paises.size() = " + paises.size());
-        paises.clear();
-        System.out.println("paises.isEmpty() = " + paises.isEmpty());
-        System.out.println("paises.size() = " + paises.size());
+        try {
+            System.out.println("Retener a España, Suiza y Andorra...");
+            //Borra todos los elementos de la colección menos los que están en la colección proporcionada
+            countries.retainAll(List.of("España", "Suiza", "Andorra"));
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede modificar de una vista no modificable");
+        } finally {
+            print(countries);
+        }
 
-        paises.addAll(List.of(americanCountriesArray));
-        //Iterador
-        Iterator<String> iterator = paises.iterator();
+        try {
+            System.out.println("Vaciando la colección (borrando todos los elementos)...");
+            //Borrar todos los elementos de la colección, la vacía
+            countries.clear();
+        } catch (UnsupportedOperationException e) {
+            System.out.println(e.getClass().getSimpleName() + ": No se puede vaciar una vista no modificable");
+        } finally {
+            print(countries);
+        }
+
+    }
+
+
+    //---------------- COMPROBACIÓN DE ELEMENTOS
+
+    @Test
+    void testCheckElementsMethods() {
+
+        Collection<String> countries = getEuropeanCountries();
+        print(countries);
+
+        System.out.println("countries.contains(\"España\") = " + countries.contains("España"));
+        System.out.println("countries.contains(\"Grecia\") = " + countries.contains("Grecia"));
+
+        System.out.println("Eliminamos España...");
+        countries.remove("España");
+        print(countries);
+        System.out.println("countries.contains(\"España\") = " + countries.contains("España"));
+
+        // Contains all
+        System.out.println("countries.containsAll(List.of(\"Francia\",\"Portugal\")) = "
+                + countries.containsAll(List.of("Francia", "Portugal")));
+
+        System.out.println("countries.containsAll(List.of(\"Francia\",\"Grecia\")) = "
+                + countries.containsAll(List.of("Francia", "Grecia")));
+
+        // Esta vacía
+        System.out.println("countries.isEmpty() = " + countries.isEmpty());
+
+        // Cuantos elementos contiene la colección
+        System.out.println("countries.size() = " + countries.size());
+
+        System.out.println("Vaciamos la lista...");
+        countries.clear();
+        print(countries);
+
+        System.out.println("countries.isEmpty() = " + countries.isEmpty());
+        System.out.println("countries.size() = " + countries.size());
+    }
+
+
+    //---------------- ITERADOR -----------------------------------
+
+    @Test
+    void testCollectionIterator() {
+        Collection<String> countries = getAmericanCountries();
+        print(countries);
+
+        System.out.println("Iterando mediante un iterator...");
+
+        Iterator<String> iterator = countries.iterator();
+
         while (iterator.hasNext()) {
-            System.out.println("iterator.next() = " + iterator.next());
+            String country = iterator.next();
+            System.out.println("pais = " + country);
         }
-        for (String pais : paises) {
+
+        System.out.println("Iterando mediante el bucle foreach...");
+
+        for (String pais : countries) {
             System.out.println("pais = " + pais);
         }
     }
 
-    //------------------TO ARRAY ------------------------------
+
+    //------------------TO ARRAY ----------------------------------
 
     @Test
     void testToArray() {
@@ -284,18 +429,25 @@ public class CollectionDemo {
 
     //Streams (Stream API)
     @Test
-    void testListToStream() {
+    void testCollectionToStream() {
         Collection<String> countries = generateEmptyCollection();
 
         countries.addAll(List.of(americanCountriesArray));
         countries.addAll(List.of(europeanCountriesArray));
+        countries.addAll(List.of(africanCountriesArray));
+
+        System.out.println(countries);
+        System.out.println("Nombre en mayúsculas de los países que empiezan por C o E ordenados alfabéticamente");
 
         // Imprimir por consola
         // los nombres de los paises que empiezan por C o por E
-        countries.stream()
+        Collection<String> result = countries.stream()
                 .filter(pais -> pais.startsWith("C") || pais.startsWith("E")) // filtrado
                 .map(String::toUpperCase)                                           // mapeo
-                .forEach(System.out::println);                                      // consumo
+                .sorted()                                       // ordenación
+                .toList();                                      // recolección
+
+        System.out.println(result);
     }
 
 }
