@@ -154,15 +154,24 @@ public class GenericsTest {
         System.out.println(ga2.getElement(0));
     }
 
+    /**
+     * Arrays cuyo tipo de elementos es un tipo genérico (clase o interface genérica)
+     * Es decir, elementos de un tipo que declara un parámetro de tipo.
+     */
     @Test
     void testGenericTypeArray() {
+        /*
+        Los elementos del array swa son de tipo Wrapper<String>
+        Wrapper es un clase genérica, por tanto, los elementos del array son de un tipo genérico
+        El array es un array cuyo tipo es un tipo genérico (array de genéricos)
+         */
         Wrapper<String>[] swa = null;
+
         /*
         No se puede crear un array de elementos de un tipo genérico (array de genéricos)
         porque el compilador no puede garantizar la seguridad de tipos en la asignación del array;
          */
-
-        //swa = new Wrapper<String>[10]; //Error de compilación (en tiempo de ejecución equivale a new Wrapper[10]
+        //swa = new Wrapper<String>[10]; //Error de compilación (en tiempo de ejecución equivale a new Wrapper[10] en crudo
         //swa[0] = new Wrapper<String>("Hola");
 
         /* Sí que está permitido crear un array de elementos con la wildcard */

@@ -13,7 +13,7 @@ public class CollectionDemo {
             {"EE.UU.", "Canada", "Brasil", "Argentina", "Cuba", "Colombia"};
 
     static final String[] africanCountriesArray =
-            {"Egipto", "Tunez", "Marruecos", "Camerún", "Senegal"};
+            {"Egipto", "Túnez", "Marruecos", "Camerún", "Senegal"};
 
     /**
      * Imprimir una colección en la consola
@@ -30,7 +30,7 @@ public class CollectionDemo {
         List<String> countries = List.of(europeanCountriesArray);
 
         // Crear una colección modificable "envolviéndola" con un LinkedList
-        return new LinkedList<>(countries);
+        return new HashSet<>(countries);
     }
 
 
@@ -79,16 +79,24 @@ public class CollectionDemo {
         Collection<String> countries = getEuropeanCountries();
         print(countries);
 
-        countries.add("Reino Unido");
+        // Al añadir un elemento en una colección, dependerá del tipo concreto de colección
+        // en que posición se añade el nuevo elemento
+        // Las tienen secuenciación y respetan la organización según el orden de llegada a la colección
+        // Los conjuntos, depende de la implementacion, no preservan el orden de inserción
+        System.out.println("Añadiendo Reino Unido...");
+        countries.add("Reino Unido".toUpperCase());
         print(countries);
 
-        countries.add("Bélgica");
+        System.out.println("Añadiendo Bélgica...");
+        countries.add("Bélgica".toUpperCase());
         print(countries);
 
+        System.out.println("Añadiendo Suecia y Noruega...");
         //El metodo addAll permite añadir varios elementos que provienen de una colección
         countries.addAll(Arrays.asList("Suecia", "Noruega"));
         print(countries);
 
+        System.out.println("Añadiendo Alemania y Austria...");
         countries.addAll(List.of("Alemania", "Austria"));
         print(countries);
     }

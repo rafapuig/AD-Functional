@@ -20,6 +20,7 @@ public class GenericArrayTest<T> {
         elements = (T[]) new Object[howMany];
     }
 
+
     public GenericArrayTest(Class<T> type, int howMany) {
         elements = (T[]) Array.newInstance(type, howMany);
     }

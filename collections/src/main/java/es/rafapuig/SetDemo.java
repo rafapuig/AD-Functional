@@ -10,16 +10,20 @@ import java.util.function.Function;
 public class SetDemo {
 
     static String[] frutas =
-            {"pera", "manzana", "limon", "kiwi", "cereza", "uva", "melocoton", "piña", "naranja"};
+            {"pera", "manzana", "limón", "kiwi", "cereza", "uva", "melocotón", "piña", "naranja"};
 
     public static void main(String[] args) {
 
-        //hashSetTest1();
+        Set<String> setOfFruits = Set.of(frutas);
+
+        System.out.println(setOfFruits.getClass().toString());
+
+        hashSetTest1();
         //hashSetTest2();
         //hashSetTest();
         //hashSetTest3();
         //hashSetTest4();
-        hashSetTest5();
+        //hashSetTest5();
 
         //linkedHashSetTest1();
         //linkedHashSetTest2();
