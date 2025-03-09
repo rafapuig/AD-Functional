@@ -16,13 +16,12 @@ public class GenericsTest {
         String s = (String) stringWrapper.get(); //Necesario el casting
 
         stringWrapper.set(Integer.valueOf(100));
-        try {
-            s = (String) stringWrapper.get();
 
-        } catch (ClassCastException e) {
-            System.out.println(e.getClass().getCanonicalName());
-            System.out.println(e.getMessage());
-        }
+        Executable code = () -> {
+            String s2 = (String) stringWrapper.get();
+        };
+
+        assertThrows(ClassCastException.class, code);
     }
 
     //La implementación de tipos genéricos es compatible hacia atrás.
@@ -40,10 +39,12 @@ public class GenericsTest {
         Wrapper<String> genericType = new Wrapper<>("Adios");
 
         //Asignar el tipo en crudo al tipo parametrizado
-        genericType = rawType; //unchecked warning
+        genericType = rawType; // unchecked warning
 
         //Asignar el tipo parametrizado al tipo en crudo
         rawType = genericType;
+
+        genericType.set("Adios");
     }
 
 
