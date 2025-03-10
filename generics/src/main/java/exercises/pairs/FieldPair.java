@@ -10,7 +10,6 @@ public class FieldPair<T> implements Pair<T> {
         this.second = second;
     }
 
-
     @Override
     public T getFirst() {
         return first;
