@@ -12,9 +12,11 @@ public interface Pair<T> {
 
     void setSecond(T second);
 
-    FieldPair<T> swap();
+    Pair<T> swap();
 
-    boolean contains(T item);
+    default boolean contains(T item) {
+        return (getFirst().equals(item) || getSecond().equals(item));
+    }
 
 
     /** Pair UTILS **/
@@ -36,7 +38,7 @@ public interface Pair<T> {
         return new FieldPair<>(first, second);
     }
 
-    static <T> void fill(T first, T second, Pair<? super T> pair) {
+    static <T> void fill(Pair<? super T> pair, T first, T second) {
         pair.setFirst(first);
         pair.setSecond(second);
     }

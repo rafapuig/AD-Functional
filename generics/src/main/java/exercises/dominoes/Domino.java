@@ -6,7 +6,20 @@ import java.util.*;
 
 public class Domino {
 
+    public static final int MIN_DOTS = 0;
+    public static final int MAX_DOTS = 6;
+
     private final FieldPair<Integer> ends;
+
+    public static boolean isValidNumberOfDots(int dots) {
+        return dots >= MIN_DOTS && dots <= MAX_DOTS;
+    }
+
+    private static void checkNumberOfDots(int dots) {
+        if (!isValidNumberOfDots(dots)) {
+            throw new IllegalArgumentException("Número de puntos invalido, entre 0 y 6");
+        }
+    }
 
     public Domino(int firstEndDots, int secondEndDots) {
         this.ends = new FieldPair<>(firstEndDots, secondEndDots);
@@ -32,6 +45,17 @@ public class Domino {
         return new Domino(ends.swap());
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (!(object instanceof Domino domino)) return false;
+        return ends.equals(domino.ends);
+    }
+
+    @Override
+    public int hashCode() {
+        return ends.hashCode();
+    }
+
     private static String endToString(int dots) {
         return switch (dots) {
             case 1 -> " ∙ ";
@@ -50,10 +74,17 @@ public class Domino {
         return "[" + endToString(ends.getFirst()) + "|" + endToString(ends.getSecond()) + "]";
     }
 
-    public static int VERTICAL_BASE = 0x1F062;
-    public static int HORIZONTAL_BASE = 0x1F030;
+
 
     //TODO un mapa de int (offset) a String (resultado cacheado del StringBuilder de la ficha)
+
+
+    private int getOffSet() {
+        return ends.getSecond() + ends.getFirst() * 7 + 1;
+    }
+
+    public static int VERTICAL_BASE = 0x1F062;
+    public static int HORIZONTAL_BASE = 0x1F030;
 
     protected static String toTileChar(boolean vertical, int offset) {
         final int base = vertical ? VERTICAL_BASE : HORIZONTAL_BASE;
@@ -66,13 +97,13 @@ public class Domino {
         //Character.highSurrogate();
     }
 
+    public static String backTileChar(boolean vertical) {
+        return toTileChar(vertical, 0);
+    }
+
     public String toTileChar(boolean vertical) {
         final int offset = getOffSet();
         return toTileChar(vertical, offset);
-    }
-
-    private int getOffSet() {
-        return ends.getSecond() + ends.getFirst() * 7 + 1;
     }
 
     public String toVerticalTileChar() {
@@ -82,11 +113,6 @@ public class Domino {
     public String toHorizontalTileChar() {
         return toTileChar(false);
     }
-
-    public static String backTileChar(boolean vertical) {
-        return toTileChar(vertical, 0);
-    }
-
 }
 
 class Demo {
@@ -105,6 +131,7 @@ class Demo {
 
         for (Domino domino : dominoes) {
             System.out.print(domino.toVerticalTileChar());
+            System.out.print(domino.toHorizontalTileChar());
         }
     }
 }

@@ -40,7 +40,16 @@ public class FieldPair<T> implements Pair<T> {
         return getFirst().equals(item) || getSecond().equals(item);
     }
 
+    @Override
+    public final boolean equals(Object object) {
+        if (!(object instanceof FieldPair<?> fieldPair)) return false;
+        return first.equals(fieldPair.first) && second.equals(fieldPair.second);
+    }
 
-
-
+    @Override
+    public int hashCode() {
+        int result = first.hashCode();
+        result = 31 * result + second.hashCode();
+        return result;
+    }
 }

@@ -101,11 +101,11 @@ public class PairsDemo {
 
         Pair<Object> objectPair = new FieldPair<>(null, null);
 
-        Pair.fill(armando, belen, objectPair);
+        Pair.fill(objectPair, armando, belen);
 
         Pair<Employee> employeePair = new FieldPair<>(null, null);
 
-        Pair.fill(armando, belen, employeePair);
+        Pair.fill(employeePair, armando, belen);
 
         Pair<Pair<? extends Person>> xxxx = Pair.join(joseAndMariaPair, armandoAndBelenPair);
 
