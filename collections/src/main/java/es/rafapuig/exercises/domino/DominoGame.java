@@ -7,9 +7,9 @@ public class DominoGame {
 
     public static void main(String[] args) {
 
-        Set<Dominoes> set = Domino.createDominoesSet();
+        Set<Domino> set = Dominoes.createDominoesSet();
 
-        Set<Dominoes> shuffledSet = Domino.shuffle(set);
+        Set<Domino> shuffledSet = Dominoes.shuffle(set);
 
         System.out.println(shuffledSet);
 
@@ -20,8 +20,8 @@ public class DominoGame {
         }
 
         int counter = 0;
-        for (Dominoes dominoes : shuffledSet) {
-            players.get(counter++ % players.size()).getDominoes().add(dominoes);
+        for (Domino domino : shuffledSet) {
+            players.get(counter++ % players.size()).getDominoes().add(domino);
         }
 
         for (Player player : players) {
@@ -29,19 +29,19 @@ public class DominoGame {
         }
 
         //Comprobar si el jugador 1 tiene seises
-        List<Dominoes> dominoesList = Domino.containsDominoesWith(
+        List<Domino> dominoList = Dominoes.containsDominoesWith(
                 players.get(0).getDominoes(), 6);
-        System.out.println(dominoesList);
+        System.out.println(dominoList);
 
-        dominoesList = Domino.containsDominoesWithStreams(
+        dominoList = Dominoes.containsDominoWithStreams(
                 players.get(0).getDominoes(), 6);
-        System.out.println(dominoesList);
+        System.out.println(dominoList);
 
         //Jugar la primera ficha del jugador 1 que tenga seis
         System.out.println(players.get(0));
 
-        if (!dominoesList.isEmpty()) {
-            players.get(0).removeDominoes(dominoesList.get(0));
+        if (!dominoList.isEmpty()) {
+            players.get(0).removeDominoes(dominoList.get(0));
         }
 
         System.out.println(players.get(0).getDominoes());

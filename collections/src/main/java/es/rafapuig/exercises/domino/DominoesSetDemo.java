@@ -12,57 +12,57 @@ public class DominoesSetDemo {
     }
 
     static void generateDominoesSetTest() {
-        Set<Dominoes> dominoesSet = Domino.createDominoesSet();
-        System.out.println(dominoesSet);
+        Set<Domino> dominoSet = Dominoes.createDominoesSet();
+        System.out.println(dominoSet);
     }
 
     static void duplicatePieceTest() {
-        Set<Dominoes> dominoesSet = new LinkedHashSet<>();
+        Set<Domino> dominoSet = new LinkedHashSet<>();
         boolean added;
 
-        added = dominoesSet.add(new Dominoes(4,5));
+        added = dominoSet.add(new Domino(4,5));
         System.out.println("added = " + added);
-        System.out.println(dominoesSet);
+        System.out.println(dominoSet);
 
-        added = dominoesSet.add(new Dominoes(4,5));
+        added = dominoSet.add(new Domino(4,5));
         System.out.println("added = " + added);
-        System.out.println(dominoesSet);
+        System.out.println(dominoSet);
 
-        added = dominoesSet.add(new Dominoes(5,4));
+        added = dominoSet.add(new Domino(5,4));
         System.out.println("added = " + added);
-        System.out.println(dominoesSet);
+        System.out.println(dominoSet);
 
     }
 
     static void sortedPiecesTest() {
-        Set<Dominoes> set = new TreeSet<>();
+        Set<Domino> set = new TreeSet<>();
 
-        set.add(new Dominoes(2,4));
-        set.add(new Dominoes(1,5));
-        set.add(new Dominoes(6,6));
-        set.add(new Dominoes(5,5));
-        set.add(new Dominoes(4,6));
-        set.add(new Dominoes(5,6));
-        set.add(new Dominoes(1,4));
-        set.add(new Dominoes(3,0));
+        set.add(new Domino(2,4));
+        set.add(new Domino(1,5));
+        set.add(new Domino(6,6));
+        set.add(new Domino(5,5));
+        set.add(new Domino(4,6));
+        set.add(new Domino(5,6));
+        set.add(new Domino(1,4));
+        set.add(new Domino(3,0));
 
         System.out.println(set);
     }
 
     static void sortedPiecesByPointsTest() {
-        Set<Dominoes> set = new TreeSet<>(
+        Set<Domino> set = new TreeSet<>(
                 Comparator
-                        .comparingInt(Dominoes::getPoints)
-                        .thenComparing(Dominoes::hashCode));
+                        .comparingInt(Domino::getPoints)
+                        .thenComparing(Domino::hashCode));
 
-        set.add(new Dominoes(2,4));
-        set.add(new Dominoes(1,5));
-        set.add(new Dominoes(6,6));
-        set.add(new Dominoes(5,5));
-        set.add(new Dominoes(4,6));
-        set.add(new Dominoes(5,6));
-        set.add(new Dominoes(1,4));
-        set.add(new Dominoes(3,0));
+        set.add(new Domino(2,4));
+        set.add(new Domino(1,5));
+        set.add(new Domino(6,6));
+        set.add(new Domino(5,5));
+        set.add(new Domino(4,6));
+        set.add(new Domino(5,6));
+        set.add(new Domino(1,4));
+        set.add(new Domino(3,0));
         System.out.println(set);
     }
 

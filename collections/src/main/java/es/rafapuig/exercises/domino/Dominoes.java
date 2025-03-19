@@ -1,81 +1,77 @@
 package es.rafapuig.exercises.domino;
 
-import java.util.Objects;
+import es.rafapuig.exercises.SetUtils;
 
-/**
- * Modela una ficha de dómino, con un valor de 0 a 6 en su lado superior
- * y otro en el lado inferior
- */
-public class Dominoes implements Comparable<Dominoes>{
+import java.util.*;
 
-    private final int top;
-    private final int bottom;
+public class Dominoes {
 
-    public Dominoes(int top, int bottom) {
-        this.top = top;
-        this.bottom = bottom;
-    }
+    /**
+     * Metodo para crear un set de fichas de dominó
+     */
+    public static Set<Domino> createDominoesSet() {
 
-    public int getTop() {
-        return top;
-    }
+        Set<Domino> dominoSet = new LinkedHashSet<>(); // Un linkedHashSet preserva el orden de inserción
 
-    public int getBottom() {
-        return bottom;
-    }
-
-    public int getPoints() {
-        return top + bottom;
+        //Generar el conjunto de fichas de dominó
+        for (int i = 0; i <= 6; i++) {
+            for (int j = i; j <= 6; j++) { // j empieza a partir de i para no repetir fichas iguales invertidas
+                Domino domino = new Domino(i, j);
+                dominoSet.add(domino); // Se añadirá al conjunto si no existe otra igual
+            }
+        }
+        return dominoSet;
     }
 
     /**
-     * Dos fichas de dominó se consideran iguales si tienen el mismo valor arriba y abajo
-     * y también si le damos la vuelta a una ficha de ellas y entonces tienen el mismo valor arriba y abajo
-     * @param o referencia a la otra ficha con la que se va a comparar para ver si son iguales
-     * @return true si las fichas se consideran iguales, false si no
+     * Mezclar (desordenar) un conjunto de fichas de dominó
      */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Dominoes dominoes)) return false;
-
-        return top == dominoes.top && bottom == dominoes.bottom
-                || top == dominoes.bottom && bottom == dominoes.top;
+    public static Set<Domino> shuffle(Set<Domino> dominoes) {
+        return SetUtils.shuffleSet(dominoes); // Delegamos en el mezclador de conjuntos
     }
 
-    // Por contrato, dos instancias Dominoes que sean consideradas iguales
-    // (lo que equivale a que el método "equals" devuelve true cuando se comparan)
-    // deben devolver el mismo valor de hashCode
-    // Lo que implica que como la ficha 2:3 se considera igual a la ficha 3:2
-    // debemos garantizar que tanto la ficha X:Y como la Y:X devuelven el mismo valor de hash
-    @Override
-    public int hashCode() {
-        int min = Math.min(top, bottom);
-        int max = Math.max(top, bottom);
-        return Objects.hash(min, max);
+    /** Devuelve una lista con las fichas de dominó que bien el lado superior o
+     * en el inferior coincide con el valor del parámetro suit (el palo)
+     */
+    public static List<Domino> containsDominoesWith(Collection<Domino> dominoes, int suit) {
+        List<Domino> result = new LinkedList<>();
+
+        // Realizamos una iteración sobre los elementos de la colección
+        // y para cada uno aplicamos el proceso (filtro), que de pasarlo, lo añadimos
+        // a la lista resultado
+        for (Domino domino : dominoes) {
+            if(domino.getTop() == suit || domino.getBottom() == suit) {
+                result.add(domino);
+            }
+        }
+
+        return result;
     }
 
-    @Override
-    public String toString() {
-        return String.format("[%d : %d]", top, bottom);
+    //-------------- Programación funcional ------------------------------
+
+    public static List<Domino> containsDominoWithFunctional(Collection<Domino> dominoes, int suit) {
+
+        List<Domino> result = new LinkedList<>();
+
+        // La iteración es interna (método forEach)
+        // Proporcionamos el código que indica lo que debe hacer para procesar cada elemento
+        dominoes.forEach(domino -> {
+            if(domino.getTop() == suit || domino.getBottom() == suit) {
+                result.add(domino);
+            }
+        });
+
+        return result;
     }
 
-    @Override
-    public int compareTo(Dominoes other) {
+    //-------------------- Stream API -------------------------------------
 
-        // Primero comparamos si son iguales por el lado superior
-        int topComparison = Integer.compare(this.top, other.top);
+    public static List<Domino> containsDominoWithStreams(Collection<Domino> set, int suit) {
 
-        // Si no son iguales los lados superiores devolvemos el valor de la comparación
-        if(topComparison != 0) return topComparison;
-
-        // Si son iguales entonces "desempatamos" comparando los lados inferiores
-        return Integer.compare(bottom, other.bottom);
-
-        //int points = this.top + this.bottom;
-        //int otherPoints = o.top + o.bottom;
-        //return points - otherPoints;
+        //Mediante el stream API no hay iteración externa (bucle)
+        return set.stream()
+                .filter(d -> d.getTop() == suit || d.getBottom() == suit)
+                .toList();
     }
-
-
 }

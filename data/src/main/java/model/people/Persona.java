@@ -10,10 +10,11 @@ public class Persona implements Comparable<Persona> {
     public int compareTo(Persona other) {
         //Si la otra persona tiene una fecha de nacimiento menor (anterior) a la mia -> -1 this es menor
         //Si la otra persona nació después de this (fecha de nacimiento mayor) -> 1, this es mayor
-       return other.getNacimiento().compareTo(this.getNacimiento());
+        return other.getNacimiento().compareTo(this.getNacimiento());
     }
 
-    public enum Sexo { HOMBRE, MUJER }
+    public enum Sexo {HOMBRE, MUJER}
+
     public static enum Idioma {INGLES, ESPAÑOL, ITALIANO, FRANCES, ALEMAN, JAPONES, RUSO}
 
     private long id;
@@ -104,15 +105,22 @@ public class Persona implements Comparable<Persona> {
         return this.idiomas.contains(idioma);
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Persona.class.getSimpleName() + "[", "]")
+
+    protected void addFieldsToString(StringJoiner joiner) {
+        joiner
                 .add("id=" + id)
                 .add("nombre='" + nombre + "'")
                 .add("apellidos='" + apellidos + "'")
                 .add("sexo=" + sexo)
                 .add("nacimiento=" + nacimiento)
-                .add("idiomas=" + idiomas)
-                .toString();
+                .add("idiomas=" + idiomas);
+    }
+
+    @Override
+    public String toString() {
+        String className = this.getClass().getSimpleName();
+        StringJoiner joiner = new StringJoiner(", ", className + "{", "}");
+        addFieldsToString(joiner);
+        return joiner.toString();
     }
 }

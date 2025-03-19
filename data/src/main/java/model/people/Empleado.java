@@ -37,14 +37,10 @@ public class Empleado extends Persona {
     }
 
     @Override
-    public String toString() {
-        return new StringJoiner(", ", Empleado.class.getSimpleName() + "[", "]")
-                .add(Long.toString(getId()))
-                .add(getNombre() + " " + getApellidos())
-                .add("sexo=" + getSexo())
-                .add("nacimiento=" + getNacimiento())
-                .add("sueldo=" + sueldo)
-                .add("contrato=" + hireDate)
-                .toString();
+    protected void addFieldsToString(StringJoiner joiner) {
+        super.addFieldsToString(joiner);
+        joiner.add("sueldo: " + this.sueldo);
+        joiner.add("contrato: " + this.hireDate);
     }
+
 }

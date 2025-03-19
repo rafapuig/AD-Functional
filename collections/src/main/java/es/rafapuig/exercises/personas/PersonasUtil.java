@@ -3,7 +3,6 @@ package es.rafapuig.exercises.personas;
 import model.people.Persona;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.*;
 import java.util.stream.Collector;
 
@@ -15,17 +14,14 @@ public class PersonasUtil {
     /**
      * Obtener una lista de todas las personas ordenadas por su ordenamiento natural
      * El ordenamiento natural se corresponde con la ordenación de los elementos (Persona)
-     * mediante la implementación de la interfaz Comparable por la propia clase Persona     *
-     *
-     * @param personas
-     * @return
+     * mediante la implementación de la interfaz Comparable por la propia clase Persona
      */
-    public static List<? extends Persona> getAllPersonasSorted(List<? extends Persona> personas) {
+    public static List<Persona> getAllPersonasSorted(List<? extends Persona> personas) {
         List<Persona> sorted = new ArrayList<>(personas);
         sorted.sort(Comparator.naturalOrder());
-        // equivalente pasar como argumento el valor null, equivale a pedir ordenación natural
+        // equivalente, pasar como argumento el valor null, equivale a pedir ordenación natural
         //sorted.sort(null);
-        // equivalente, usar el método estático sort sin argumentos de la clase Collections
+        // equivalente, usar el metodo estático sort sin argumentos de la clase Collections
         //Collections.sort(sorted);
         return sorted;
     }
@@ -41,7 +37,8 @@ public class PersonasUtil {
             }
         }
 
-        return resultList.toArray(new String[resultList.size()]);
+        String[] result = new String[resultList.size()];
+        return resultList.toArray(result);
     }
 
     // Implementación de la misma funcionalidad que el método anterior pero esta vez mediante

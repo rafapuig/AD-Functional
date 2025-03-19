@@ -2,19 +2,17 @@ package es.rafapuig.exercises.domino;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.StringJoiner;
 
 public class Player {
 
-    private final Collection<Dominoes> pieces = new LinkedHashSet<Dominoes>();
+    private final Collection<Domino> pieces = new LinkedHashSet<Domino>();
 
-    public Collection<Dominoes> getDominoes() {
+    public Collection<Domino> getDominoes() {
         return pieces;
     }
 
-    public void removeDominoes(Dominoes dominoes) {
-        pieces.remove(dominoes);
+    public void removeDominoes(Domino domino) {
+        pieces.remove(domino);
     }
 
     @Override
