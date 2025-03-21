@@ -2,15 +2,22 @@ package es.rafapuig.exercises.personas;
 
 import model.people.Empleados;
 import model.people.Persona;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+
 import static es.rafapuig.exercises.personas.PersonasUtil.*;
 
 public class PersonasUtilTest {
 
     public static void main(String[] args) {
+        new PersonasUtilTest().run();
+    }
+
+    void run() {
+        testPrintPersonas();
         testGetAllPersonasSorted();
         testGetNombresMujeresMayusculas();
         testGetNombresPersonasSortByApellidos();
@@ -20,26 +27,29 @@ public class PersonasUtilTest {
         testAllHablanIdioma();
     }
 
-    static void testGetAllPersonasSorted() {
+
+    @Test
+    void testPrintPersonas() {
+        printPersonas(Empleados.EMPLEADOS);
+    }
+
+
+    @Test
+    void testGetAllPersonasSorted() {
         System.out.println("\nTodas las personas ordenadas de forma natural:");
-        System.out.println("------------------------------------------------------");
+        printLineSeparator();
 
         List<? extends Persona> personasSorted = getAllPersonasSorted(Empleados.EMPLEADOS);
 
-        for (Persona p : personasSorted) {
-            String nombre = p.getNombreCompleto();
-            LocalDate nacimiento = p.getNacimiento();
-            long edad = p.getEdad();
-            System.out.println(nombre + ", "
-                    + "nacido el " + nacimiento + ", "
-                    + "tiene " + edad + " años");
-        }
+        printPersonas(personasSorted);
+
         System.out.println("\n(Total: " + personasSorted.size() + " personas)");
     }
 
-    static void testGetNombresMujeresMayusculas() {
-        System.out.println("\nNombres en mayusculas de todas las mujeres:");
-        System.out.println("------------------------------------------------------");
+    @Test
+    void testGetNombresMujeresMayusculas() {
+        System.out.println("\nNombres en mayúsculas de todas las mujeres:");
+        printLineSeparator();
 
         String[] result = getNombresMujeresMayusculas(Empleados.EMPLEADOS);
         System.out.println(Arrays.toString(result));
@@ -51,7 +61,9 @@ public class PersonasUtilTest {
         System.out.println("\n(Total: " + result.length + " nombres)");
     }
 
-    static void testGetNombresPersonasSortByApellidos() {
+
+    @Test
+    void testGetNombresPersonasSortByApellidos() {
         System.out.println("\nNombres en mayúsculas ordenados por apellidos:");
         System.out.println("------------------------------------------------------");
 
@@ -71,6 +83,41 @@ public class PersonasUtilTest {
 
         System.out.println("\n(Total: " + nombres.size() + " nombres)");
     }
+
+
+    @Test
+    void testGetPersonasSortBySexo() {
+        System.out.println("\nTodas las personas ordenadas por sexo:");
+        printLineSeparator();
+        List<? extends Persona> personasSorted = getPersonasSortBySexo(Empleados.EMPLEADOS);
+        printPersonas(personasSorted);
+    }
+
+    @Test
+    void testGetCountPersonasBySexo() {
+        List<? extends Persona> personas = Empleados.EMPLEADOS;
+        testGetPersonasSortBySexo();
+        System.out.println("\nTotal de personas por sexo:");
+        int mujeresCount = getCountPersonasBySexo(personas, Persona.Sexo.MUJER);
+        int hombresCount = getCountPersonasBySexo(personas, Persona.Sexo.HOMBRE);
+        System.out.println("(Total: " + mujeresCount + " mujeres)");
+        System.out.println("(Total: " + hombresCount + " hombres)");
+    }
+
+    @Test
+    void testGetHombresMayoresEdad() {
+        List<? extends Persona> personas = Empleados.EMPLEADOS;
+        System.out.println("\nPersonas hombres mayores edad:");
+        printLineSeparator();
+        List<Persona> result = getHombresMayoresEdad(personas);
+
+        printPersonas(result);
+
+    }
+
+
+
+    //--------------------------------
 
     static void testNombresPorSexo() {
         System.out.println("\nNombres de personas por sexo:");

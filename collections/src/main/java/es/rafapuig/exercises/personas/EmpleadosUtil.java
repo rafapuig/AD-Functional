@@ -15,8 +15,21 @@ import java.util.stream.Collector;
 public class EmpleadosUtil {
 
 
+    public static void printEmpleadosTable(List<Empleado> empleados) {
+        System.out.println(EmpleadosTableFormatter.DEFAULT.getTable(empleados.toArray(new Empleado[0])));
+    }
+
+    static void printLineSeparator() {
+        System.out.println(EmpleadosTableFormatter.DEFAULT.getLineSeparator());
+    }
+
+
+
     //-------------- FILTRADO -----------------------------------------------
 
+    /**
+     * Obtener una lista de empleados con un sueldo superior a 2000 euros
+     */
     public static List<Empleado> filterSueldoSuperior2000(List<Empleado> empleados) {
         List<Empleado> result = new ArrayList<>(); // Creamos la colección / acumulador del resultado
         for (Empleado empleado : empleados) {   // Iteramos la colección fuente
@@ -30,32 +43,33 @@ public class EmpleadosUtil {
     /**
      * Obtiene una lista de empleados cuya antigüedad es superior a 10 años
      *
-     * @param empleados
-     * @return
+     * En este metodo vamos a obtener una lista filtrada de empleados cambiando el criterio respecto
+     * del metodo anterior, la estructura del código es prácticamente la misma que antes
+     * solamente se diferencian en la condición especificada en la sentencia if
      */
-    // En este método vamos a obtener una lista filtrada de empleados cambiando el criterio respecto
-    // del método anterior, la estructura del código es prácticamente la misma que antes
-    // solamente se diferencian en la condición especificada en la sentencia if
     public static List<Empleado> filterAntiguedadSuperior10(List<Empleado> empleados) {
         List<Empleado> result = new ArrayList<>();
         for (Empleado empleado : empleados) {
-            if (empleado.getAntiguedad() > 10) {    //Solamente cambia el filtro respecto al código anterior
+            if (empleado.getAntiguedad() > 10) { //Solamente cambia el filtro respecto al código anterior
                 result.add(empleado);
             }
         }
         return result;
     }
 
-    // Podemos encapsular el código de un filtro o predicado y hacerlo intercambiable por otros
-    // si el código de estos filtros se define implementando una interfaz común
+    /**
+     * Podemos encapsular el código de un filtro o predicado y hacerlo intercambiable por otros
+     * si el código de estos filtros se define implementando una interfaz común
+     */
     public interface EmpleadoPredicate {
         boolean test(Empleado empleado);
     }
 
-    // Por ejemplo, para filtrar a los empleados contratados antes del año 2000
-    // Implementamos la interfaz EmpleadoPredicate mediante la clase EmpleadoAnteriorAño2000
-    public static class EmpleadoAnteriorAño2000 implements EmpleadoPredicate {
-
+    /**
+     * Por ejemplo, para filtrar a los empleados contratados antes del año 2000
+     * Implementamos la interfaz EmpleadoPredicate mediante la clase EmpleadoAnteriorAño2000
+     */
+    public static class EmpleadoPosteriorAño2000 implements EmpleadoPredicate {
         @Override
         public boolean test(Empleado empleado) {
             return empleado
@@ -65,27 +79,27 @@ public class EmpleadosUtil {
         }
     }
 
-    // Ahora, creamos una instancia de la clase EmpleadoAnteriorAño2000
-    public static EmpleadoPredicate EMPLEADO_ANTERIOR_2000 = new EmpleadoAnteriorAño2000();
+    /**
+     * Ahora, creamos una instancia de la clase EmpleadoAnteriorAño2000
+     * que implementa la interface EmpleadoPredicate
+     */
+    public static EmpleadoPredicate EMPLEADO_POSTERIOR_2000 = new EmpleadoPosteriorAño2000();
 
     /**
      * Obtiene una lista de empleados filtrada aplicando el criterio que determina el tipo concreto
      * del objeto pasado como una instancia que implementa la interfaz EmpleadoPredicate
-     *
-     * @param empleados
      * @param predicate referencia a un objeto que implementa la interfaz EmpleadoPredicate
-     * @return
      */
-    // Y ya podemos escribir el método que obtiene una lista filtrada según sea la clase de la instancia
-    // que implementa la interfaz EmpleadoPredicate pasada como argumento del segundo parámetro
+    // Y ya podemos escribir el metodo que obtiene una lista filtrada según sea la clase de la instancia
+    // que implementa la interfaz EmpleadoPredicate proporcionada como argumento del segundo parámetro
     // La estructura del código, que crea la colección que acumula el resultado, la iteración de los
-    // elementos de la colección origen y el filtrado permanecen.
-    // La firma del método se amplía con segundo parámetro que parametriza el comportamiento del método
+    // elementos de la colección origen y el filtrado permanecen inalterados.
+    // La firma del metodo se amplía con segundo parámetro que parametriza el comportamiento del metodo
     // Es decir, especifica el código concreto con el que se aplicará el filtrado.
     public static List<Empleado> filterBy(List<Empleado> empleados, EmpleadoPredicate predicate) {
         List<Empleado> result = new ArrayList<>();
         for (Empleado empleado : empleados) {
-            if (predicate.test(empleado)) { //LLamada al método test de interfaz EmpleadoPredicate (filtrado)
+            if (predicate.test(empleado)) { //Llamada al metodo test de interfaz EmpleadoPredicate (filtrado)
                 result.add(empleado);
             }
         }
@@ -95,13 +109,29 @@ public class EmpleadosUtil {
 
     // ------------------------------- ORDENACIÓN ------------------------------------------------
 
+
+    //------- Ordenar por un comparador (personalizar para ordenar por sueldo)
+
+    public static class ComparingBySueldo implements Comparator<Empleado> {
+        @Override
+        public int compare(Empleado e1, Empleado e2) {
+            return Double.compare(e1.getSueldo(), e2.getSueldo());
+        }
+    }
+
+    public static final Comparator<Empleado> COMPARING_BY_SUELDO = new ComparingBySueldo();
+
+    static List<Empleado> getAllEmpleadosSortedBySueldo(List<Empleado> empleados) {
+        List<Empleado> sorted = new ArrayList<>(empleados);
+        sorted.sort(COMPARING_BY_SUELDO);
+        return sorted;
+    }
+
+
     /**
      * Obtener la lista de empleados ordenados por fecha de contratación por la empresa
-     *
-     * @param empleados
-     * @return
      */
-    static List<Empleado> getAllEmpleadosSortedByHireDate_Imperative(List<Empleado> empleados) {
+    static List<Empleado> getAllEmpleadosSortedByHireDate(List<Empleado> empleados) {
         //Creamos una copia de la lista, para no modificar la original
         List<Empleado> sorted = new ArrayList<>(empleados);
 
@@ -123,16 +153,7 @@ public class EmpleadosUtil {
     }
 
 
-    //------- Ordenar por un comparador (personalizar para ordenar por sueldo)
 
-    public static class ComparingBySueldo implements Comparator<Empleado> {
-        @Override
-        public int compare(Empleado e1, Empleado e2) {
-            return Double.compare(e1.getSueldo(), e2.getSueldo());
-        }
-    }
-
-    public static final Comparator<Empleado> COMPARING_BY_SUELDO = new ComparingBySueldo();
 
     public static List<Empleado> getAllEmpleadosSortedByCriteria(
             List<Empleado> empleados, Comparator<Empleado> comparator) {
@@ -141,6 +162,8 @@ public class EmpleadosUtil {
         sorted.sort(comparator);
         return sorted;
     }
+
+
 
 
     // ----------- AGRUPAMIENTO (Mapas) ----------------------------------------

@@ -6,6 +6,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Persona implements Comparable<Persona> {
+
+    public static final int AÑOS_MAYORIA_EDAD = 18;
+
     @Override
     public int compareTo(Persona other) {
         //Si la otra persona tiene una fecha de nacimiento menor (anterior) a la mia -> -1 this es menor
@@ -81,7 +84,7 @@ public class Persona implements Comparable<Persona> {
     }
 
     public boolean isMayorEdad() {
-        return Period.between(nacimiento, LocalDate.now()).getYears() >= 18;
+        return Period.between(nacimiento, LocalDate.now()).getYears() >= AÑOS_MAYORIA_EDAD;
         //return getEdad() >= 18;
     }
 

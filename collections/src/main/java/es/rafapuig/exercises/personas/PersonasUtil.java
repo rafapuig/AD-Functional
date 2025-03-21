@@ -1,5 +1,6 @@
 package es.rafapuig.exercises.personas;
 
+import model.people.Empleados;
 import model.people.Persona;
 
 import java.util.*;
@@ -10,6 +11,15 @@ import static model.people.Persona.Sexo;
 import static model.people.Persona.Idioma;
 
 public class PersonasUtil {
+
+    static void printPersonas(List<? extends Persona> personas) {
+        System.out.println(
+                PersonasTableFormatter.DEFAULT.getTable(personas.toArray(new Persona[0])));
+    }
+
+    static void printLineSeparator() {
+        System.out.println(PersonasTableFormatter.DEFAULT.getLineSeparator());
+    }
 
     /**
      * Obtener una lista de todas las personas ordenadas por su ordenamiento natural
@@ -233,6 +243,48 @@ public class PersonasUtil {
 
         return toList.finisher().apply(nombres);    //Adaptamos el resultado
     }
+
+
+    /**
+     * Obtener una lista de personas ordenadas por su sexo
+     */
+    static List<Persona> getPersonasSortBySexo(List<? extends Persona> personas) {
+        List<Persona> sortedPersonas = new ArrayList<>(personas);
+        //sortedPersonas.sort(Comparator.comparing(Persona::getSexo));
+        sortedPersonas.sort(new Comparator<Persona>() {
+            @Override
+            public int compare(Persona o1, Persona o2) {
+                return o1.getSexo().compareTo(o2.getSexo());
+            }
+        });
+        return sortedPersonas;
+    }
+
+    /**
+     * Obtener el número de personas del sexo especificado
+     */
+    static int getCountPersonasBySexo(List<? extends Persona> personas, Sexo sexo) {
+        int count = 0;
+        for (Persona persona : personas) {
+            if(persona.getSexo().equals(sexo)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    static List<Persona> getHombresMayoresEdad(List<? extends Persona> personas) {
+        List<Persona> result = new ArrayList<>();
+        for (Persona persona : personas) {
+            if(persona.getSexo().equals(Sexo.HOMBRE) && persona.isMayorEdad()) {
+                result.add(persona);
+            }
+        }
+        return result;
+    }
+
+
+
 
 
     //--------- Nombres de personas agrupadas por sexo
