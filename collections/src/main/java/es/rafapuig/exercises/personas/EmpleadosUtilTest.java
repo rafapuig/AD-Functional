@@ -23,8 +23,11 @@ public class EmpleadosUtilTest {
 
         testGetAllEmpleadosSortedByHireDate();
         testGetAllEmpleadosSortedBySueldo();
-        testGetSueldoMedioHombresMujeres();
+
         testGetEmpleadoPeorPagado();
+
+        testGetSueldoMedioHombresMujeres();
+
         testEmpleadoMejorPagadoPorSexo();
     }
 
@@ -186,6 +189,8 @@ public class EmpleadosUtilTest {
         printEmpleadosTable(empleados);
     }
 
+
+    // Lambda
     @Test
     void testGetAllEmpleadosSortedByCriteriaSueldo4() {
         System.out.println("\nTodos las empleados ordenados por sueldo:");
@@ -198,6 +203,7 @@ public class EmpleadosUtilTest {
         printEmpleadosTable(empleados);
     }
 
+    // Referencia a metodo y metodo factoria comparing
     @Test
     void testGetAllEmpleadosSortedByCriteriaSueldo5() {
         System.out.println("\nTodos las empleados ordenados por sueldo:");
@@ -210,6 +216,28 @@ public class EmpleadosUtilTest {
         printEmpleadosTable(empleados);
     }
 
+
+
+    @Test
+    void testGetEmpleadoPeorPagado() {
+        System.out.println("\nEmpleado peor pagado:");
+        printLineSeparator();
+
+        System.out.println(
+                getEmpleadoPeorPagado(Empleados.EMPLEADOS));
+
+        System.out.println(
+                getEmpleadoPeorPagado3(Empleados.EMPLEADOS));
+
+        System.out.println(
+                getEmpleadoMinBy(Empleados.EMPLEADOS, COMPARING_BY_SUELDO));
+
+        System.out.println(
+                getEmpleadoMinBy(Empleados.EMPLEADOS, Comparator.comparing(Empleado::getSueldo)));
+
+        System.out.println(
+                getEmpleadoPeorPagadoFunctional(Empleados.EMPLEADOS));
+    }
 
 
 
@@ -232,22 +260,11 @@ public class EmpleadosUtilTest {
     }
 
 
-    static void testGetEmpleadoPeorPagado() {
-        System.out.println("\nEmpleado peor pagado:");
-        System.out.println("------------------------------------------------------");
 
-        System.out.println(
-                getEmpleadoPeorPagado(Empleados.EMPLEADOS));
 
-        System.out.println(
-                getEmpleadoMinimoSegun(Empleados.EMPLEADOS, COMPARING_BY_SUELDO));
 
-        System.out.println(
-                getEmpleadoMinimoSegun(Empleados.EMPLEADOS, Comparator.comparing(Empleado::getSueldo)));
 
-        System.out.println(
-                getEmpleadoPeorPagadoFunctional(Empleados.EMPLEADOS));
-    }
+
 
     static void testEmpleadoMejorPagadoPorSexo() {
         System.out.println("\nEmpleado mejor pagado por sexos:");

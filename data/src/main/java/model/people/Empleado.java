@@ -16,6 +16,12 @@ public class Empleado extends Persona {
         this.hireDate = fechaContrato;
     }
 
+    Empleado(Persona persona, double sueldo, LocalDate fechaContrato) {
+        super(persona);
+        this.sueldo = sueldo;
+        this.hireDate = fechaContrato;
+    }
+
     public double getSueldo() {
         return sueldo;
     }

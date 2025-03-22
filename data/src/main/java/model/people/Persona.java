@@ -35,6 +35,15 @@ public class Persona implements Comparable<Persona> {
         this.nacimiento = nacimiento;
     }
 
+    protected Persona(Persona persona) {
+        this.id = persona.id;
+        this.nombre = persona.nombre;
+        this.apellidos = persona.apellidos;
+        this.sexo = persona.sexo;
+        this.nacimiento = persona.nacimiento;
+        this.idiomas = EnumSet.copyOf(persona.idiomas);
+    }
+
     public long getId() {
         return id;
     }

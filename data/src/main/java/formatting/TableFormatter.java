@@ -8,7 +8,7 @@ import java.util.StringJoiner;
 
 public class TableFormatter<T> {
 
-    private ColumnInfo<? super T>[] columns;
+    private final ColumnInfo<? super T>[] columns;
 
     private final String header;
     private final String lineSeparator;
@@ -23,15 +23,6 @@ public class TableFormatter<T> {
         this.lineSeparator = generateLineSeparator();
     }
 
-    private static String centerAligned(String text, int width) {
-        int printedLength = text.length();
-        int padding = width - printedLength;
-        int paddingLeft = padding / 2;
-
-        return String.format("%-" + width + "s",
-                String.format("%" + (paddingLeft + printedLength) + "s",
-                        text));
-    }
 
     private String generateHeader() {
 
@@ -50,7 +41,7 @@ public class TableFormatter<T> {
     private String generateColumnHeader(ColumnInfo<? super T> column) {
         String columnName = column.getColumnName().toUpperCase();
         int columnLength = column.getColumnLength();
-        return centerAligned(columnName, columnLength);
+        return Strings.centerAligned(columnName, columnLength);
     }
 
 

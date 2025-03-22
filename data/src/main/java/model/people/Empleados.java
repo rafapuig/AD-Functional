@@ -9,19 +9,6 @@ import static model.people.Persona.*;
 import static model.people.Persona.Idioma.*;
 
 public class Empleados {
-    /*private static List<Persona> personas;
-
-    public static List<Persona> getPersonas() {
-        if(personas == null) {
-            personas = createPersonas();
-        }
-        return personas;
-    }
-
-    public static List<Persona> createPersonas() {
-        List<Persona> personas = PERSONAS;
-        return personas;
-    }*/
 
     public static final Empleado ARMANDO =
             new Empleado(1, "Armando", "Bronca Segura",

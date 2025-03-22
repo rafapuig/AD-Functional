@@ -24,7 +24,6 @@ public class EmpleadosUtil {
     }
 
 
-
     //-------------- FILTRADO -----------------------------------------------
 
     /**
@@ -42,7 +41,7 @@ public class EmpleadosUtil {
 
     /**
      * Obtiene una lista de empleados cuya antigüedad es superior a 10 años
-     *
+     * <p>
      * En este metodo vamos a obtener una lista filtrada de empleados cambiando el criterio respecto
      * del metodo anterior, la estructura del código es prácticamente la misma que antes
      * solamente se diferencian en la condición especificada en la sentencia if
@@ -88,6 +87,7 @@ public class EmpleadosUtil {
     /**
      * Obtiene una lista de empleados filtrada aplicando el criterio que determina el tipo concreto
      * del objeto pasado como una instancia que implementa la interfaz EmpleadoPredicate
+     *
      * @param predicate referencia a un objeto que implementa la interfaz EmpleadoPredicate
      */
     // Y ya podemos escribir el metodo que obtiene una lista filtrada según sea la clase de la instancia
@@ -153,8 +153,6 @@ public class EmpleadosUtil {
     }
 
 
-
-
     public static List<Empleado> getAllEmpleadosSortedByCriteria(
             List<Empleado> empleados, Comparator<Empleado> comparator) {
 
@@ -162,8 +160,6 @@ public class EmpleadosUtil {
         sorted.sort(comparator);
         return sorted;
     }
-
-
 
 
     // ----------- AGRUPAMIENTO (Mapas) ----------------------------------------
@@ -362,21 +358,22 @@ public class EmpleadosUtil {
 
     //-------------- Empleado peor pagado
 
-    static Empleado getEmpleadoPeorPagado(List<Empleado> empleados) {
+    static Empleado getEmpleadoPeorPagado(Collection<Empleado> empleados) {
 
         Empleado peorPagado = null;
 
         for (Empleado empleado : empleados) {
             if (peorPagado == null) {
                 peorPagado = empleado;
-            } else {
-                if (empleado.getSueldo() < peorPagado.getSueldo()) {
-                    peorPagado = empleado;
-                }
+                continue;
+            }
+            if (empleado.getSueldo() < peorPagado.getSueldo()) {
+                peorPagado = empleado;
             }
         }
         return peorPagado;
     }
+
 
     static Empleado getEmpleadoPeorPagado2(List<Empleado> empleados) {
 
@@ -398,7 +395,7 @@ public class EmpleadosUtil {
      * @param a          primer elemento
      * @param b          segundo elemento
      * @param comparator comparador que servirá para determinar cuál de ellos es menor
-     * @param <T>
+     * @param <T> clase de los elementos a comparar
      * @return el menor de ambos datos
      */
     static <T> T minBy(T a, T b, Comparator<T> comparator) {
@@ -412,7 +409,7 @@ public class EmpleadosUtil {
     }
 
 
-    static Empleado getEmpleadoMinimoSegun(List<Empleado> empleados, Comparator<Empleado> comparator) {
+    static Empleado getEmpleadoMinBy(Collection<Empleado> empleados, Comparator<Empleado> comparator) {
 
         Empleado minimo = null;
 
@@ -424,7 +421,7 @@ public class EmpleadosUtil {
         return minimo;
     }
 
-    static Empleado getEmpleadoMinimoSegun2(List<Empleado> empleados, Comparator<Empleado> comparator) {
+    static Empleado getEmpleadoMinBy2(List<Empleado> empleados, Comparator<Empleado> comparator) {
 
         Empleado minimo = null;
 
@@ -436,8 +433,22 @@ public class EmpleadosUtil {
         return minimo;
     }
 
+
     static Empleado getEmpleadoPeorPagado3(List<Empleado> empleados) {
-        return getEmpleadoMinimoSegun(
+        return getEmpleadoMinBy(
+                empleados,
+                new Comparator<Empleado>() {
+                    @Override
+                    public int compare(Empleado o1, Empleado o2) {
+                        return Double.compare(o1.getSueldo(), o2.getSueldo());
+                    }
+                });
+    }
+
+
+
+    static Empleado getEmpleadoPeorPagado4(List<Empleado> empleados) {
+        return getEmpleadoMinBy(
                 empleados,
                 Comparator.comparing(new Function<Empleado, Double>() {
                     @Override
@@ -447,8 +458,9 @@ public class EmpleadosUtil {
                 }));
     }
 
-    // --Funcional
 
+
+    // --Funcional
 
     static Empleado getEmpleadoPeorPagadoFunctional(List<Empleado> empleados) {
 
@@ -493,7 +505,7 @@ public class EmpleadosUtil {
     }
 
     static Empleado getEmpleadoPeorPagadoFunctional_v2(List<Empleado> empleados) {
-        return getEmpleadoMinimoSegun(
+        return getEmpleadoMinBy(
                 empleados,
                 Comparator.comparingDouble(Empleado::getSueldo)); // Pasamos una referencia a método
     }
@@ -503,6 +515,7 @@ public class EmpleadosUtil {
         return empleados.stream()
                 .min(Comparator.comparingDouble(Empleado::getSueldo));
     }
+
 
 
     //------------ Empleado mejor pagado por cada sexo
