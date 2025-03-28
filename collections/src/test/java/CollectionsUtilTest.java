@@ -18,7 +18,7 @@ public class CollectionsUtilTest {
 
     static List<String> nombres1 = List.of("Emilio", "Rafa", "Ramon", "Raul", "Ramon");
     static List<String> nombres2 = List.of("Rafa", "Ramon", "Emilio", "Raul", "Ramon");
-    static List<String> nombres3 = List.of( "Ramon", "Emilio", "Raul", "Ramon");
+    static List<String> nombres3 = List.of("Ramon", "Emilio", "Raul", "Ramon");
     static List<String> nombres4 = List.of("Rafa", "Emilio", "Raul", "Ramon");
     static List<String> nombres5 = List.of("Ramon", "Emilio", "Raul", "Ramon", "Lucas");
     static List<String> nombres6 = List.of("Rafa", "Ramon", "Emilio", "Raul", "Ramon", "Lucas");
@@ -26,16 +26,17 @@ public class CollectionsUtilTest {
 
     static Stream<Arguments> testCollectionEqualsIgnoreOrder() {
         return Stream.of(
-                Arguments.of(nombres1, nombres2, true),
-                Arguments.of(nombres1, nombres3, false),
-                Arguments.of(nombres1, nombres4, false),
-                Arguments.of(nombres1, nombres5, false),
-                Arguments.of(nombres1, nombres6, false)
+                Arguments.of(nombres1, nombres2, true), // Mismos elems en misma cantidad
+                Arguments.of(nombres1, nombres3, false), // Falta Rafa
+                Arguments.of(nombres1, nombres4, false), // Mismos elementos pero un Ramon menos
+                Arguments.of(nombres1, nombres5, false), // Un elem diferente en cada Rafa vs. Lucas
+                Arguments.of(nombres1, nombres6, false) // El segundo tiene un elemento más
         );
     }
 
     @ParameterizedTest
-    @MethodSource //("collectionEqualsIgnoreOrderArguments")
+    @MethodSource
+        //("collectionEqualsIgnoreOrderArguments")
     <T> void testCollectionEqualsIgnoreOrder(Collection<T> one, Collection<T> other, boolean expected) {
 
         Assertions.assertEquals(expected, CollectionsUtil.collectionEqualsIgnoreOrder(one, other));

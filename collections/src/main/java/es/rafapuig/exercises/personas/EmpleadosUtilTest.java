@@ -26,8 +26,8 @@ public class EmpleadosUtilTest {
 
         testGetEmpleadoPeorPagado();
 
+        //Mapas
         testGetSueldoMedioHombresMujeres();
-
         testEmpleadoMejorPagadoPorSexo();
     }
 
@@ -248,9 +248,13 @@ public class EmpleadosUtilTest {
 
 
 
-    static void testGetSueldoMedioHombresMujeres() {
+    @Test
+    void testGetSueldoMedioHombresMujeres() {
         System.out.println("\nSueldo medio empledos por Sexo:");
         System.out.println("------------------------------------------------------");
+
+        System.out.println(
+                getSueldoMedioHombresMujeres(Empleados.EMPLEADOS));
 
         System.out.println(
                 getSueldoMedioHombresMujeresImperative(Empleados.EMPLEADOS));
@@ -266,21 +270,33 @@ public class EmpleadosUtilTest {
 
 
 
-    static void testEmpleadoMejorPagadoPorSexo() {
+    @Test
+    void testEmpleadoMejorPagadoPorSexo() {
         System.out.println("\nEmpleado mejor pagado por sexos:");
-        System.out.println("------------------------------------------------------");
+        printLineSeparator();
 
-        System.out.println(
-                getEmpleadoMejorPagadoPorSexo(Empleados.EMPLEADOS));
+        printEmpleadosTable(
+                getEmpleadoMejorPagadoPorSexo(Empleados.EMPLEADOS).values());
 
-        System.out.println(
-                getEmpleadoMejorPagadoPorSexoFunctional(Empleados.EMPLEADOS));
+        printLineSeparator();
 
-        System.out.println(
-                getEmpleadoMejorPagadoPorSexoFunctionalMerge(Empleados.EMPLEADOS));
+        printEmpleadosTable(
+                getEmpleadoMejorPagadoPorSexo(Empleados.EMPLEADOS).values());
 
-        System.out.println(
-                getEmpleadoMejorPagadoPorSexoFunctionalCompute(Empleados.EMPLEADOS));
+        printLineSeparator();
+
+        printEmpleadosTable(
+                getEmpleadoMejorPagadoPorSexoFunctional(Empleados.EMPLEADOS).values());
+
+        printLineSeparator();
+
+        printEmpleadosTable(
+                getEmpleadoMejorPagadoPorSexoFunctionalMerge(Empleados.EMPLEADOS).values());
+
+        printLineSeparator();
+
+        printEmpleadosTable(
+                getEmpleadoMejorPagadoPorSexoFunctionalCompute(Empleados.EMPLEADOS).values());
     }
 
 }

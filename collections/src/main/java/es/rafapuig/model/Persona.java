@@ -7,8 +7,16 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Persona implements Comparable<Persona>, Cloneable {
+
     private String nombre;
     private LocalDate fechaNacimiento;
+
+
+    protected static LocalDate fromString(String fechaNacimiento) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return LocalDate.parse(fechaNacimiento, formatter);
+    }
+
 
     public Persona(String nombre, LocalDate fechaNacimiento) {
         this.nombre = nombre;
@@ -16,27 +24,25 @@ public class Persona implements Comparable<Persona>, Cloneable {
     }
 
     public Persona(String nombre, String fechaNacimiento) {
-        this(nombre, LocalDate.parse(fechaNacimiento));
+        this(nombre, fromString(fechaNacimiento));
+    }
+
+    /**
+     * Es posible la clonación superficial dado que los atributos de Persona son inmutables
+     * y se pueden compartir
+     */
+    public Persona tryClone() throws CloneNotSupportedException {
+        return (Persona) super.clone();
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        Object clone = super.clone();
-
-        return new Persona(this.getNombre(), this.getFechaNacimiento());
-        //return super.clone();
-    }
-
-    public Persona cloneMe() {
+    public Persona clone() {
         try {
-            return (Persona) this.clone();
+            return tryClone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
     }
-
-
-
 
 
     public String getNombre() {
@@ -56,14 +62,16 @@ public class Persona implements Comparable<Persona>, Cloneable {
     }
 
     public void setFechaNacimiento(String fechaNacimiento) {
-        setFechaNacimiento(LocalDate.parse(fechaNacimiento));
+        setFechaNacimiento(fromString(fechaNacimiento));
     }
+
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Persona.class.getSimpleName().substring(0, 0) + "{", "}")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yyyy");
+        return new StringJoiner(", ", "{", "}")
                 .add("'" + nombre + "'")
-                .add(fechaNacimiento.format(DateTimeFormatter.ofPattern("d-MMM-yyyy")))
+                .add(fechaNacimiento.format(formatter))
                 .toString();
     }
 
@@ -84,10 +92,12 @@ public class Persona implements Comparable<Persona>, Cloneable {
         return this.getNombre().compareTo(other.getNombre());
     }
 
-    private static Comparator<Persona> byEdadComparator = Comparator.comparing(Persona::getFechaNacimiento);
-    private static Comparator<Persona> byEdadComparatorLambdaExpr =
+
+
+    private static final Comparator<Persona> byEdadComparator = Comparator.comparing(Persona::getFechaNacimiento);
+    private static final Comparator<Persona> byEdadComparatorLambdaExpr =
             (p1, p2) -> p1.getFechaNacimiento().compareTo(p2.getFechaNacimiento());
-    private static Comparator<Persona> byEdadComparatorAnon = new ByEdadComparator();
+    private static final Comparator<Persona> byEdadComparatorAnon = new ByEdadComparator();
 
     public static Comparator<Persona> getByEdadComparator() {
         return Comparator.comparing(Persona::getFechaNacimiento);
@@ -99,7 +109,6 @@ public class Persona implements Comparable<Persona>, Cloneable {
     }
 
     public static class ByEdadComparator implements Comparator<Persona> {
-
         @Override
         public int compare(Persona o1, Persona o2) {
             return o1.getFechaNacimiento().compareTo(o2.getFechaNacimiento());

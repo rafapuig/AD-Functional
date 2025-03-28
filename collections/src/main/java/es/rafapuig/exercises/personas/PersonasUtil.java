@@ -266,7 +266,7 @@ public class PersonasUtil {
     static int getCountPersonasBySexo(List<? extends Persona> personas, Sexo sexo) {
         int count = 0;
         for (Persona persona : personas) {
-            if(persona.getSexo().equals(sexo)) {
+            if (persona.getSexo().equals(sexo)) {
                 count++;
             }
         }
@@ -276,15 +276,12 @@ public class PersonasUtil {
     static List<Persona> getHombresMayoresEdad(List<? extends Persona> personas) {
         List<Persona> result = new ArrayList<>();
         for (Persona persona : personas) {
-            if(persona.getSexo().equals(Sexo.HOMBRE) && persona.isMayorEdad()) {
+            if (persona.getSexo().equals(Sexo.HOMBRE) && persona.isMayorEdad()) {
                 result.add(persona);
             }
         }
         return result;
     }
-
-
-
 
 
     //--------- Nombres de personas agrupadas por sexo
@@ -293,11 +290,10 @@ public class PersonasUtil {
      * Obtener, por cada sexo, un String con los nombres de las personas
      * concatenados entre sí y separados por una coma
      *
-     * @param personas
      * @return un mapa de clave sexo y valor un String con la cadena de nombres para ese sexo
      */
 
-    static Map<Sexo, String> getGenderToNamesMap(List<? extends Persona> personas) {
+    static Map<Sexo, String> getGenderToNamesMap(Collection<? extends Persona> personas) {
         Map<Sexo, String> map = new HashMap<>();
 
         for (Persona persona : personas) {
@@ -310,7 +306,7 @@ public class PersonasUtil {
                 // oldValue tendrá la lista separada por comas de los nombres que se llevan
                 // procesados hasta el momento en el bucle
                 String oldValue = map.get(sexo);
-                // Combinamos la lista momentanea con el nombre de la persona con la que estamos iterando
+                // Combinamos la lista momentánea con el nombre de la persona con la que estamos iterando
                 String newValue = String.join(", ", oldValue, persona.getNombreCompleto());
                 // Y se añade de nuevo al mapa con la clave de su sexo
                 map.put(sexo, newValue);
@@ -319,7 +315,7 @@ public class PersonasUtil {
         return map;
     }
 
-    static Map<Persona.Sexo, String> getGenderToNamesMapFunctional(List<? extends Persona> personas) {
+    static Map<Persona.Sexo, String> getGenderToNamesMapFunctional(Collection<? extends Persona> personas) {
         Map<Persona.Sexo, String> map = new HashMap<>();
 
         personas.forEach(
@@ -337,27 +333,30 @@ public class PersonasUtil {
     }
 
 
-    //------------- Numero de personas por cada sexo
+    //------------- Número de personas por cada sexo
 
     /**
-     * Obtener el número de personas por cada sexo a partir de una lista de personas
+     * Obtener el número de personas por cada sexo a partir de una colección de personas
      *
-     * @param personas lista de personas
+     * @param personas colección de personas
      * @return un mapa cuyas claves son de tipo Sexo y el valor asociado un Long que
      * contiene el número de personas para el valor clave Sexo al que está asociado
      */
-
-    static Map<Sexo, Long> getPersonasCountByGender(List<? extends Persona> personas) {
+    static Map<Sexo, Long> getPersonasCountByGender(Collection<? extends Persona> personas) {
         Map<Sexo, Long> map = new HashMap<>();
 
-        for (Persona persona : personas) {
-            Persona.Sexo sexo = persona.getSexo();
+        for (Persona persona : personas) { // Para cada persona de la colección
+            Persona.Sexo sexo = persona.getSexo(); // Obtenemos su sexo
             // Sí es la primera persona con ese sexo...
             if (!map.containsKey(sexo)) { //No habrá una entrada para ese valor clave de sexo en el mapa
                 map.put(sexo, 1L); // Por tanto, el primer valor asociado con ese sexo será un 1
             } else {
-                long oldCount = map.get(sexo);
-                map.put(sexo, oldCount + 1L);   // Incrementar el número de personas de ese sexo en el mapa
+                Long oldCount = map.get(sexo);
+                // No debería nunca ser nulo en este mapa concreto, dado que no insertamos el null en ninguna entrada
+                // y estamos en la rama else de una comprobación con containsKey
+                if (oldCount != null) {
+                    map.put(sexo, oldCount + 1L);   // Incrementar el número de personas de ese sexo en el mapa
+                }
             }
         }
 
@@ -365,7 +364,7 @@ public class PersonasUtil {
     }
 
     //Versión con merge
-    static Map<Persona.Sexo, Long> getPersonasCountByGenderFunctional(List<? extends Persona> personas) {
+    static Map<Persona.Sexo, Long> getPersonasCountByGenderFunctional(Collection<? extends Persona> personas) {
         Map<Persona.Sexo, Long> map = new HashMap<>();
 
         personas.forEach(
@@ -381,19 +380,19 @@ public class PersonasUtil {
     }
 
     //Version con compute
-    static Map<Persona.Sexo, Long> getPersonasCountByGenderFunctional2(List<? extends Persona> personas) {
+    static Map<Persona.Sexo, Long> getPersonasCountByGenderFunctional2(Collection<? extends Persona> personas) {
         Map<Persona.Sexo, Long> map = new HashMap<>();
 
         personas.forEach(
-                persona -> {
-                    map.compute(
-                            persona.getSexo(),
-                            (sexo, oldCount) -> oldCount == null ? 1L : oldCount + 1L);
-                }
-        );
+                persona ->
+                        map.compute(
+                                persona.getSexo(),
+                                (sexo, oldCount) -> oldCount == null ? 1L : oldCount + 1L));
 
         return map;
     }
+
+
 
 
     // ---- Hablan un idioma
@@ -405,7 +404,7 @@ public class PersonasUtil {
      * @param personas
      * @return un valor boolean que sera true si se cumple la condición y false si no
      */
-    static boolean allPersonasHablanEspañol(List<? extends Persona> personas) {
+    static boolean allPersonasHablanEspañol(Collection<? extends Persona> personas) {
 
         // Iniciamos el flag que indica el resultado con el valor inicial verdadero falso
         // dependiendo de si la lista esta o no vacía

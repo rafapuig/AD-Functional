@@ -15,7 +15,7 @@ import java.util.stream.Collector;
 public class EmpleadosUtil {
 
 
-    public static void printEmpleadosTable(List<Empleado> empleados) {
+    public static void printEmpleadosTable(Collection<Empleado> empleados) {
         System.out.println(EmpleadosTableFormatter.DEFAULT.getTable(empleados.toArray(new Empleado[0])));
     }
 
@@ -162,196 +162,7 @@ public class EmpleadosUtil {
     }
 
 
-    // ----------- AGRUPAMIENTO (Mapas) ----------------------------------------
 
-    //------------ Sueldo medio hombres y mujeres
-
-    static Map<Sexo, Double> getSueldoMedioHombresMujeres(List<Empleado> empleados) {
-
-        Map<Sexo, Double> sueldosMedios = new HashMap<>();
-        Map<Sexo, Integer> contador = new HashMap<>();
-
-        for (Empleado persona : empleados) {
-            Sexo sexo = persona.getSexo();
-            if (!sueldosMedios.containsKey(sexo)) {
-                sueldosMedios.put(sexo, 0.0);
-            }
-            if (!contador.containsKey(sexo)) {
-                contador.put(sexo, 0);
-            }
-            double sueldo = persona.getSueldo();
-            double acumulado = sueldosMedios.get(sexo);
-            sueldosMedios.replace(sexo, acumulado, acumulado + sueldo);
-            int count = contador.get(sexo);
-            contador.replace(sexo, count + 1);
-        }
-
-        for (Persona.Sexo sexo : sueldosMedios.keySet()) {
-            double average = sueldosMedios.get(sexo) / contador.get(sexo);
-            sueldosMedios.replace(sexo, average);
-        }
-
-        return sueldosMedios;
-    }
-
-    static Map<Sexo, Double> getSueldoMedioHombresMujeresImperative(List<Empleado> empleados) {
-
-        Map<Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
-
-        for (Empleado empleado : empleados) {
-            Sexo sexo = empleado.getSexo();
-            if (!sueldosPorSexo.containsKey(sexo)) {
-                sueldosPorSexo.put(sexo, new ArrayList<>());
-            }
-            double sueldo = empleado.getSueldo();
-            sueldosPorSexo.get(sexo).add(sueldo);
-        }
-
-        Map<Sexo, Double> result = new HashMap<>();
-
-        for (Sexo sexo : sueldosPorSexo.keySet()) {
-            double sum = 0.0;
-            for (Double sueldo : sueldosPorSexo.get(sexo)) {
-                sum += sueldo;
-            }
-            result.put(sexo, sum / sueldosPorSexo.get(sexo).size());
-        }
-        return result;
-    }
-
-
-    //Esto es una closure
-    //El método devuelve una expresión lambda de tipo BiFunction
-    // que ha capturado por el ámbito lexico el valor del parámetro de entrada "empleado"
-    // del método addSueldoToList
-    static BiFunction<Sexo, List<Double>, List<Double>> addSueldoToList(Empleado empleado) {
-        return (sexo, sueldos) -> {
-            sueldos.add(empleado.getSueldo());
-            return sueldos;
-        };
-    }
-
-
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional(List<Empleado> empleados) {
-
-        Map<Persona.Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
-
-        /*empleados.forEach( empleado ->
-            sueldosPorSexo.compute(empleado.getSexo(),
-                    (sexo1, sueldos) -> {
-                        if (sueldos == null) {
-                            sueldos = new ArrayList<>();
-                        } else {
-                            sueldos.add(empleado.getSueldo());
-                        }
-                        return sueldos;
-                    })
-        );*/
-
-        empleados.forEach(empleado -> {
-                    sueldosPorSexo.computeIfAbsent(empleado.getSexo(), sexo -> new ArrayList<>());
-                    sueldosPorSexo.computeIfPresent(empleado.getSexo(), addSueldoToList(empleado));
-                }
-        );
-
-        Map<Persona.Sexo, Double> result = new HashMap<>();
-
-        sueldosPorSexo.forEach(
-                (sexo, sueldos) -> {
-                    result.computeIfAbsent(sexo,
-                            sexoKey ->
-                            {
-                                //No se puede hacer con sueldos.forEach a no ser que se use AtomicReference
-                                /* double acumulator = 0.0;
-                                for (double sueldo : sueldos) {
-                                    acumulator += sueldo;
-                                }
-                                return acumulator / sueldos.size();
-                                */
-                                AtomicReference<Double> acumulator = new AtomicReference<>(0.0);
-                                sueldos.forEach(sueldo -> acumulator.updateAndGet(v -> v + sueldo));
-                                return acumulator.get() / sueldos.size();
-                            }
-
-                            //Con streams seria mas simple
-                            //sueldos.stream().mapToDouble(sueldo -> sueldo).sum() / sueldos.size()
-                    );
-                }
-        );
-
-        return result;
-    }
-
-
-    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional_v2(List<Empleado> empleados) {
-
-        Collector<Empleado, Map<Sexo, List<Double>>, Map<Sexo, Double>> sueldosPorSexoCollector = new Collector<Empleado, Map<Sexo, List<Double>>, Map<Sexo, Double>>() {
-            @Override
-            public Supplier<Map<Sexo, List<Double>>> supplier() {
-                return HashMap::new;
-            }
-
-            @Override
-            public BiConsumer<Map<Sexo, List<Double>>, Empleado> accumulator() {
-                return (map, empleado) -> {
-                    map.computeIfAbsent(empleado.getSexo(), sexo -> new ArrayList<Double>());
-                    map.computeIfPresent(empleado.getSexo(), addSueldoToList(empleado));
-                };
-            }
-
-            @Override
-            public BinaryOperator<Map<Sexo, List<Double>>> combiner() {
-                return null;
-            }
-
-            @Override
-            public Function<Map<Sexo, List<Double>>, Map<Sexo, Double>> finisher() {
-
-                return sueldosPorSexo -> {
-                    Map<Sexo, Double> result = new HashMap<>();
-
-                    sueldosPorSexo.forEach(
-                            (sexo, sueldos) -> {
-                                result.computeIfAbsent(sexo,
-                                        sexoKey ->
-                                        {
-                                            //No se puede hacer con sueldos.forEach a no ser que se use AtomicReference
-                                /* double acumulator = 0.0;
-                                for (double sueldo : sueldos) {
-                                    acumulator += sueldo;
-                                }
-                                return acumulator / sueldos.size();
-                                */
-                                            AtomicReference<Double> acumulator = new AtomicReference<>(0.0);
-                                            sueldos.forEach(sueldo -> acumulator.updateAndGet(v -> v + sueldo));
-                                            return acumulator.get() / sueldos.size();
-                                        }
-
-                                        //Con streams seria mas simple
-                                        //sueldos.stream().mapToDouble(sueldo -> sueldo).sum() / sueldos.size()
-                                );
-
-                            }
-                    );
-                    return result;
-                };
-            }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Set.of();
-            }
-        };
-
-        var listSueldosBySexoMap = sueldosPorSexoCollector.supplier().get();
-
-        empleados.forEach(empleado ->
-                sueldosPorSexoCollector.accumulator().accept(listSueldosBySexoMap, empleado));
-
-        return sueldosPorSexoCollector.finisher().apply(listSueldosBySexoMap);
-
-
-    }
 
 
     // ------------- FIND (Min, Max) ------------------------------------------------
@@ -517,10 +328,212 @@ public class EmpleadosUtil {
     }
 
 
+    // ------------ MAPAS ----------------------------------------------------------------------------------------------
+
+    // ----------- AGRUPAMIENTO (Mapas) ----------------------------------------
+
+    //------------ Sueldo medio hombres y mujeres
+
+    static Map<Sexo, Double> getSueldoMedioHombresMujeres(Collection<Empleado> empleados) {
+
+        Map<Sexo, Double> sueldosMedios = new HashMap<>(); // Mapa para acumular el resultado
+        Map<Sexo, Integer> contador = new HashMap<>();  // Mapa para saber cuantos hombres y cuantas mujeres hay
+
+        for (Empleado empleado : empleados) { // Para cada empleado
+            Sexo sexo = empleado.getSexo();     // Obtenemos su sexo como persona
+            if (!sueldosMedios.containsKey(sexo)) { // Si el mapa no contiene una entrada con clave de ese sexo todavía
+                sueldosMedios.put(sexo, 0.0);   // Creamos una entrada para ese sexo con valor inicial 0
+            }
+            if (!contador.containsKey(sexo)) { // Si el mapa que cuenta hombres y mujeres hay no tiene entrada para sexo
+                contador.put(sexo, 0);  // Creamos una entrada para ese sexo con valor 0
+            }
+            double sueldo = empleado.getSueldo(); // Obtenemos el sueldo del empleado
+            double acumulado = sueldosMedios.get(sexo); // Obtenemos la suma de parcial de los sueldos para ese sexo
+            //sueldosMedios.replace(sexo, acumulado, acumulado + sueldo); // Alternativa más segura
+            sueldosMedios.replace(sexo, acumulado + sueldo); // Reemplazamos la entrada con el nuevo acumulado
+            int count = contador.get(sexo);
+            //contador.replace(sexo, count, count + 1); // Alternativa más segura
+            contador.replace(sexo, count + 1); // Reemplazamos la entrada con un valor de cuenta incrementado
+        }
+
+        for (Persona.Sexo sexo : sueldosMedios.keySet()) { // Recorremos la vista de claves del mapa
+            double average = sueldosMedios.get(sexo) / contador.get(sexo);  // Calculamos la media del sueldo
+            sueldosMedios.replace(sexo, average); // Se reemplaza el valor acumulado por la media
+        }
+
+        return sueldosMedios;
+    }
+
+
+    static Map<Sexo, Double> getSueldoMedioHombresMujeresImperative(Collection<Empleado> empleados) {
+
+        Map<Sexo, Collection<Double>> sueldosPorSexo = new HashMap<>();
+
+        for (Empleado empleado : empleados) {
+            Sexo sexo = empleado.getSexo();
+            if (!sueldosPorSexo.containsKey(sexo)) {
+                sueldosPorSexo.put(sexo, new ArrayList<>());
+            }
+            double sueldo = empleado.getSueldo();
+            sueldosPorSexo.get(sexo).add(sueldo);
+        }
+
+        Map<Sexo, Double> result = new HashMap<>();
+
+        for (Sexo sexo : sueldosPorSexo.keySet()) {
+            double sum = 0.0;
+            for (Double sueldo : sueldosPorSexo.get(sexo)) {
+                sum += sueldo;
+            }
+            result.put(sexo, sum / sueldosPorSexo.get(sexo).size());
+        }
+        return result;
+    }
+
+
+    //Esto es una closure
+    //El método devuelve una expresión lambda de tipo BiFunction
+    // que ha capturado por el ámbito lexico el valor del parámetro de entrada "empleado"
+    // del método addSueldoToList
+    static BiFunction<Sexo, List<Double>, List<Double>> addSueldoToList(Empleado empleado) {
+        return (sexo, sueldos) -> {
+            sueldos.add(empleado.getSueldo());
+            return sueldos;
+        };
+    }
+
+
+    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional(Collection<Empleado> empleados) {
+
+        Map<Persona.Sexo, List<Double>> sueldosPorSexo = new HashMap<>();
+
+        /*empleados.forEach( empleado ->
+            sueldosPorSexo.compute(empleado.getSexo(),
+                    (sexo1, sueldos) -> {
+                        if (sueldos == null) {
+                            sueldos = new ArrayList<>();
+                        } else {
+                            sueldos.add(empleado.getSueldo());
+                        }
+                        return sueldos;
+                    })
+        );*/
+
+        empleados.forEach(empleado -> {
+                    sueldosPorSexo.computeIfAbsent(empleado.getSexo(), sexo -> new ArrayList<>());
+                    sueldosPorSexo.computeIfPresent(empleado.getSexo(), addSueldoToList(empleado));
+                }
+        );
+
+        Map<Persona.Sexo, Double> result = new HashMap<>();
+
+        sueldosPorSexo.forEach(
+                (sexo, sueldos) -> {
+                    result.computeIfAbsent(sexo,
+                            sexoKey ->
+                            {
+                                //No se puede hacer con sueldos.forEach a no ser que se use AtomicReference
+                                /* double acumulator = 0.0;
+                                for (double sueldo : sueldos) {
+                                    acumulator += sueldo;
+                                }
+                                return acumulator / sueldos.size();
+                                */
+                                AtomicReference<Double> acumulator = new AtomicReference<>(0.0);
+                                sueldos.forEach(sueldo -> acumulator.updateAndGet(v -> v + sueldo));
+                                return acumulator.get() / sueldos.size();
+                            }
+
+                            //Con streams seria mas simple
+                            //sueldos.stream().mapToDouble(sueldo -> sueldo).sum() / sueldos.size()
+                    );
+                }
+        );
+
+        return result;
+    }
+
+
+    static Map<Persona.Sexo, Double> getSueldoMedioHombresMujeresFunctional_v2(Collection<Empleado> empleados) {
+
+        Collector<Empleado, Map<Sexo, List<Double>>, Map<Sexo, Double>> sueldosPorSexoCollector = new Collector<Empleado, Map<Sexo, List<Double>>, Map<Sexo, Double>>() {
+            @Override
+            public Supplier<Map<Sexo, List<Double>>> supplier() {
+                return HashMap::new;
+            }
+
+            @Override
+            public BiConsumer<Map<Sexo, List<Double>>, Empleado> accumulator() {
+                return (map, empleado) -> {
+                    map.computeIfAbsent(empleado.getSexo(), sexo -> new ArrayList<Double>());
+                    map.computeIfPresent(empleado.getSexo(), addSueldoToList(empleado));
+                };
+            }
+
+            @Override
+            public BinaryOperator<Map<Sexo, List<Double>>> combiner() {
+                return null;
+            }
+
+            @Override
+            public Function<Map<Sexo, List<Double>>, Map<Sexo, Double>> finisher() {
+
+                return sueldosPorSexo -> {
+                    Map<Sexo, Double> result = new HashMap<>();
+
+                    sueldosPorSexo.forEach(
+                            (sexo, sueldos) -> {
+                                result.computeIfAbsent(sexo,
+                                        sexoKey ->
+                                        {
+                                            //No se puede hacer con sueldos.forEach a no ser que se use AtomicReference
+                                /* double acumulator = 0.0;
+                                for (double sueldo : sueldos) {
+                                    acumulator += sueldo;
+                                }
+                                return acumulator / sueldos.size();
+                                */
+                                            AtomicReference<Double> acumulator = new AtomicReference<>(0.0);
+                                            sueldos.forEach(sueldo -> acumulator.updateAndGet(v -> v + sueldo));
+                                            return acumulator.get() / sueldos.size();
+                                        }
+
+                                        //Con streams seria mas simple
+                                        //sueldos.stream().mapToDouble(sueldo -> sueldo).sum() / sueldos.size()
+                                );
+
+                            }
+                    );
+                    return result;
+                };
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Set.of();
+            }
+        };
+
+        var listSueldosBySexoMap = sueldosPorSexoCollector.supplier().get();
+
+        empleados.forEach(empleado ->
+                sueldosPorSexoCollector.accumulator().accept(listSueldosBySexoMap, empleado));
+
+        return sueldosPorSexoCollector.finisher().apply(listSueldosBySexoMap);
+
+
+    }
+
+
+
+
+
+
+
 
     //------------ Empleado mejor pagado por cada sexo
 
-    static Map<Persona.Sexo, Empleado> getEmpleadoMejorPagadoPorSexo(List<Empleado> empleados) {
+    static Map<Persona.Sexo, Empleado> getEmpleadoMejorPagadoPorSexo(Collection<Empleado> empleados) {
 
         Map<Persona.Sexo, Empleado> map = new HashMap<>();
 

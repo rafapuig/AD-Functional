@@ -82,7 +82,7 @@ public class CollectionDemo {
         // Al añadir un elemento en una colección, dependerá del tipo concreto de colección
         // en que posición se añade el nuevo elemento
         // Las tienen secuenciación y respetan la organización según el orden de llegada a la colección
-        // Los conjuntos, depende de la implementacion, no preservan el orden de inserción
+        // Los conjuntos, depende de la implementación, no preservan el orden de inserción
         System.out.println("Añadiendo Reino Unido...");
         countries.add("Reino Unido".toUpperCase());
         print(countries);
@@ -402,7 +402,7 @@ public class CollectionDemo {
         // el array proporcionado es de tamaño cero,
         // se proporciona para que el runtime pueda saber el tipo de los elementos
         // del array que debe crear
-        String[] resultArray = countries.toArray(new String[countries.size()]); // Reemplazar por 0
+        String[] resultArray = countries.toArray(new String[0]); // Reemplazar por 0
 
         System.out.println(Arrays.toString(resultArray)); // Es el array resultado el que los tiene
 

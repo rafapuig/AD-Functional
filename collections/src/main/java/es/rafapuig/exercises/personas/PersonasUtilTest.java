@@ -21,6 +21,8 @@ public class PersonasUtilTest {
         testGetAllPersonasSorted();
         testGetNombresMujeresMayusculas();
         testGetNombresPersonasSortByApellidos();
+
+        // Mapas
         testNombresPorSexo();
         testPersonasCountPorSexo();
         testAllPersonasHablanEspañol();
@@ -117,9 +119,10 @@ public class PersonasUtilTest {
 
 
 
-    //--------------------------------
+    //-------------------------------- MAPAS -------------------------------
 
-    static void testNombresPorSexo() {
+    @Test
+    void testNombresPorSexo() {
         System.out.println("\nNombres de personas por sexo:");
         System.out.println("------------------------------------------------------");
         System.out.println(
@@ -129,7 +132,8 @@ public class PersonasUtilTest {
                 getGenderToNamesMapFunctional(Empleados.EMPLEADOS));
     }
 
-    static void testPersonasCountPorSexo() {
+    @Test
+    void testPersonasCountPorSexo() {
         System.out.println("\nNumero de personas agrupadas por sexo:");
         System.out.println("------------------------------------------------------");
 
@@ -137,7 +141,13 @@ public class PersonasUtilTest {
                 getPersonasCountByGender(Empleados.EMPLEADOS));
         System.out.println(
                 getPersonasCountByGenderFunctional(Empleados.EMPLEADOS));
+        System.out.println(
+                getPersonasCountByGenderFunctional2(Empleados.EMPLEADOS));
     }
+
+
+
+
 
     static void testAllPersonasHablanEspañol() {
         System.out.println("\nComprobar si todas las personas hablan español:");
@@ -158,6 +168,7 @@ public class PersonasUtilTest {
         System.out.println(
                 allPersonasHablanEspañolFunctional_v4(Empleados.EMPLEADOS));
     }
+
 
     static void testAllHablanIdioma() {
 
