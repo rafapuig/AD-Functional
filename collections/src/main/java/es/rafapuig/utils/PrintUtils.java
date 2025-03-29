@@ -1,4 +1,4 @@
-package es.rafapuig;
+package es.rafapuig.utils;
 
 import java.util.Collection;
 

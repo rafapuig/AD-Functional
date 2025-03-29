@@ -1,6 +1,7 @@
 package es.rafapuig;
 
 import es.rafapuig.model.Persona;
+import es.rafapuig.utils.PrintUtils;
 import org.junit.jupiter.api.Test;
 
 import static es.rafapuig.model.Personas.*;

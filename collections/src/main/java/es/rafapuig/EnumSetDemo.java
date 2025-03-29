@@ -1,5 +1,6 @@
 package es.rafapuig;
 
+import es.rafapuig.utils.PrintUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumSet;
