@@ -7,7 +7,7 @@ public class PrintUtils {
     /**
      * Imprime una colección por la consola
      */
-    static void print(Collection<?> collection) {
+    public static void print(Collection<?> collection) {
         System.out.println(collection);
     }
 }
