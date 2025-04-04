@@ -1,6 +1,7 @@
 package exercises;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class UtilExercise {
         String[] arr4 = {"cuatro", "cinco", "seis"};
         String[] merged2 = merge(arr3, arr4);
         System.out.println(Arrays.toString(merged2));
+
+        List<Number> list = new ArrayList<>();
+        add(list, 10, 20, 30L, 40.5F, 50.9);
+        System.out.println(list);
 
     }
 
@@ -38,7 +43,7 @@ public class UtilExercise {
         return dest;
     }
 
-    public static <T,U extends T>  /* añade los parámetros de tipo */ void add(List<T> list, U... elements) {
+    public static /* añade los parámetros de tipo */<T,U extends T> void add(List<T> list, U... elements) {
         list.addAll(List.of(elements));
     }
 
