@@ -134,4 +134,5 @@ class Demo {
             System.out.print(domino.toHorizontalTileChar());
         }
     }
+
 }
